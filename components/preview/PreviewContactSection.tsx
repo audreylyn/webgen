@@ -177,14 +177,14 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
           <div className="col-span-12 md:col-span-4">
             <div className="contact-page-map rounded-lg overflow-hidden shadow-md">
               <iframe
-                src={content.contact.mapEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.8157790899295!2d120.9704706749103!3d14.549232976722247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397c9459392e297%3A0xc3e0023023e9a597!2s1%20Kabesang%20Purong%20St%2C%20Valenzuela%2C%201444%20Metro%20Manila%2C%20Philippines!5e0!3m2!1sen!2sph!4v1701334418386!5m2!1sen!2sph"}
+                src={content.contact.mapEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15433.871420078262!2d120.9991027!3d14.74265155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b114bb6f4717%3A0xdde1f186a6921ee7!2sWES%20Arena!5e0!3m2!1sen!2sph!4v1764089030080!5m2!1sen!2sph"}
                 width="100%"
                 height="450"
                 frameBorder="0"
                 style={{ border: 0 }}
                 allowFullScreen=""
-                aria-hidden="false"
-                tabIndex={0}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
               ></iframe>
             </div>
           </div>
