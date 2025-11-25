@@ -274,26 +274,30 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
       {/* Scroll To Top */}
       <ScrollToTopButton showScrollTop={showScrollTop} scrollToTop={scrollToTop} />
 
-      <CartButton totalItems={totalItems()} openCart={openCart} themeButton={theme.button} />
-      <CartDrawer
-        isOpen={isCartOpen}
-        cart={cart}
-        closeCart={closeCart}
-        setCartEmpty={clearCart}
-        updateQuantity={updateQuantity}
-        removeFromCart={removeFromCart}
-        cartTotal={cartTotal}
-        totalItems={totalItems}
-        checkoutForm={checkoutForm}
-        setCheckoutForm={setCheckoutForm}
-        handleCheckout={handleCheckout}
-        parseCurrency={parseCurrency}
-        formatCurrency={formatCurrency}
-        theme={theme}
-        isDark={isDark}
-        handleImageError={handleImageError}
-        website={website}
-      />
+      {enabledSections.products && (
+        <>
+          <CartButton totalItems={totalItems()} openCart={openCart} themeButton={theme.button} />
+          <CartDrawer
+            isOpen={isCartOpen}
+            cart={cart}
+            closeCart={closeCart}
+            setCartEmpty={clearCart}
+            updateQuantity={updateQuantity}
+            removeFromCart={removeFromCart}
+            cartTotal={cartTotal}
+            totalItems={totalItems}
+            checkoutForm={checkoutForm}
+            setCheckoutForm={setCheckoutForm}
+            handleCheckout={handleCheckout}
+            parseCurrency={parseCurrency}
+            formatCurrency={formatCurrency}
+            theme={theme}
+            isDark={isDark}
+            handleImageError={handleImageError}
+            website={website}
+          />
+        </>
+      )}
     </div>
   );
 };

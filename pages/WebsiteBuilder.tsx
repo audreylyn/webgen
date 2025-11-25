@@ -30,6 +30,55 @@ import { ContactDetails } from '../components/website-builder/ContactDetails';
 import { FooterConfig } from '../components/website-builder/FooterConfig';
 import { AiMarketingKit } from '../components/website-builder/AiMarketingKit';
 
+enum WebsiteType {
+  Custom = 'Custom',
+  Portfolio = 'Portfolio',
+  Ecommerce = 'E-commerce/Store',
+  LandingPage = 'Landing Page',
+}
+
+const WEBSITE_PRESETS: Record<WebsiteType, Partial<Website['enabledSections']>> = {
+  [WebsiteType.Custom]: {},
+  [WebsiteType.Portfolio]: {
+    hero: true,
+    gallery: true,
+    about: true,
+    contact: true,
+    products: false,
+    pricing: false,
+    benefits: false,
+    testimonials: false,
+    faq: false,
+    team: false,
+    callToAction: false,
+  },
+  [WebsiteType.Ecommerce]: {
+    hero: true,
+    products: true,
+    pricing: true,
+    faq: true,
+    gallery: false,
+    about: false,
+    benefits: false,
+    testimonials: false,
+    team: false,
+    callToAction: false,
+    contact: true,
+  },
+  [WebsiteType.LandingPage]: {
+    hero: true,
+    benefits: true,
+    testimonials: true,
+    callToAction: true,
+    products: false,
+    pricing: false,
+    gallery: false,
+    team: false,
+    about: false,
+    faq: false,
+    contact: true,
+  },
+};
 
 export const WebsiteBuilder: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -55,6 +104,8 @@ export const WebsiteBuilder: React.FC = () => {
   // AI Marketing State
   const [isGeneratingMarketing, setIsGeneratingMarketing] = useState(false);
   const [copied, setCopied] = useState(false);
+  
+  const [websiteType, setWebsiteType] = useState<WebsiteType>(WebsiteType.Custom);
 
   // File Input Refs
   // const heroImageInputRef = useRef<HTMLInputElement>(null);
@@ -384,6 +435,21 @@ export const WebsiteBuilder: React.FC = () => {
     setIsGeneratingMarketing(false);
   };
 
+  const handlePresetChange = (type: WebsiteType) => {
+    setWebsiteType(type);
+    if (type === WebsiteType.Custom) {
+      return; // Do nothing for custom, user manages manually
+    }
+    setWebsite(prev => {
+      if (!prev) return null;
+      const presetSections = WEBSITE_PRESETS[type];
+      return {
+        ...prev,
+        enabledSections: { ...prev.enabledSections, ...presetSections },
+      };
+    });
+  };
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
@@ -426,7 +492,12 @@ export const WebsiteBuilder: React.FC = () => {
                 <GeneralSettings website={website} setWebsite={setWebsite} />
 
                 {/* Section Visibility */}
-                <SectionVisibility website={website} setWebsite={setWebsite} />
+                <SectionVisibility 
+                  website={website}
+                  setWebsite={setWebsite}
+                  websiteType={websiteType}
+                  handlePresetChange={handlePresetChange}
+                />
 
               </div>
 
