@@ -52,13 +52,13 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
           <div className="col-span-1">
             <div className="contact-info">
               <div className="contact-info-item flex items-center p-4 rounded-lg shadow-md"
-                   style={{ backgroundColor: isDark ? theme.primary : '#071c34' }}>
+                   style={{ backgroundColor: '#071c34' }}> {/* Static dark blue background */}
                 <div className="contact-info-icon mr-4">
-                  <MapPin style={{ color: theme.secondary }} />
+                  <MapPin style={{ color: theme.secondary }} /> {/* Dynamic icon color */}
                 </div>
                 <div className="contact-info-text text-left">
-                  <h2 className="text-white text-lg font-semibold mb-1">Address</h2>
-                  <span className="text-sm" style={{ color: isDark ? '#d1d5db' : '#999999' }}>{content.contact.address || '123 Street, City, Country'}</span>
+                  <h2 className="text-white text-lg font-semibold mb-1">Phone</h2>
+                  <span className="text-sm" style={{ color: '#999999' }}>{content.contact.phone || '09201063227'}</span>
                 </div>
               </div>
             </div>
@@ -67,40 +67,41 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
           <div className="col-span-1">
             <div className="contact-info">
               <div className="contact-info-item flex items-center p-4 rounded-lg shadow-md"
-                   style={{ backgroundColor: isDark ? theme.primary : '#071c34' }}>
+                   style={{ backgroundColor: '#071c34' }}> {/* Static dark blue background */}
                 <div className="contact-info-icon mr-4">
-                  <Mail style={{ color: theme.secondary }} />
+                  <Mail style={{ color: theme.secondary }} /> {/* Dynamic icon color */}
                 </div>
                 <div className="contact-info-text text-left">
                   <h2 className="text-white text-lg font-semibold mb-1">E-mail</h2>
-                  <span className="text-sm" style={{ color: isDark ? '#d1d5db' : '#999999' }}>{content.contact.email || 'info@example.com'}</span>
+                  <span className="text-sm" style={{ color: '#999999' }}>{content.contact.email || 'audreylynmorana1504@gmail.com'}</span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="col-span-1">
+          {/* REMOVED: Office Time Block */}
+          {/* <div className="col-span-1">
             <div className="contact-info">
               <div className="contact-info-item flex items-center p-4 rounded-lg shadow-md"
-                   style={{ backgroundColor: isDark ? theme.primary : '#071c34' }}>
+                   style={{ backgroundColor: '#071c34' }}>
                 <div className="contact-info-icon mr-4">
                   <Clock style={{ color: theme.secondary }} />
                 </div>
                 <div className="contact-info-text text-left">
                   <h2 className="text-white text-lg font-semibold mb-1">Office Time</h2>
-                  <span className="text-sm" style={{ color: isDark ? '#d1d5db' : '#999999' }}>Mon - Thu 9:00 am - 4.00 pm</span>
-                  <span className="text-sm" style={{ color: isDark ? '#d1d5db' : '#999999' }}>Thu - Mon 10.00 pm - 5.00 pm</span>
+                  <span className="text-sm" style={{ color: '#999999' }}>Mon - Thu 9:00 am - 4.00 pm</span>
+                  <span className="text-sm" style={{ color: '#999999' }}>Thu - Mon 10.00 pm - 5.00 pm</span>
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Contact Form */}
           <div className="col-span-12 md:col-span-8">
-            <div className="contact-page-form p-6 rounded-lg shadow-md bg-white" style={{ backgroundColor: isDark ? '#1f2937' : '#fff' }}>
-              <h2 className="text-2xl font-bold mb-6" style={{ color: theme.primary }}>Get in Touch</h2>
+            <div className="contact-page-form p-6 rounded-lg shadow-md bg-white"> {/* Static white background */}
+              <h2 className="text-2xl font-bold mb-6" style={{ color: '#000' }}>Get in Touch</h2> {/* Static dark color */}
               <form onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <div className="single-input-field">
@@ -110,8 +111,8 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-${theme.primary}`}
-                      style={{ borderColor: isDark ? '#4b5563' : '#e5e7eb', backgroundColor: isDark ? '#374151' : '#f9f9f9', color: isDark ? '#fff' : '#000' }}
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2`}
+                      style={{ borderColor: '#e5e7eb', backgroundColor: '#f9f9f9', color: '#000' }}
                     />
                   </div>
                   <div className="single-input-field">
@@ -122,8 +123,8 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-${theme.primary}`}
-                      style={{ borderColor: isDark ? '#4b5563' : '#e5e7eb', backgroundColor: isDark ? '#374151' : '#f9f9f9', color: isDark ? '#fff' : '#000' }}
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2`}
+                      style={{ borderColor: '#e5e7eb', backgroundColor: '#f9f9f9', color: '#000' }}
                     />
                   </div>
                   <div className="single-input-field">
@@ -133,8 +134,8 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-${theme.primary}`}
-                      style={{ borderColor: isDark ? '#4b5563' : '#e5e7eb', backgroundColor: isDark ? '#374151' : '#f9f9f9', color: isDark ? '#fff' : '#000' }}
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2`}
+                      style={{ borderColor: '#e5e7eb', backgroundColor: '#f9f9f9', color: '#000' }}
                     />
                   </div>
                   <div className="single-input-field">
@@ -144,8 +145,8 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
                       name="subject"
                       value={formData.subject}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-${theme.primary}`}
-                      style={{ borderColor: isDark ? '#4b5563' : '#e5e7eb', backgroundColor: isDark ? '#374151' : '#f9f9f9', color: isDark ? '#fff' : '#000' }}
+                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2`}
+                      style={{ borderColor: '#e5e7eb', backgroundColor: '#f9f9f9', color: '#000' }}
                     />
                   </div>
                 </div>
@@ -156,8 +157,8 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
                     value={formData.message}
                     onChange={handleInputChange}
                     rows={6}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2 focus:ring-${theme.primary}`}
-                    style={{ borderColor: isDark ? '#4b5563' : '#e5e7eb', backgroundColor: isDark ? '#374151' : '#f9f9f9', color: isDark ? '#fff' : '#000' }}
+                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2`}
+                    style={{ borderColor: '#e5e7eb', backgroundColor: '#f9f9f9', color: '#000' }}
                   ></textarea>
                 </div>
                 <div className="single-input-fieldsbtn text-right">
@@ -176,7 +177,7 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
           <div className="col-span-12 md:col-span-4">
             <div className="contact-page-map rounded-lg overflow-hidden shadow-md">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d109741.02912911311!2d76.69348873658222!3d30.73506264436677!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390fed0be66ec96b%3A0xa5ff67f9527319fe!2sChandigarh!5e0!3m2!1sen!2sin!4v1553497921355"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3861.8157790899295!2d120.9704706749103!3d14.549232976722247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397c9459392e297%3A0xc3e0023023e9a597!2s1%20Kabesang%20Purong%20St%2C%20Valenzuela%2C%201444%20Metro%20Manila%2C%20Philippines!5e0!3m2!1sen!2sph!4v1701334418386!5m2!1sen!2sph"
                 width="100%"
                 height="450"
                 frameBorder="0"
