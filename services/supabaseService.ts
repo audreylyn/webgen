@@ -136,16 +136,12 @@ export const saveWebsite = async (website: Website) => {
     const dbPayload: any = {};
     Object.keys(payload).forEach((k) => { dbPayload[k.toLowerCase()] = (payload as any)[k]; });
 
-    console.log("Saving website with payload:", dbPayload);
-
     // Try upsert without select first to avoid schema cache issues
-    console.log("Attempting upsert with dbPayload:", dbPayload);
     const { error: upsertError } = await supabase.from('websites').upsert(dbPayload);
     if (upsertError) {
       console.error("Supabase Upsert Error:", upsertError);
       throw upsertError;
     }
-    console.log("Supabase Upsert successful for id:", payload.id);
     
     // Then fetch the saved data
     const { data, error: selectError } = await supabase.from('websites').select('*').eq('id', payload.id).maybeSingle();
@@ -154,7 +150,6 @@ export const saveWebsite = async (website: Website) => {
       throw selectError;
     }
     if (!data) return undefined as any;
-    console.log("Fetched data after upsert:", data);
     const copy = { ...data } as any;
     if ('enabledsections' in copy) { copy.enabledSections = copy.enabledsections; delete copy.enabledsections; }
     if ('createdat' in copy) { copy.createdAt = copy.createdat; delete copy.createdat; }
