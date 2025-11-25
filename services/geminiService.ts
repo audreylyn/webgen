@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { AISuggestionResponse, ThemeConfig, Website, AIMarketingResponse } from "../types";
 
@@ -6,7 +5,15 @@ import { AISuggestionResponse, ThemeConfig, Website, AIMarketingResponse } from 
 // For this MVP, we rely on the environment variable as per instructions.
 // If API_KEY is missing, we handle it gracefully in the UI.
 
-const apiKey = process.env.API_KEY || '';
+interface ImportMetaEnv {
+  readonly VITE_GEMINI_API_KEY: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}
+
+const apiKey = import.meta.env.VITE_GEMINI_API_KEY || '';
 
 export const generateWebsiteContent = async (businessName: string, businessType: string): Promise<AISuggestionResponse | null> => {
   if (!apiKey) {
