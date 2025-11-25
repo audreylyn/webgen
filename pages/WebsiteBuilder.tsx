@@ -39,6 +39,19 @@ export const WebsiteBuilder: React.FC = () => {
   // File Input Refs
   const heroImageInputRef = useRef<HTMLInputElement>(null);
 
+  const uploadAiImage = async (imageUrl: string, fileNamePrefix: string) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+      const file = new File([blob], `${fileNamePrefix}_${Date.now()}.png`, { type: blob.type });
+      const publicUrl = await uploadImage(file);
+      return publicUrl;
+    } catch (error) {
+      console.error(`Failed to upload AI-generated image (${fileNamePrefix}):`, error);
+      return null; // Return null to indicate failure
+    }
+  };
+
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -154,57 +167,78 @@ export const WebsiteBuilder: React.FC = () => {
           return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${width}&height=${height}&nologo=true`;
         };
 
-        return {
-          ...prev,
-          title: aiPrompt.name,
-          content: {
-            ...prev.content,
-            hero: { 
-              ...prev.content.hero, 
-              title: result.heroTitle, 
-              subtext: result.heroSubtext,
-              image: result.heroImagePrompt 
-                ? generateImageUrl(result.heroImagePrompt, 1200, 600)
-                : `https://placehold.co/1200x600?text=Hero+Image`
-            },
-            about: result.aboutText,
-            products: result.products?.map((p, i) => ({
-              id: generateId(),
-              name: p.name,
-              description: p.description,
-              price: p.price.includes('₱') ? p.price : `₱${p.price.replace('$', '')}`, // Ensure Peso sign
-              image: p.imagePrompt 
+        // Asynchronously upload images and update the website object
+        const processImages = async () => {
+          const newWebsite = { ...prev };
+
+          // Process Hero Image
+          if (result.heroImagePrompt) {
+            const heroImageUrl = generateImageUrl(result.heroImagePrompt, 1200, 600);
+            const uploadedHeroUrl = await uploadAiImage(heroImageUrl, 'hero');
+            if (uploadedHeroUrl) {
+              newWebsite.content.hero.image = uploadedHeroUrl;
+            } else {
+              newWebsite.content.hero.image = `https://placehold.co/1200x600?text=Hero+Image`;
+            }
+          } else {
+            newWebsite.content.hero.image = `https://placehold.co/1200x600?text=Hero+Image`;
+          }
+
+          // Process Product Images
+          if (result.products && result.products.length > 0) {
+            newWebsite.content.products = await Promise.all(result.products.map(async (p, i) => {
+              const productImageUrl = p.imagePrompt
                 ? generateImageUrl(p.imagePrompt, 800, 600)
-                : `https://placehold.co/800x600?text=${encodeURIComponent(p.name)}`
-            })) || [],
-            benefits: result.benefits?.map((b) => ({
-              id: generateId(),
-              title: b.title,
-              description: b.description,
-              icon: b.icon || 'Star'
-            })) || [],
-            testimonials: result.testimonials?.map((t, i) => ({
-              id: generateId(),
-              name: t.name,
-              role: t.role,
-              content: t.content,
-              avatar: `https://placehold.co/150x150?text=${t.name.charAt(0)}`
-            })) || [],
-            faq: result.faq?.map((f) => ({
-              id: generateId(),
-              question: f.question,
-              answer: f.answer
-            })) || [],
-          },
-          enabledSections: {
+                : `https://placehold.co/800x600?text=${encodeURIComponent(p.name)}`;
+              const uploadedProductUrl = await uploadAiImage(productImageUrl, `product_${i}`);
+              return {
+                id: generateId(),
+                name: p.name,
+                description: p.description,
+                price: p.price.includes('₱') ? p.price : `₱${p.price.replace('$', '')}`, // Ensure Peso sign
+                image: uploadedProductUrl || `https://placehold.co/800x600?text=${encodeURIComponent(p.name)}`
+              };
+            }));
+          } else {
+            newWebsite.content.products = [];
+          }
+
+          // Process other content that doesn't involve images
+          newWebsite.title = aiPrompt.name;
+          newWebsite.content.hero.title = result.heroTitle;
+          newWebsite.content.hero.subtext = result.heroSubtext;
+          newWebsite.content.about = result.aboutText;
+          newWebsite.content.benefits = result.benefits?.map((b) => ({
+            id: generateId(),
+            title: b.title,
+            description: b.description,
+            icon: b.icon || 'Star'
+          })) || [];
+          newWebsite.content.testimonials = result.testimonials?.map((t, i) => ({
+            id: generateId(),
+            name: t.name,
+            role: t.role,
+            content: t.content,
+            avatar: `https://placehold.co/150x150?text=${t.name.charAt(0)}`
+          })) || [];
+          newWebsite.content.faq = result.faq?.map((f) => ({
+            id: generateId(),
+            question: f.question,
+            answer: f.answer
+          })) || [];
+          newWebsite.enabledSections = {
             ...prev.enabledSections,
-            // Auto-enable sections if AI returned content for them
             products: (result.products?.length ?? 0) > 0,
             benefits: (result.benefits?.length ?? 0) > 0,
             testimonials: (result.testimonials?.length ?? 0) > 0,
             faq: (result.faq?.length ?? 0) > 0,
-          }
+          };
+
+          setWebsite(newWebsite);
         };
+
+        processImages(); // Call the async function
+        return prev; // Return previous state immediately as setWebsite will be called inside processImages
       });
     }
     setIsGenerating(false);
