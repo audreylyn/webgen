@@ -1,0 +1,81 @@
+import React from 'react';
+import { Plus, Trash, Upload } from 'lucide-react';
+import { Website, Product } from '../../types';
+
+interface ProductListProps {
+  website: Website;
+  addItem: <T extends keyof Website['content']>(section: T, item: Website['content'][T][number]) => void;
+  removeItem: <T extends keyof Website['content']>(section: T, id: string) => void;
+  updateItem: <T extends keyof Website['content'], K extends keyof Website['content'][T][number]>(section: T, id: string, key: K, value: Website['content'][T][number][K]) => void;
+  handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => void;
+}
+
+export const ProductList: React.FC<ProductListProps> = ({
+  website,
+  addItem,
+  removeItem,
+  updateItem,
+  handleFileUpload,
+}) => {
+  return (
+    <section>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-bold text-slate-800">Products / Services</h3>
+        <button
+          onClick={() => addItem<Product>('products', { id: Math.random().toString(), name: 'New Product', description: 'Desc', image: 'https://placehold.co/400x300?text=Product', price: '₱0.00' })}
+          className="text-sm flex items-center gap-1 text-indigo-600 hover:underline"
+        >
+          <Plus className="w-4 h-4" /> Add Item
+        </button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {website.content.products.map((p) => (
+          <div key={p.id} className="border border-slate-200 p-4 rounded-lg relative bg-slate-50 group">
+            <button onClick={() => removeItem('products', p.id)} className="absolute top-2 right-2 p-1 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+              <Trash className="w-4 h-4" />
+            </button>
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={p.name}
+                placeholder="Product Name"
+                onChange={(e) => updateItem<Product>('products', p.id, 'name', e.target.value)}
+                className="flex-1 bg-transparent font-bold border-b border-transparent focus:border-indigo-400 outline-none"
+              />
+              <input
+                type="text"
+                value={p.price}
+                placeholder="Price"
+                onChange={(e) => updateItem<Product>('products', p.id, 'price', e.target.value)}
+                className="w-20 bg-transparent text-right font-medium text-slate-700 border-b border-transparent focus:border-indigo-400 outline-none"
+              />
+            </div>
+            <textarea
+              value={p.description}
+              onChange={(e) => updateItem<Product>('products', p.id, 'description', e.target.value)}
+              className="w-full bg-transparent text-sm text-slate-600 border-transparent focus:border-indigo-400 rounded outline-none h-16 resize-none"
+            />
+            <div className="flex gap-2 mt-2">
+              <input
+                type="text"
+                value={p.image}
+                onChange={(e) => updateItem<Product>('products', p.id, 'image', e.target.value)}
+                className="flex-1 text-xs text-slate-400 bg-white border border-slate-200 rounded px-2 py-1"
+                placeholder="Image URL"
+              />
+              <label className="cursor-pointer px-2 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50 flex items-center justify-center">
+                <Upload className="w-3 h-3 text-slate-500" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleFileUpload(e, (base64) => updateItem<Product>('products', p.id, 'image', base64))}
+                />
+              </label>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
