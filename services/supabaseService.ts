@@ -90,6 +90,31 @@ export const getWebsiteById = async (id: string) => {
   }
 };
 
+export const getWebsiteBySubdomain = async (subdomain: string) => {
+  try {
+    const { data, error } = await supabase
+      .from('websites')
+      .select('*')
+      .eq('subdomain', subdomain)
+      .eq('status', 'published') // Only show published sites
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) return undefined;
+    const copy = { ...data } as any;
+    if ('enabledsections' in copy) { copy.enabledSections = copy.enabledsections; delete copy.enabledsections; }
+    if ('createdat' in copy) { copy.createdAt = copy.createdat; delete copy.createdat; }
+    return copy as Website;
+  } catch (err) {
+    console.error('getWebsiteBySubdomain error', err);
+    const msg = (err as any)?.message || String(err);
+    if (/relation .* does not exist|does not exist|invalid relation/i.test(msg)) {
+      throw new Error('Database table `websites` not found. Run the SQL migration in MIGRATE_TO_SUPABASE.md to create the table. Original error: ' + msg);
+    }
+    throw new Error(msg);
+  }
+};
+
 export const saveWebsite = async (website: Website) => {
   // Upsert: create or update
   const payload = { ...website } as any;

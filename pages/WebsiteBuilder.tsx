@@ -122,9 +122,10 @@ export const WebsiteBuilder: React.FC = () => {
 
         // If the website has a configured subdomain, build the preview URL using it.
         // Otherwise fall back to the current origin (localhost during development).
-        let baseUrl = window.location.href.split('#')[0];
+        let baseUrl = window.location.origin; // Default to current origin for development
         if (website.subdomain && website.subdomain.trim()) {
-          baseUrl = `https://${website.subdomain}.webgen.com`;
+          // For published subdomains, use the full subdomain URL
+          baseUrl = `https://${website.subdomain}.likhasiteworks.dev`;
         }
 
         const previewUrl = `${baseUrl}#/preview/${saved.id}`;
@@ -391,7 +392,7 @@ export const WebsiteBuilder: React.FC = () => {
                       className="flex-1 px-4 py-2 border border-slate-300 rounded-l-lg focus:ring-2 focus:ring-indigo-500 outline-none"
                     />
                     <span className="bg-slate-100 border border-l-0 border-slate-300 text-slate-500 px-4 py-2 rounded-r-lg">
-                      .webgen.com
+                      .likhasiteworks.dev
                     </span>
                   </div>
                 </div>

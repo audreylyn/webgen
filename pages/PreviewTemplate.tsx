@@ -1,7 +1,6 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getWebsiteById } from '../services/supabaseService';
+import { getWebsiteById, getWebsiteBySubdomain } from '../services/supabaseService';
 import { Website, Product } from '../types';
 // Added User to imports from lucide-react
 import { Phone, Mail, MapPin, MessageCircle, Loader2, AlertTriangle, ArrowUp, Star, ChevronDown, Check, X, Send, Plus, Minus, User, Facebook, Instagram, Twitter, Linkedin, Youtube, Link as LinkIcon } from 'lucide-react';
@@ -9,7 +8,7 @@ import { useCart } from '../hooks/useCart';
 import CartButton from '../components/CartButton';
 import CartDrawer from '../components/CartDrawer';
 
-export const PreviewTemplate: React.FC = () => {
+export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain }) => {
   const { id } = useParams<{ id: string }>();
   const [website, setWebsite] = useState<Website | null>(null);
   const [loading, setLoading] = useState(true);
@@ -22,22 +21,37 @@ export const PreviewTemplate: React.FC = () => {
 
   useEffect(() => {
     const fetchWebsite = async () => {
-      if (!id) {
-        setError('Invalid preview URL.');
-        setLoading(false);
+      if (subdomain) {
+        try {
+          const data = await getWebsiteBySubdomain(subdomain);
+          if (data) {
+            setWebsite(data);
+          } else {
+            setError(`Website ${subdomain}.likhasiteworks.dev not found or not published.`);
+          }
+        } catch (e) {
+          setError('Failed to load website configuration by subdomain.');
+        } finally {
+          setLoading(false);
+        }
         return;
       }
 
-      try {
-        const data = await getWebsiteById(id);
-        if (data) {
-          setWebsite(data);
-        } else {
-          setError('Website not found. It may have been deleted or the link is incorrect.');
+      if (id) {
+        try {
+          const data = await getWebsiteById(id);
+          if (data) {
+            setWebsite(data);
+          } else {
+            setError('Website not found. It may have been deleted or the link is incorrect.');
+          }
+        } catch (e) {
+          setError('Failed to load website configuration.');
+        } finally {
+          setLoading(false);
         }
-      } catch (e) {
-        setError('Failed to load website configuration.');
-      } finally {
+      } else {
+        setError('Invalid preview URL. No ID or subdomain provided.');
         setLoading(false);
       }
     };
@@ -48,7 +62,7 @@ export const PreviewTemplate: React.FC = () => {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [id]);
+  }, [id, subdomain]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

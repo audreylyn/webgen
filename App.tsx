@@ -9,9 +9,23 @@ import AdminUsers from './pages/AdminUsers';
 import RequireRole from './components/RequireRole';
 import { useAuth } from './contexts/AuthContext';
 
-const AppInner: React.FC = () => {
+const SubdomainRouter: React.FC = () => {
+  const host = window.location.host; // e.g., "my-site.likhasiteworks.dev"
+  const parts = host.split('.');
   const { user } = useAuth();
 
+  // Determine if it's a custom subdomain (e.g., my-site.likhasiteworks.dev, not www.likhasiteworks.dev or just likhasiteworks.dev)
+  // For Vercel deployments, the default URL will be like webgen-xi.vercel.app, which also has 3 parts.
+  // We need to differentiate the main app host from a user-defined subdomain.
+  // Assuming the main app is accessed at likhasiteworks.dev or www.likhasiteworks.dev (or webgen-xi.vercel.app)
+  const isMainAppHost = parts.length <= 2 || parts[0] === 'www' || host.includes('vercel.app');
+
+  if (!isMainAppHost) {
+    const subdomain = parts[0];
+    return <PreviewTemplate subdomain={subdomain} />;
+  }
+
+  // Otherwise, render the main application with all its routes
   return (
     <Router>
       <Routes>
@@ -29,7 +43,7 @@ const AppInner: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <AppInner />
+      <SubdomainRouter />
     </AuthProvider>
   );
 };
