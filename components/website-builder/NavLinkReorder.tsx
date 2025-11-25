@@ -87,10 +87,11 @@ export const NavLinkReorder: React.FC<NavLinkReorderProps> = ({
 
   return (
     <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 mt-8">
-      <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+      <h3 className="text-lg font-bold text-slate-800 mb-2 flex items-center gap-2">
         <Menu className="w-5 h-5 text-indigo-500" />
         Navigation Order
       </h3>
+      <p className="text-sm text-slate-500 mb-4">Sections like 'Home' and 'Call to Action' are excluded from reordering as they have fixed positions.</p>
       <div className="space-y-3">
         {orderedLinks.map((link, index) => (
           <div

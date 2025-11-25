@@ -26,6 +26,7 @@ export const Integrations: React.FC<IntegrationsProps> = ({
             <div>
               <p className="font-semibold text-slate-800">Facebook Messenger</p>
               <p className="text-xs text-slate-500">Enable checkout via Messenger</p>
+              <p className="text-xs text-slate-400 mt-1">Page ID is required for Messenger-based checkout when products section is enabled.</p>
             </div>
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
@@ -38,7 +39,7 @@ export const Integrations: React.FC<IntegrationsProps> = ({
             <div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
           </label>
         </div>
-        {website.messenger.enabled && (
+        {website.messenger.enabled && website.enabledSections.products && (
           <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
             <input
               type="text"
