@@ -33,7 +33,7 @@ export const AiMarketingKit: React.FC<AiMarketingKitProps> = ({
           className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2 shadow-sm font-medium"
         >
           {isGeneratingMarketing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-          Generate Kit
+          {isGeneratingMarketing ? 'Generating...' : 'Generate Kit'}
         </button>
       </div>
 

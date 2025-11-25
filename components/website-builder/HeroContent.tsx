@@ -1,17 +1,19 @@
 import React, { useRef } from 'react';
-import { ImageIcon, Upload } from 'lucide-react';
+import { ImageIcon, Upload, Loader2 } from 'lucide-react';
 import { Website, HeroContent as HeroContentType } from '../../types';
 
 interface HeroContentProps {
   website: Website;
   updateContent: (section: 'hero', data: HeroContentType) => void;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => void;
+  isUploadingImage: boolean; // New prop
 }
 
 export const HeroContent: React.FC<HeroContentProps> = ({
   website,
   updateContent,
   handleFileUpload,
+  isUploadingImage, // Destructure new prop
 }) => {
   const heroImageInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,10 +53,11 @@ export const HeroContent: React.FC<HeroContentProps> = ({
           />
           <button
             onClick={() => heroImageInputRef.current?.click()}
-            className="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-600"
+            className="px-3 py-2 border border-slate-300 rounded-lg hover:bg-slate-50 text-slate-600 disabled:opacity-50 disabled:cursor-not-allowed"
             title="Upload Image"
+            disabled={isUploadingImage}
           >
-            <Upload className="w-4 h-4" />
+            {isUploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
           </button>
         </div>
       </div>

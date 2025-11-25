@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Trash, Upload } from 'lucide-react';
+import { Plus, Trash, Upload, Loader2 } from 'lucide-react';
 import { Website, Product } from '../../types';
 
 interface ProductListProps {
@@ -8,6 +8,7 @@ interface ProductListProps {
   removeItem: <T extends keyof Website['content']>(section: T, id: string) => void;
   updateItem: <T extends keyof Website['content'], K extends keyof Website['content'][T][number]>(section: T, id: string, key: K, value: Website['content'][T][number][K]) => void;
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => void;
+  isUploadingImage: boolean; // New prop
 }
 
 export const ProductList: React.FC<ProductListProps> = ({
@@ -16,6 +17,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   removeItem,
   updateItem,
   handleFileUpload,
+  isUploadingImage, // Destructure new prop
 }) => {
   return (
     <section>
@@ -63,13 +65,14 @@ export const ProductList: React.FC<ProductListProps> = ({
                 className="flex-1 text-xs text-slate-400 bg-white border border-slate-200 rounded px-2 py-1"
                 placeholder="Image URL"
               />
-              <label className="cursor-pointer px-2 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50 flex items-center justify-center">
-                <Upload className="w-3 h-3 text-slate-500" />
+              <label className="cursor-pointer px-2 py-1 border border-slate-200 rounded bg-white hover:bg-slate-50 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+                {isUploadingImage ? <Loader2 className="w-3 h-3 text-slate-500 animate-spin" /> : <Upload className="w-3 h-3 text-slate-500" />}
                 <input
                   type="file"
                   accept="image/*"
                   className="hidden"
                   onChange={(e) => handleFileUpload(e, (base64) => updateItem<Product>('products', p.id, 'image', base64))}
+                  disabled={isUploadingImage}
                 />
               </label>
             </div>

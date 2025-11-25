@@ -8,6 +8,7 @@ import Login from './pages/Login';
 import AdminUsers from './pages/AdminUsers';
 import RequireRole from './components/RequireRole';
 import { useAuth } from './contexts/AuthContext';
+import { ToastProvider } from './components/Toast';
 
 const SubdomainRouter: React.FC = () => {
   const host = window.location.host; // e.g., "my-site.likhasiteworks.dev"
@@ -43,7 +44,9 @@ const SubdomainRouter: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <SubdomainRouter />
+      <ToastProvider>
+        <SubdomainRouter />
+      </ToastProvider>
     </AuthProvider>
   );
 };

@@ -49,6 +49,7 @@ export const VisualStyle: React.FC<VisualStyleProps> = ({
             className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2"
           >
             {isGeneratingTheme ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Generate'}
+            {isGeneratingTheme ? 'Generating...' : 'Generate'}
           </button>
         </div>
       </div>

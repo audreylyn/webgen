@@ -46,7 +46,7 @@ export const AiContentWizard: React.FC<AiContentWizardProps> = ({
               className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-2 whitespace-nowrap"
             >
               {isGenerating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-              Generate
+              {isGenerating ? 'Generating...' : 'Generate'}
             </button>
           </div>
         </div>

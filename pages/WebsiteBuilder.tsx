@@ -38,6 +38,7 @@ export const WebsiteBuilder: React.FC = () => {
   const [isNew, setIsNew] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUploadingImage, setIsUploadingImage] = useState(false); // New state for image uploads
   
   // AI Content State
   const [aiPrompt, setAiPrompt] = useState({ name: '', type: '' });
@@ -73,8 +74,16 @@ export const WebsiteBuilder: React.FC = () => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, callback: (base64: string) => void) => {
     const file = e.target.files?.[0];
     if (file) {
-      // upload to Supabase storage and return the public URL to the callback
-      uploadImage(file).then((url) => callback(url)).catch(() => {});
+      setIsUploadingImage(true); // Set loading state
+      uploadImage(file)
+        .then((url) => callback(url))
+        .catch((error) => {
+          console.error("Image upload failed:", error);
+          // Optionally show a toast notification for upload failure
+        })
+        .finally(() => {
+          setIsUploadingImage(false); // Unset loading state
+        });
     }
   };
 
@@ -388,6 +397,7 @@ export const WebsiteBuilder: React.FC = () => {
                   website={website}
                   updateContent={updateContent}
                   handleFileUpload={handleFileUpload}
+                  isUploadingImage={isUploadingImage}
                 />
               )}
 
@@ -404,6 +414,7 @@ export const WebsiteBuilder: React.FC = () => {
                   removeItem={removeItem}
                   updateItem={updateItem}
                   handleFileUpload={handleFileUpload}
+                  isUploadingImage={isUploadingImage}
                 />
               )}
 
@@ -425,6 +436,7 @@ export const WebsiteBuilder: React.FC = () => {
                   removeItem={removeItem}
                   updateItem={updateItem}
                   handleFileUpload={handleFileUpload}
+                  isUploadingImage={isUploadingImage}
                 />
               )}
 

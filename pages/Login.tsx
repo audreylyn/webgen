@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock } from 'lucide-react';
+import { useToast } from '../components/Toast';
 
 const Login: React.FC = () => {
   const { signIn } = useAuth();
@@ -9,8 +10,9 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState(''); // Keep for inline validation, but use toast for general errors
   const navigate = useNavigate();
+  const { addToast } = useToast();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,8 +21,9 @@ const Login: React.FC = () => {
     try {
       await signIn(email, password);
       navigate('/');
+      addToast('Signed in successfully!', 'success');
     } catch (err) {
-      setError('Invalid email or password. Please try again.');
+      addToast('Invalid email or password. Please try again.', 'error');
       console.error('Sign in error:', err);
     } finally {
       setLoading(false);
@@ -49,11 +52,11 @@ const Login: React.FC = () => {
           </div>
 
           {/* Error Message */}
-          {error && (
+          {/* {error && (
             <div className="bg-red-50 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
               <p>{error}</p>
             </div>
-          )}
+          )} */}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
