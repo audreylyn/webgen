@@ -17,7 +17,7 @@ export const DEFAULT_WEBSITE: Website = {
   messenger: {
     enabled: false,
     pageId: '',
-    welcomeMessage: 'Hi! How can we help?',
+    welcomeMessage: '',
   },
   enabledSections: {
     hero: true,

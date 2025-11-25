@@ -555,7 +555,7 @@ export const WebsiteBuilder: React.FC = () => {
                         </div>
                         <div>
                           <p className="font-semibold text-slate-800">Facebook Messenger</p>
-                          <p className="text-xs text-slate-500">Add live chat to your site</p>
+                          <p className="text-xs text-slate-500">Enable checkout via Messenger</p>
                         </div>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
