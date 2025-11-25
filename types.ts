@@ -35,6 +35,11 @@ export interface GalleryItem {
   id: string;
   image: string;
   caption?: string;
+  price?: string;
+  address?: string;
+  beds?: number;
+  bathrooms?: number;
+  area?: string;
 }
 
 export interface TeamMember {

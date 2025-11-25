@@ -1,6 +1,7 @@
 .base-template__wrapper {
 
 	max-width: 1560px;
+	margin: 0 auto;
 }
 .base-template__text {
 	margin-bottom: 60px;

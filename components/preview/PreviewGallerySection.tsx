@@ -94,19 +94,70 @@ export const PreviewGallerySection: React.FC<PreviewGallerySectionProps> = ({
               {content.gallery.map((item) => (
                 <SwiperSlide key={item.id} className="booking-slider__slide swiper-slide">
                   <div className="booking-slider__item booking-slider-item">
+                    {item.price && (
+                      <div className="booking-slider-item__badge">Popular</div>
+                    )}
                     <a title={item.caption || "Gallery Item"} href="/" className="booking-slider-item__image" onClick={(e) => e.preventDefault()}>
                       <img src={item.image} alt={item.caption || "Gallery Item"} />
                     </a>
                     <div className="booking-slider-item__content">
+                      {item.price && (
+                        <div className="booking-slider-item__price">
+                          {item.price} <small>/month</small>
+                        </div>
+                      )}
                       <h2 className="booking-slider-item__title">
                         <a title={item.caption || "Gallery Item"} href="/" onClick={(e) => e.preventDefault()}>
                           {item.caption || "Gallery Item"}
                         </a>
                       </h2>
+                      {item.address && (
+                        <div className="booking-slider-item__address">
+                          <span className="booking-slider-item__address-icon">
+                            <img src="https://bato-web-agency.github.io/bato-shared/img/slider-2/icon-address.svg" alt="Address icon" />
+                          </span>
+                          {item.address}
+                        </div>
+                      )}
                       <div className="booking-slider-item__text">
                         {item.caption || "Explore this beautifully crafted space."}
                       </div>
-                      {/* Add other details if available in GalleryItem type */}
+                      {(item.beds || item.bathrooms || item.area) && (
+                        <div className="booking-slider-item__footer">
+                          <div className="booking-slider-item__footer-inner">
+                            <div className="booking-slider-item__amenities">
+                              {item.beds && (
+                                <div className="booking-slider-item__amenity">
+                                  <span className="booking-slider-item__amenity-icon">
+                                    <img src="https://bato-web-agency.github.io/bato-shared/img/slider-2/icon-beds.svg" alt="Beds icon" />
+                                  </span>
+                                  <span className="booking-slider-item__amenity-text">{item.beds} Beds</span>
+                                </div>
+                              )}
+                              {item.bathrooms && (
+                                <div className="booking-slider-item__amenity">
+                                  <span className="booking-slider-item__amenity-icon">
+                                    <img src="https://bato-web-agency.github.io/bato-shared/img/slider-2/icon-bathrooms.svg" alt="Bathrooms icon" />
+                                  </span>
+                                  <span className="booking-slider-item__amenity-text">{item.bathrooms} Bathrooms</span>
+                                </div>
+                              )}
+                              {item.area && (
+                                <div className="booking-slider-item__amenity">
+                                  <span className="booking-slider-item__amenity-icon">
+                                    <img src="https://bato-web-agency.github.io/bato-shared/img/slider-2/icon-area.svg" alt="Area icon" />
+                                  </span>
+                                  <span className="booking-slider-item__amenity-text">{item.area}</span>
+                                </div>
+                              )}
+                            </div>
+                            <a href="/" className="booking-slider-item__btn" onClick={(e) => e.preventDefault()}>
+                              Explore more
+                              <span className="booking-slider-item__btn-icon"></span>
+                            </a>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </SwiperSlide>
