@@ -59,7 +59,7 @@ const Login: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                   Email Address
                 </label>
                 <div className="relative">
@@ -79,14 +79,9 @@ const Login: React.FC = () => {
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Password
-                  </label>
-                  <Link to="/forgot-password" className="text-sm text-[#B8860B] hover:text-[#D4AF37] font-medium">
-                    Forgot password?
-                  </Link>
-                </div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#B8860B]">
                     <Lock className="h-5 w-5 text-gray-400" />
@@ -100,6 +95,13 @@ const Login: React.FC = () => {
                     placeholder="Enter your password"
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute inset-y-0 right-0 flex items-center pr-3"
+                  >
+                    <span className="text-gray-500 text-sm">{showPassword ? 'Hide' : 'Show'}</span>
+                  </button>
                 </div>
               </div>
             </div>
