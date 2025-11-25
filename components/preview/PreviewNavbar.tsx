@@ -39,9 +39,10 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
       };
     })
     .sort((a, b) => {
-      if (!website.navLinkOrder) return 0; // No custom order, maintain original order
-      const indexA = website.navLinkOrder.indexOf(a.id as keyof typeof enabledSections);
-      const indexB = website.navLinkOrder.indexOf(b.id as keyof typeof enabledSections);
+      const navLinkOrder = (website.content as any)?.navLinkOrder;
+      if (!navLinkOrder) return 0; // No custom order, maintain original order
+      const indexA = navLinkOrder.indexOf(a.id as keyof typeof enabledSections);
+      const indexB = navLinkOrder.indexOf(b.id as keyof typeof enabledSections);
       return indexA - indexB;
     });
 

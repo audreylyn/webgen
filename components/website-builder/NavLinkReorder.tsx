@@ -37,8 +37,8 @@ export const NavLinkReorder: React.FC<NavLinkReorderProps> = ({
       };
     });
 
-  // Use navLinkOrder if it exists (check both top-level and content), otherwise use default order
-  const navLinkOrder = website.navLinkOrder || (website.content as any)?.navLinkOrder;
+  // Use navLinkOrder from content field, otherwise use default order
+  const navLinkOrder = (website.content as any)?.navLinkOrder;
   const orderedLinks = navLinkOrder
     ? navLinkOrder
         .map(id => navLinks.find(link => link.id === id))
@@ -57,7 +57,6 @@ export const NavLinkReorder: React.FC<NavLinkReorderProps> = ({
       if (!prev) return prev;
       return {
         ...prev,
-        navLinkOrder: newNavLinkOrder,
         content: {
           ...prev.content,
           navLinkOrder: newNavLinkOrder
@@ -78,7 +77,6 @@ export const NavLinkReorder: React.FC<NavLinkReorderProps> = ({
       if (!prev) return prev;
       return {
         ...prev,
-        navLinkOrder: newNavLinkOrder,
         content: {
           ...prev.content,
           navLinkOrder: newNavLinkOrder
