@@ -53,28 +53,31 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Contact Info - Phone */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg flex items-start space-x-4">
-            <Phone className="text-indigo-600 dark:text-indigo-400 mt-1" size={24} />
+            <Phone className="mt-1" size={24} style={{ color: theme.secondary }} />
             <div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Call Us</h3>
               <p className="text-gray-700 dark:text-gray-300">{content.contact.phone || 'N/A'}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Reach out to us during business hours.</p>
             </div>
           </div>
 
           {/* Contact Info - Email */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg flex items-start space-x-4">
-            <Mail className="text-indigo-600 dark:text-indigo-400 mt-1" size={24} />
+            <Mail className="mt-1" size={24} style={{ color: theme.secondary }} />
             <div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Email Us</h3>
               <p className="text-gray-700 dark:text-gray-300 break-words">{content.contact.email || 'N/A'}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">We respond to all inquiries within 24 hours.</p>
             </div>
           </div>
 
           {/* Contact Info - Address */}
           <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg flex items-start space-x-4">
-            <MapPin className="text-indigo-600 dark:text-indigo-400 mt-1" size={24} />
+            <MapPin className="mt-1" size={24} style={{ color: theme.secondary }} />
             <div>
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Our Location</h3>
               <p className="text-gray-700 dark:text-gray-300">{content.contact.address || 'N/A'}</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Visit us at our office during opening hours.</p>
             </div>
           </div>
         </div>
