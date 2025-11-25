@@ -136,6 +136,8 @@ export const saveWebsite = async (website: Website) => {
     const dbPayload: any = {};
     Object.keys(payload).forEach((k) => { dbPayload[k.toLowerCase()] = (payload as any)[k]; });
 
+    console.log("Saving website with payload:", dbPayload);
+
     // Try upsert without select first to avoid schema cache issues
     const { error: upsertError } = await supabase.from('websites').upsert(dbPayload);
     if (upsertError) throw upsertError;
