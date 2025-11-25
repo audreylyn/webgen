@@ -122,7 +122,7 @@ export const NavLinkReorder: React.FC<NavLinkReorderProps> = ({
           </div>
         ))}
       </div>
-      <p className="text-sm text-slate-500 mb-4">Sections like 'Home' and 'Call to Action' are excluded from reordering as they have fixed positions.</p>
+      <p className="text-sm text-slate-500 mt-4">Sections like 'Home' and 'Call to Action' are excluded from reordering as they have fixed positions.</p>
     </div>
   );
 };
