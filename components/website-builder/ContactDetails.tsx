@@ -37,11 +37,10 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
 }) => {
 
   return (
-    <section className="p-6 space-y-6">
+    <section className="p-6 space-y-6 max-w-md mx-auto">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Contact Details</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="space-y-4">
-          <div>
+      <div className="space-y-4">
+        <div>
             <Label htmlFor="contact-phone">Phone</Label>
             <Input
               id="contact-phone"
