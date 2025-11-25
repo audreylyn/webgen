@@ -1,14 +1,19 @@
 import React from 'react';
 import { Website } from '../../types';
+import CartButton from '../CartButton';
 
 interface PreviewNavbarProps {
   website: Website;
   isDark: boolean;
+  totalItems: () => number;
+  openCart: () => void;
 }
 
 export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
   website,
   isDark,
+  totalItems,
+  openCart
 }) => {
   const { theme, enabledSections } = website;
 
@@ -53,12 +58,13 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
           <div className="text-2xl font-bold" style={{ color: theme.primary }}>
             {website.title}
           </div>
-          <div className="hidden md:flex space-x-8">
+          <div className="hidden md:flex space-x-8 items-center">
             {navLinks.map((link) => (
               <a key={link.id} href={link.href} className="hover:text-opacity-80 transition-opacity">
                 {link.name}
               </a>
             ))}
+            <CartButton totalItems={totalItems()} openCart={openCart} themeButton={theme.button} />
           </div>
         </div>
       </div>

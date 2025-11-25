@@ -5,7 +5,6 @@ import { Website, Product } from '../types';
 // Added User to imports from lucide-react
 import { Phone, Mail, MapPin, MessageCircle, Loader2, AlertTriangle, ArrowUp, Star, ChevronDown, Check, X, Send, Plus, Minus, User, Facebook, Instagram, Twitter, Linkedin, Youtube, Link as LinkIcon } from 'lucide-react';
 import { useCart } from '../hooks/useCart';
-import CartButton from '../components/CartButton';
 import CartDrawer from '../components/CartDrawer';
 import { PreviewNavbar } from '../components/preview/PreviewNavbar';
 import { PreviewHeroSection } from '../components/preview/PreviewHeroSection';
@@ -159,7 +158,7 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
     <div className={`min-h-screen font-sans ${bgMain}`}>
       
       {/* Navigation */}
-      <PreviewNavbar website={website} isDark={isDark} />
+      <PreviewNavbar website={website} isDark={isDark} totalItems={totalItems} openCart={openCart} />
 
       {/* Hero Section */}
       {enabledSections.hero && (
@@ -275,28 +274,25 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
       <ScrollToTopButton showScrollTop={showScrollTop} scrollToTop={scrollToTop} />
 
       {enabledSections.products && (
-        <>
-          <CartButton totalItems={totalItems()} openCart={openCart} themeButton={theme.button} />
-          <CartDrawer
-            isOpen={isCartOpen}
-            cart={cart}
-            closeCart={closeCart}
-            setCartEmpty={clearCart}
-            updateQuantity={updateQuantity}
-            removeFromCart={removeFromCart}
-            cartTotal={cartTotal}
-            totalItems={totalItems}
-            checkoutForm={checkoutForm}
-            setCheckoutForm={setCheckoutForm}
-            handleCheckout={handleCheckout}
-            parseCurrency={parseCurrency}
-            formatCurrency={formatCurrency}
-            theme={theme}
-            isDark={isDark}
-            handleImageError={handleImageError}
-            website={website}
-          />
-        </>
+        <CartDrawer
+          isOpen={isCartOpen}
+          cart={cart}
+          closeCart={closeCart}
+          setCartEmpty={clearCart}
+          updateQuantity={updateQuantity}
+          removeFromCart={removeFromCart}
+          cartTotal={cartTotal}
+          totalItems={totalItems}
+          checkoutForm={checkoutForm}
+          setCheckoutForm={setCheckoutForm}
+          handleCheckout={handleCheckout}
+          parseCurrency={parseCurrency}
+          formatCurrency={formatCurrency}
+          theme={theme}
+          isDark={isDark}
+          handleImageError={handleImageError}
+          website={website}
+        />
       )}
     </div>
   );
