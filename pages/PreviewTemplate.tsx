@@ -95,6 +95,29 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
     e.currentTarget.src = 'https://placehold.co/150x150?text=User';
   };
 
+  // Update document title and meta description based on website SEO
+  useEffect(() => {
+    if (website && website.marketing && website.marketing.seo) {
+      document.title = website.marketing.seo.metaTitle || website.title;
+
+      const metaDescriptionTag = document.querySelector('meta[name="description"]');
+      if (metaDescriptionTag) {
+        metaDescriptionTag.setAttribute('content', website.marketing.seo.metaDescription || '');
+      } else if (website.marketing.seo.metaDescription) {
+        const newMetaTag = document.createElement('meta');
+        newMetaTag.name = 'description';
+        newMetaTag.content = website.marketing.seo.metaDescription;
+        document.head.appendChild(newMetaTag);
+      }
+    } else if (website) {
+      document.title = website.title;
+      const metaDescriptionTag = document.querySelector('meta[name="description"]');
+      if (metaDescriptionTag) {
+        metaDescriptionTag.setAttribute('content', '');
+      }
+    }
+  }, [website]);
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center gap-2 text-slate-500 bg-slate-50">
