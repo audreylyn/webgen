@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { ColorPicker } from '../components/ColorPicker';
-import { Website, Product, Benefit, Testimonial, FAQ, SocialLink } from '../types';
+import { Website, Product, Benefit, Testimonial, FAQ, SocialLink, GalleryItem, TeamMember, PricingPlan, CallToAction } from '../types';
 import { saveWebsite, getWebsiteById, uploadImage } from '../services/supabaseService';
 import { generateWebsiteContent, generateTheme, generateMarketingContent } from '../services/geminiService';
 import { Save, ArrowLeft, Plus, Trash, Sparkles, Image as ImageIcon, Loader2, Lock, ExternalLink, Palette, Sun, Moon, MessageCircle, Layers, Star, HelpCircle, Heart, User, Facebook, Instagram, Twitter, Linkedin, Youtube, Link as LinkIcon, Megaphone, Copy, Check, Upload } from 'lucide-react';
@@ -22,6 +22,10 @@ import { ProductList } from '../components/website-builder/ProductList';
 import { BenefitList } from '../components/website-builder/BenefitList';
 import { TestimonialList } from '../components/website-builder/TestimonialList';
 import { FaqList } from '../components/website-builder/FaqList';
+import { GalleryList } from '../components/website-builder/GalleryList';
+import { TeamList } from '../components/website-builder/TeamList';
+import { PricingList } from '../components/website-builder/PricingList';
+import { CallToActionEditor } from '../components/website-builder/CallToActionEditor';
 import { ContactDetails } from '../components/website-builder/ContactDetails';
 import { FooterConfig } from '../components/website-builder/FooterConfig';
 import { AiMarketingKit } from '../components/website-builder/AiMarketingKit';
@@ -109,6 +113,10 @@ export const WebsiteBuilder: React.FC = () => {
             benefits: existing.content.benefits || [],
             testimonials: existing.content.testimonials || [],
             faq: existing.content.faq || [],
+            gallery: existing.content.gallery || [],
+            team: existing.content.team || [],
+            pricing: existing.content.pricing || [],
+            callToAction: existing.content.callToAction || DEFAULT_WEBSITE.content.callToAction,
             socialLinks: existing.content.socialLinks || DEFAULT_WEBSITE.content.socialLinks,
           };
           // Ensure marketing object exists
@@ -263,7 +271,72 @@ export const WebsiteBuilder: React.FC = () => {
             benefits: (result.benefits?.length ?? 0) > 0,
             testimonials: (result.testimonials?.length ?? 0) > 0,
             faq: (result.faq?.length ?? 0) > 0,
+            gallery: (result.gallery?.length ?? 0) > 0,
+            team: (result.team?.length ?? 0) > 0,
+            pricing: (result.pricing?.length ?? 0) > 0,
+            callToAction: !!(result.callToAction?.text && result.callToAction?.buttonText && result.callToAction?.buttonLink),
           };
+
+          // Process Gallery Images
+          if (result.gallery && result.gallery.length > 0) {
+            newWebsite.content.gallery = await Promise.all(result.gallery.map(async (item, i) => {
+              const galleryImageUrl = item.imagePrompt
+                ? generateImageUrl(item.imagePrompt, 800, 600)
+                : `https://placehold.co/800x600?text=${encodeURIComponent(item.caption || `Gallery ${i + 1}`)}`;
+              const uploadedGalleryUrl = await uploadAiImage(galleryImageUrl, `gallery_${i}`);
+              return {
+                id: generateId(),
+                image: uploadedGalleryUrl || `https://placehold.co/800x600?text=${encodeURIComponent(item.caption || `Gallery ${i + 1}`)}`,
+                caption: item.caption
+              };
+            }));
+          } else {
+            newWebsite.content.gallery = [];
+          }
+
+          // Process Team Images
+          if (result.team && result.team.length > 0) {
+            newWebsite.content.team = await Promise.all(result.team.map(async (member, i) => {
+              const teamImageUrl = member.imagePrompt
+                ? generateImageUrl(member.imagePrompt, 150, 150)
+                : `https://placehold.co/150x150?text=${encodeURIComponent(member.name.charAt(0))}`;
+              const uploadedTeamUrl = await uploadAiImage(teamImageUrl, `team_${i}`);
+              return {
+                id: generateId(),
+                name: member.name,
+                role: member.role,
+                image: uploadedTeamUrl || `https://placehold.co/150x150?text=${encodeURIComponent(member.name.charAt(0))}`
+              };
+            }));
+          } else {
+            newWebsite.content.team = [];
+          }
+
+          // Process Pricing Plans
+          if (result.pricing && result.pricing.length > 0) {
+            newWebsite.content.pricing = result.pricing.map((plan) => ({
+              id: generateId(),
+              name: plan.name,
+              price: plan.price.includes('₱') ? plan.price : `₱${plan.price.replace('$', '')}`,
+              features: plan.features || [],
+              buttonText: plan.buttonText || 'Learn More',
+              buttonLink: plan.buttonLink || '#'
+            }));
+          } else {
+            newWebsite.content.pricing = [];
+          }
+
+          // Process Call to Action
+          if (result.callToAction) {
+            newWebsite.content.callToAction = {
+              ...DEFAULT_WEBSITE.content.callToAction,
+              text: result.callToAction.text || DEFAULT_WEBSITE.content.callToAction.text,
+              buttonText: result.callToAction.buttonText || DEFAULT_WEBSITE.content.callToAction.buttonText,
+              buttonLink: result.callToAction.buttonLink || DEFAULT_WEBSITE.content.callToAction.buttonLink,
+            };
+          } else {
+            newWebsite.content.callToAction = DEFAULT_WEBSITE.content.callToAction;
+          }
 
           setWebsite(newWebsite);
         };
@@ -447,6 +520,48 @@ export const WebsiteBuilder: React.FC = () => {
                   addItem={addItem}
                   removeItem={removeItem}
                   updateItem={updateItem}
+                />
+              )}
+
+              {/* Gallery */}
+              {website.enabledSections.gallery && (
+                <GalleryList
+                  website={website}
+                  addItem={addItem}
+                  removeItem={removeItem}
+                  updateItem={updateItem}
+                  handleFileUpload={handleFileUpload}
+                  isUploadingImage={isUploadingImage}
+                />
+              )}
+
+              {/* Team */}
+              {website.enabledSections.team && (
+                <TeamList
+                  website={website}
+                  addItem={addItem}
+                  removeItem={removeItem}
+                  updateItem={updateItem}
+                  handleFileUpload={handleFileUpload}
+                  isUploadingImage={isUploadingImage}
+                />
+              )}
+
+              {/* Pricing */}
+              {website.enabledSections.pricing && (
+                <PricingList
+                  website={website}
+                  addItem={addItem}
+                  removeItem={removeItem}
+                  updateItem={updateItem}
+                />
+              )}
+
+              {/* Call to Action */}
+              {website.enabledSections.callToAction && (
+                <CallToActionEditor
+                  website={website}
+                  updateContent={updateContent}
                 />
               )}
 

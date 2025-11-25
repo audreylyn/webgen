@@ -27,6 +27,10 @@ export const DEFAULT_WEBSITE: Website = {
     benefits: true,
     testimonials: false,
     faq: false,
+    gallery: false,
+    team: false,
+    pricing: false,
+    callToAction: false,
   },
   content: {
     hero: { title: 'Welcome', subtext: 'We are glad you are here.', image: 'https://placehold.co/1200x600?text=Hero+Image' },
@@ -36,6 +40,10 @@ export const DEFAULT_WEBSITE: Website = {
     benefits: [],
     testimonials: [],
     faq: [],
+    gallery: [],
+    team: [],
+    pricing: [],
+    callToAction: { text: 'Ready to get started?', buttonText: 'Contact Us', buttonLink: '#contact', backgroundColor: '#4f46e5', textColor: '#ffffff' },
     footerText: '© 2024 All rights reserved.',
     socialLinks: [
       { platform: 'facebook', url: '', enabled: false },

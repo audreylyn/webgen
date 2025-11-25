@@ -31,6 +31,37 @@ export interface Product {
   category?: string;
 }
 
+export interface GalleryItem {
+  id: string;
+  image: string;
+  caption?: string;
+}
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  image: string;
+}
+
+export interface PricingPlan {
+  id: string;
+  name: string;
+  price: string;
+  features: string[];
+  buttonText: string;
+  buttonLink: string;
+}
+
+export interface CallToAction {
+  id: string;
+  text: string;
+  buttonText: string;
+  buttonLink: string;
+  backgroundColor: string;
+  textColor: string;
+}
+
 export interface Benefit {
   id: string;
   title: string;
@@ -74,6 +105,10 @@ export interface WebsiteContent {
   benefits: Benefit[];
   testimonials: Testimonial[];
   faq: FAQ[];
+  gallery: GalleryItem[];
+  team: TeamMember[];
+  pricing: PricingPlan[];
+  callToAction: CallToAction;
   footerText: string;
   socialLinks: SocialLink[];
 }
@@ -107,6 +142,10 @@ export interface Website {
     benefits: boolean;
     testimonials: boolean;
     faq: boolean;
+    gallery: boolean;
+    team: boolean;
+    pricing: boolean;
+    callToAction: boolean;
   };
   content: WebsiteContent;
   marketing: MarketingConfig;

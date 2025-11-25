@@ -15,6 +15,10 @@ import { PreviewProductsSection } from '../components/preview/PreviewProductsSec
 import { PreviewTestimonialsSection } from '../components/preview/PreviewTestimonialsSection';
 import { PreviewFaqSection } from '../components/preview/PreviewFaqSection';
 import { PreviewContactSection } from '../components/preview/PreviewContactSection';
+import { PreviewGallerySection } from '../components/preview/PreviewGallerySection';
+import { PreviewTeamSection } from '../components/preview/PreviewTeamSection';
+import { PreviewPricingSection } from '../components/preview/PreviewPricingSection';
+import { PreviewCallToActionSection } from '../components/preview/PreviewCallToActionSection';
 import { PreviewFooter } from '../components/preview/PreviewFooter';
 import { ScrollToTopButton } from '../components/preview/ScrollToTopButton';
 
@@ -170,6 +174,42 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
           textMuted={textMuted}
           handleImageError={handleImageError}
           addToCart={addToCart}
+        />
+      )}
+
+      {/* Gallery Section */}
+      {enabledSections.gallery && content.gallery.length > 0 && (
+        <PreviewGallerySection
+          website={website}
+          bgSecondary={bgSecondary}
+          isDark={isDark}
+          handleImageError={handleImageError}
+        />
+      )}
+
+      {/* Team Section */}
+      {enabledSections.team && content.team.length > 0 && (
+        <PreviewTeamSection
+          website={website}
+          bgSecondary={bgSecondary}
+          isDark={isDark}
+          handleAvatarError={handleAvatarError}
+        />
+      )}
+
+      {/* Pricing Section */}
+      {enabledSections.pricing && content.pricing.length > 0 && (
+        <PreviewPricingSection
+          website={website}
+          bgSecondary={bgSecondary}
+          isDark={isDark}
+        />
+      )}
+
+      {/* CTA Section */}
+      {enabledSections.callToAction && content.callToAction && (
+        <PreviewCallToActionSection
+          website={website}
         />
       )}
 
