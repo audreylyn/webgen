@@ -24,12 +24,15 @@ export const PreviewHeroSection: React.FC<PreviewHeroSectionProps> = ({
           <p className={`text-lg mb-8 ${textMuted}`}>
             {content.hero.subtext}
           </p>
-          <button
-            className="px-8 py-3 rounded-lg font-bold text-white shadow-lg transform hover:-translate-y-1 transition-all duration-200"
-            style={{ backgroundColor: theme.button }}
-          >
-            Get Started
-          </button>
+          {content.hero.buttonLink && (
+            <a
+              href={content.hero.buttonLink}
+              className="px-8 py-3 rounded-lg font-bold text-white shadow-lg transform hover:-translate-y-1 transition-all duration-200 inline-block"
+              style={{ backgroundColor: theme.button }}
+            >
+              Get Started
+            </a>
+          )}
         </div>
         <div className="lg:w-1/2">
           <img

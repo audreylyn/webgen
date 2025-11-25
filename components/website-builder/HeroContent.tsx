@@ -36,6 +36,13 @@ export const HeroContent: React.FC<HeroContentProps> = ({
           onChange={(e) => website && updateContent('hero', { ...website.content.hero, subtext: e.target.value })}
           className="w-full px-4 py-2 border border-slate-300 rounded-lg h-24 resize-none"
         />
+        <input
+          type="text"
+          placeholder="Get Started Button Link (e.g., #products or /contact)"
+          value={website.content.hero.buttonLink || ''}
+          onChange={(e) => website && updateContent('hero', { ...website.content.hero, buttonLink: e.target.value })}
+          className="w-full px-4 py-2 border border-slate-300 rounded-lg"
+        />
         <div className="flex gap-2">
           <input
             type="text"

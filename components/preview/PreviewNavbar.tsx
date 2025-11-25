@@ -12,6 +12,31 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
 }) => {
   const { theme, enabledSections } = website;
 
+  const sectionMap: { [key in keyof typeof enabledSections]?: string } = {
+    hero: 'Home',
+    about: 'About',
+    products: 'Products',
+    benefits: 'Benefits',
+    testimonials: 'Testimonials',
+    faq: 'FAQ',
+    gallery: 'Gallery',
+    team: 'Team',
+    pricing: 'Pricing',
+    callToAction: 'Call to Action',
+    contact: 'Contact',
+  };
+
+  const navLinks = Object.entries(enabledSections)
+    .filter(([, isEnabled]) => isEnabled)
+    .map(([sectionKey]) => {
+      const displayKey = sectionKey as keyof typeof enabledSections;
+      return {
+        id: sectionKey,
+        name: sectionMap[displayKey] || sectionKey.charAt(0).toUpperCase() + sectionKey.slice(1),
+        href: `#${sectionKey}`,
+      };
+    });
+
   return (
     <nav className={`${isDark ? 'bg-slate-900/90' : 'bg-white/90'} fixed w-full z-50 backdrop-blur-md border-b ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,10 +45,11 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
             {website.title}
           </div>
           <div className="hidden md:flex space-x-8">
-            {enabledSections.hero && <a href="#hero" className="hover:text-opacity-80 transition-opacity">Home</a>}
-            {enabledSections.about && <a href="#about" className="hover:text-opacity-80 transition-opacity">About</a>}
-            {enabledSections.products && <a href="#products" className="hover:text-opacity-80 transition-opacity">Services</a>}
-            {enabledSections.contact && <a href="#contact" className="hover:text-opacity-80 transition-opacity">Contact</a>}
+            {navLinks.map((link) => (
+              <a key={link.id} href={link.href} className="hover:text-opacity-80 transition-opacity">
+                {link.name}
+              </a>
+            ))}
           </div>
         </div>
       </div>

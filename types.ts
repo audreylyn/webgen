@@ -94,6 +94,7 @@ export interface WebsiteContent {
     title: string;
     subtext: string;
     image: string;
+    buttonLink?: string; // New: Optional link for the hero button
   };
   about: string;
   contact: {
