@@ -9,10 +9,8 @@ import { useCart } from '../hooks/useCart';
 import CartButton from '../components/CartButton';
 import CartDrawer from '../components/CartDrawer';
 
-export const PreviewTemplate: React.FC<{ websiteId?: string }> = ({ websiteId: propWebsiteId }) => {
-  const { id: paramId } = useParams<{ id: string }>();
-  const id = propWebsiteId || paramId;
-
+export const PreviewTemplate: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const [website, setWebsite] = useState<Website | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
