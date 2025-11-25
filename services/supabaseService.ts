@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { Website } from '../types';
+import imageCompression from 'browser-image-compression';
 
 const SUPABASE_URL = (import.meta as any).env?.VITE_SUPABASE_URL as string;
 const SUPABASE_ANON_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY as string;
@@ -32,8 +33,17 @@ export const getUser = () => {
 // Storage: upload image to bucket and return public URL
 export const uploadImage = async (file: File, bucket = IMAGE_BUCKET, path?: string) => {
   try {
-    const filePath = path || `${Date.now()}_${file.name}`;
-    const { error: uploadError } = await supabase.storage.from(bucket).upload(filePath, file, { upsert: true });
+    // Image compression options
+    const options = {
+      maxSizeMB: 1,           // (max file size and image is compressed to that size) Max size in MB
+      maxWidthOrHeight: 1920, // Max width or height
+      useWebWorker: true,     // Use web worker for faster compression
+      // Additional options like fileType can be added if needed
+    };
+    const compressedFile = await imageCompression(file, options);
+
+    const filePath = path || `${Date.now()}_${compressedFile.name}`;
+    const { error: uploadError } = await supabase.storage.from(bucket).upload(filePath, compressedFile, { upsert: true });
     if (uploadError) throw uploadError;
 
     const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);

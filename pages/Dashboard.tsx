@@ -51,8 +51,8 @@ export const Dashboard: React.FC = () => {
     site.subdomain.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const activeCount = websites.filter(w => w.status === 'active').length;
-  const inactiveCount = websites.filter(w => w.status === 'inactive').length;
+  const draftCount = websites.filter(w => w.status === 'draft').length;
+  const publishedCount = websites.filter(w => w.status === 'published').length;
 
   return (
     <Layout>
@@ -80,11 +80,11 @@ export const Dashboard: React.FC = () => {
             <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-500 mb-1">Active Sites</p>
-                  <p className="text-3xl font-bold text-green-600">{activeCount}</p>
+                  <p className="text-sm text-slate-500 mb-1">Published Sites</p>
+                  <p className="text-3xl font-bold text-green-600">{publishedCount}</p>
                 </div>
                 <div className="p-3 bg-green-50 rounded-lg text-green-600">
-                  <CheckCircle className="w-6 h-6" />
+                  <Globe className="w-6 h-6" />
                 </div>
               </div>
             </div>
@@ -92,11 +92,11 @@ export const Dashboard: React.FC = () => {
             <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-500 mb-1">Inactive Sites</p>
-                  <p className="text-3xl font-bold text-slate-500">{inactiveCount}</p>
+                  <p className="text-sm text-slate-500 mb-1">Draft Sites</p>
+                  <p className="text-3xl font-bold text-slate-500">{draftCount}</p>
                 </div>
                 <div className="p-3 bg-slate-100 rounded-lg text-slate-500">
-                  <XCircle className="w-6 h-6" />
+                  <Lock className="w-6 h-6" />
                 </div>
               </div>
             </div>
