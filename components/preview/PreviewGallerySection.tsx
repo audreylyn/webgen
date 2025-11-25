@@ -28,13 +28,8 @@ export const PreviewGallerySection: React.FC<PreviewGallerySectionProps> = ({
     }}>
       <div className="base-template__wrapper wrapper">
         <h1 className="base-template__title" style={{ color: isDark ? 'white' : theme.primary }}>
-          Find Your Perfect Home Away From Home
+          Gallery
         </h1>
-        <div className="base-template__text">
-          Explore a wide selection of rental homes designed to suit your lifestyle.
-          <br />
-          Experience comfort, convenience, and unforgettable moments in beautifully crafted spaces.
-        </div>
         <div className="base-template__content">
           <div className="booking-slider">
             {/* Slider Navigation */}

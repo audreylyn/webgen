@@ -35,11 +35,6 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
   isDark,
   theme,
 }) => {
-  const { website, updateContent } = useWebsite(null); // Assuming initial state is null for editor component
-
-  if (!website) {
-    return null; // Or a loading spinner, or some fallback UI
-  }
 
   return (
     <section className="p-6 space-y-6">
