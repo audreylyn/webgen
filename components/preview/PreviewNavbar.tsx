@@ -26,8 +26,10 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
     contact: 'Contact',
   };
 
+  const excludedSections = ['hero', 'callToAction'];
+
   const navLinks = Object.entries(enabledSections)
-    .filter(([, isEnabled]) => isEnabled)
+    .filter(([sectionKey, isEnabled]) => isEnabled && !excludedSections.includes(sectionKey))
     .map(([sectionKey]) => {
       const displayKey = sectionKey as keyof typeof enabledSections;
       return {
