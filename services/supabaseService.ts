@@ -96,6 +96,7 @@ export const getWebsiteBySubdomain = async (subdomain: string) => {
       .from('websites')
       .select('*')
       .eq('subdomain', subdomain)
+      .eq('status', 'published') // Only show published sites
       .maybeSingle();
 
     if (error) throw error;

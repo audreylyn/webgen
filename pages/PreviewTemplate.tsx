@@ -15,6 +15,9 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
   const [error, setError] = useState<string | null>(null);
   const [showScrollTop, setShowScrollTop] = useState(false);
 
+  console.log("PreviewTemplate: subdomain prop", subdomain);
+  console.log("PreviewTemplate: id param", id);
+
   // Cart hook (moved to a separate module for clarity)
   const cartHook = useCart(website);
   const { cart, addToCart, updateQuantity, removeFromCart, cartTotal, totalItems, isCartOpen, openCart, closeCart, checkoutForm, setCheckoutForm, handleCheckout, parseCurrency, formatCurrency, clearCart } = cartHook;
