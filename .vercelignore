@@ -1,0 +1,9 @@
+node_modules
+.git
+.env
+.env.local
+*.log
+.DS_Store
+scripts
+migrations
+MIGRATE_TO_SUPABASE.md
