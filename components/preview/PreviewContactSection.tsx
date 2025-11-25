@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Website } from '../../types';
-import { MapPin, Mail, Clock } from 'lucide-react'; // Using Lucide React icons
+import { MapPin, Mail, Phone } from 'lucide-react'; // Using Lucide React icons
 import './PreviewContactSection.css';
 
 interface PreviewContactSectionProps {
@@ -35,159 +35,127 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
   };
 
   return (
-    <section className="contact-page-sec" style={{ 
-        backgroundColor: isDark ? theme.primary : '#fff' 
-      }}>
-      <div
-        className="container"
-        style={{
-          '--primary-color': theme.primary,
-          '--secondary-color': theme.secondary,
-          '--muted-text-color': isDark ? '#d1d5db' : '#999999',
-          '--light-bg-color': isDark ? '#1f2937' : '#f9f9f9',
-        } as React.CSSProperties}
-      >
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          {/* Contact Info Items */}
-          <div className="col-span-1">
-            <div className="contact-info">
-              <div className="contact-info-item flex items-center p-4 rounded-lg shadow-md"
-                   style={{ backgroundColor: '#071c34' }}> {/* Static dark blue background */}
-                <div className="contact-info-icon mr-4">
-                  <MapPin style={{ color: theme.secondary }} /> {/* Dynamic icon color */}
-                </div>
-                <div className="contact-info-text text-left">
-                  <h2 className="text-white text-lg font-semibold mb-1">Phone</h2>
-                  <span className="text-sm" style={{ color: '#999999' }}>{content.contact.phone || '09201063227'}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="col-span-1">
-            <div className="contact-info">
-              <div className="contact-info-item flex items-center p-4 rounded-lg shadow-md"
-                   style={{ backgroundColor: '#071c34' }}> {/* Static dark blue background */}
-                <div className="contact-info-icon mr-4">
-                  <Mail style={{ color: theme.secondary }} /> {/* Dynamic icon color */}
-                </div>
-                <div className="contact-info-text text-left">
-                  <h2 className="text-white text-lg font-semibold mb-1">E-mail</h2>
-                  <span className="text-sm" style={{ color: '#999999' }}>{content.contact.email || 'audreylynmorana1504@gmail.com'}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* REMOVED: Office Time Block */}
-          {/* <div className="col-span-1">
-            <div className="contact-info">
-              <div className="contact-info-item flex items-center p-4 rounded-lg shadow-md"
-                   style={{ backgroundColor: '#071c34' }}>
-                <div className="contact-info-icon mr-4">
-                  <Clock style={{ color: theme.secondary }} />
-                </div>
-                <div className="contact-info-text text-left">
-                  <h2 className="text-white text-lg font-semibold mb-1">Office Time</h2>
-                  <span className="text-sm" style={{ color: '#999999' }}>Mon - Thu 9:00 am - 4.00 pm</span>
-                  <span className="text-sm" style={{ color: '#999999' }}>Thu - Mon 10.00 pm - 5.00 pm</span>
-                </div>
-              </div>
-            </div>
-          </div> */}
+    <section className="py-16 px-4 bg-gray-50 dark:bg-gray-900" style={{
+      backgroundColor: isDark ? theme.primary : '#f9fafb',
+      color: isDark ? 'white' : '#1f2937'
+    }}>
+      <div className="max-w-6xl mx-auto">
+        {/* Title Section */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-extrabold mb-4 text-gray-900 dark:text-white">
+            Get in Touch
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            We'd love to hear from you. Send us a message or find us using the details below.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          {/* Contact Form */}
-          <div className="col-span-12 md:col-span-8">
-            <div className="contact-page-form p-6 rounded-lg shadow-md bg-white"> {/* Static white background */}
-              <h2 className="text-2xl font-bold mb-6" style={{ color: '#000' }}>Get in Touch</h2> {/* Static dark color */}
-              <form onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div className="single-input-field">
-                    <input
-                      type="text"
-                      placeholder="Your Name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2`}
-                      style={{ borderColor: '#e5e7eb', backgroundColor: '#f9f9f9', color: '#000' }}
-                    />
-                  </div>
-                  <div className="single-input-field">
-                    <input
-                      type="email"
-                      placeholder="E-mail"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2`}
-                      style={{ borderColor: '#e5e7eb', backgroundColor: '#f9f9f9', color: '#000' }}
-                    />
-                  </div>
-                  <div className="single-input-field">
-                    <input
-                      type="text"
-                      placeholder="Phone Number"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2`}
-                      style={{ borderColor: '#e5e7eb', backgroundColor: '#f9f9f9', color: '#000' }}
-                    />
-                  </div>
-                  <div className="single-input-field">
-                    <input
-                      type="text"
-                      placeholder="Subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleInputChange}
-                      className={`w-full px-4 py-3 rounded-lg border focus:ring-2`}
-                      style={{ borderColor: '#e5e7eb', backgroundColor: '#f9f9f9', color: '#000' }}
-                    />
-                  </div>
-                </div>
-                <div className="single-input-field message-input mb-4">
-                  <textarea
-                    placeholder="Write Your Message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    rows={6}
-                    className={`w-full px-4 py-3 rounded-lg border focus:ring-2`}
-                    style={{ borderColor: '#e5e7eb', backgroundColor: '#f9f9f9', color: '#000' }}
-                  ></textarea>
-                </div>
-                <div className="single-input-fieldsbtn text-right">
-                  <input
-                    type="submit"
-                    value="Send Now"
-                    className="px-8 py-3 rounded-lg text-white font-semibold transition-colors hover:opacity-90 cursor-pointer"
-                    style={{ backgroundColor: theme.secondary }}
-                  />
-                </div>
-              </form>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* Contact Info - Phone */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg flex items-start space-x-4">
+            <Phone className="text-indigo-600 dark:text-indigo-400 mt-1" size={24} />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Call Us</h3>
+              <p className="text-gray-700 dark:text-gray-300">{content.contact.phone || 'N/A'}</p>
             </div>
           </div>
 
-          {/* Google Map */}
-          <div className="col-span-12 md:col-span-4">
-            <div className="contact-page-map rounded-lg overflow-hidden shadow-md">
-              <iframe
-                src={content.contact.mapEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15433.871420078262!2d120.9991027!3d14.74265155!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3397b114bb6f4717%3A0xdde1f186a6921ee7!2sWES%20Arena!5e0!3m2!1sen!2sph!4v1764089030080!5m2!1sen!2sph"}
-                width="100%"
-                height="450"
-                frameBorder="0"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+          {/* Contact Info - Email */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg flex items-start space-x-4">
+            <Mail className="text-indigo-600 dark:text-indigo-400 mt-1" size={24} />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Email Us</h3>
+              <p className="text-gray-700 dark:text-gray-300 break-words">{content.contact.email || 'N/A'}</p>
             </div>
           </div>
+
+          {/* Contact Info - Address */}
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg flex items-start space-x-4">
+            <MapPin className="text-indigo-600 dark:text-indigo-400 mt-1" size={24} />
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Our Location</h3>
+              <p className="text-gray-700 dark:text-gray-300">{content.contact.address || 'N/A'}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Contact Form */}
+        <div className="mt-16 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
+          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
+            Send us a Message
+          </h3>
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label htmlFor="name" className="sr-only">Your Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="Your Name"
+                value={formData.name}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="sr-only">E-mail</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="E-mail"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="phone" className="sr-only">Phone Number</label>
+              <input
+                type="text"
+                id="phone"
+                name="phone"
+                placeholder="Phone Number"
+                value={formData.phone}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label htmlFor="subject" className="sr-only">Subject</label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                placeholder="Subject"
+                value={formData.subject}
+                onChange={handleInputChange}
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label htmlFor="message" className="sr-only">Write Your Message</label>
+              <textarea
+                id="message"
+                name="message"
+                placeholder="Write Your Message"
+                value={formData.message}
+                onChange={handleInputChange}
+                rows={6}
+                className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-indigo-500 focus:border-indigo-500"
+              ></textarea>
+            </div>
+            <div className="md:col-span-2 text-center">
+              <button
+                type="submit"
+                className="px-8 py-3 rounded-md text-white font-semibold transition-colors hover:opacity-90"
+                style={{ backgroundColor: theme.secondary }}
+              >
+                Send Message
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </section>

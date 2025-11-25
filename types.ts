@@ -101,7 +101,6 @@ export interface WebsiteContent {
     phone: string;
     email: string;
     address: string;
-    mapEmbedUrl?: string; // Added mapEmbedUrl for the map embed link
   };
   products: Product[];
   benefits: Benefit[];

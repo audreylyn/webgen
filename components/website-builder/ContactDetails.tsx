@@ -81,21 +81,7 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
             />
           </div>
         </div>
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="contact-map-embed">Google Maps Embed URL</Label>
-            <Textarea
-              id="contact-map-embed"
-              value={content.mapEmbedUrl || ''}
-              onChange={(e) => onContentChange({ ...content, mapEmbedUrl: e.target.value })}
-              placeholder="Paste your Google Maps embed URL here"
-              rows={4}
-              className={
-                `mt-1 ${isDark ? 'bg-slate-800 text-white border-slate-700' : 'bg-gray-100 border-gray-300'}`
-              }
-            />
-          </div>
-        </div>
+        {/* Removed Google Maps Embed URL input */}
       </div>
     </section>
   );
