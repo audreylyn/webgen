@@ -29,12 +29,7 @@ export const PreviewPricingSection: React.FC<PreviewPricingSectionProps> = ({
         {content.pricing.map((plan, index) => (
           <div key={plan.id} className={`pricing-item features-item ${index === 1 ? 'pricing__item--featured' : ''}`} style={{ minHeight: '497px' }}>
             <div className="pricing-deco" style={{ 
-              background: 
-                index === 0
-                  ? `linear-gradient(135deg, #4097f9, #0af0c7)` // Blueish gradient for first card
-                  : index === 1
-                  ? `linear-gradient(135deg, ${theme.secondary}, ${theme.primary})` // Brownish gradient for featured card
-                  : `linear-gradient(135deg, #40e4f9, #0ae8c7)` // Blueish-green gradient for third card (adjusted slightly from previous to match image)
+              background: `linear-gradient(135deg, ${theme.secondary}, ${theme.primary})`
             }}>
               <svg className="pricing-deco-img" enableBackground="new 0 0 300 100" height="100px" id="Layer_1" preserveAspectRatio="none" version="1.1" viewBox="0 0 300 100" width="300px" x="0px" y="0px">
                 <path className="deco-layer deco-layer--1" d="M30.913,43.944c0,0,42.911-34.464,87.51-14.191c77.31,35.14,113.304-1.952,146.638-4.729c48.654-4.056,69.94,16.218,69.94,16.218v54.396H30.913V43.944z" fill="#FFFFFF" opacity="0.6"></path>
@@ -59,12 +54,7 @@ export const PreviewPricingSection: React.FC<PreviewPricingSectionProps> = ({
               className="pricing-action"
               style={{
                 backgroundColor: theme.button,
-                background: 
-                  index === 0
-                    ? `linear-gradient(135deg, #a93bfe, #584efd)` // Blueish button gradient for first card
-                    : index === 1
-                    ? `linear-gradient(135deg, ${theme.secondary}, ${theme.primary})` // Brownish button gradient for featured card
-                    : `linear-gradient(135deg, #40e4f9, #0ae8c7)` // Blueish-green button gradient for third card
+                background: `linear-gradient(135deg, ${theme.secondary}, ${theme.primary})`
               }}
             >
               {plan.buttonText}
