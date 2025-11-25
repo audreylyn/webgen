@@ -112,6 +112,7 @@ export interface WebsiteContent {
   callToAction: CallToAction;
   footerText: string;
   socialLinks: SocialLink[];
+  navLinkOrder?: (keyof Website['enabledSections'])[]; // Navigation link order stored in content
 }
 
 export interface SEOConfig {

@@ -1,7 +1,6 @@
 import React from 'react';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { Website } from '../../types';
-import { Menu } from 'lucide-react';
+import { ChevronUp, ChevronDown, Menu } from 'lucide-react';
 
 interface NavLinkReorderProps {
   website: Website;
@@ -38,26 +37,53 @@ export const NavLinkReorder: React.FC<NavLinkReorderProps> = ({
       };
     });
 
-  const initialOrderedLinks = website.navLinkOrder
-    ? website.navLinkOrder
+  // Use navLinkOrder if it exists (check both top-level and content), otherwise use default order
+  const navLinkOrder = website.navLinkOrder || (website.content as any)?.navLinkOrder;
+  const orderedLinks = navLinkOrder
+    ? navLinkOrder
         .map(id => navLinks.find(link => link.id === id))
         .filter((link): link is { id: string; name: string } => link !== undefined)
     : navLinks;
 
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) {
-      return;
-    }
+  const moveUp = (index: number) => {
+    if (index === 0) return;
 
-    const reorderedLinks = Array.from(initialOrderedLinks);
-    const [removed] = reorderedLinks.splice(result.source.index, 1);
-    reorderedLinks.splice(result.destination.index, 0, removed);
+    const newOrder = [...orderedLinks];
+    [newOrder[index - 1], newOrder[index]] = [newOrder[index], newOrder[index - 1]];
 
-    const newNavLinkOrder = reorderedLinks.map(link => link.id as keyof typeof website.enabledSections);
+    const newNavLinkOrder = newOrder.map(link => link.id as keyof typeof website.enabledSections);
 
     setWebsite(prev => {
       if (!prev) return prev;
-      return { ...prev, navLinkOrder: newNavLinkOrder };
+      return {
+        ...prev,
+        navLinkOrder: newNavLinkOrder,
+        content: {
+          ...prev.content,
+          navLinkOrder: newNavLinkOrder
+        }
+      };
+    });
+  };
+
+  const moveDown = (index: number) => {
+    if (index === orderedLinks.length - 1) return;
+
+    const newOrder = [...orderedLinks];
+    [newOrder[index], newOrder[index + 1]] = [newOrder[index + 1], newOrder[index]];
+
+    const newNavLinkOrder = newOrder.map(link => link.id as keyof typeof website.enabledSections);
+
+    setWebsite(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        navLinkOrder: newNavLinkOrder,
+        content: {
+          ...prev.content,
+          navLinkOrder: newNavLinkOrder
+        }
+      };
     });
   };
 
@@ -67,34 +93,37 @@ export const NavLinkReorder: React.FC<NavLinkReorderProps> = ({
         <Menu className="w-5 h-5 text-indigo-500" />
         Navigation Order
       </h3>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="navlinks">
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className="space-y-3"
-            >
-              {initialOrderedLinks.map((link, index) => (
-                <Draggable key={link.id} draggableId={link.id} index={index}>
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      className="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200 shadow-sm"
-                    >
-                      <Menu className="w-5 h-5 text-slate-400" />
-                      <span className="text-sm font-medium text-slate-700">{link.name}</span>
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
+      <div className="space-y-3">
+        {orderedLinks.map((link, index) => (
+          <div
+            key={link.id}
+            className="flex items-center justify-between gap-3 p-3 bg-white rounded-lg border border-slate-200 shadow-sm"
+          >
+            <div className="flex items-center gap-3">
+              <Menu className="w-5 h-5 text-slate-400" />
+              <span className="text-sm font-medium text-slate-700">{link.name}</span>
             </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+            <div className="flex gap-1">
+              <button
+                onClick={() => moveUp(index)}
+                disabled={index === 0}
+                className="p-1 text-slate-400 hover:text-indigo-600 disabled:text-slate-200 disabled:cursor-not-allowed transition-colors"
+                title="Move up"
+              >
+                <ChevronUp className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => moveDown(index)}
+                disabled={index === orderedLinks.length - 1}
+                className="p-1 text-slate-400 hover:text-indigo-600 disabled:text-slate-200 disabled:cursor-not-allowed transition-colors"
+                title="Move down"
+              >
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

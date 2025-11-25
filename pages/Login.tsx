@@ -33,13 +33,13 @@ const Login: React.FC = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left side - Branding */}
-      <div className="hidden lg:flex flex-col justify-between bg-[#013220] text-[#E5E5E5] p-12 w-1/2">
+      <div className="hidden lg:flex flex-col justify-between bg-slate-800 text-white p-12 w-1/2">
         <div>
           <h1 className="text-4xl font-bold mb-4">WebGen</h1>
-          <p className="text-[#D4AF37] text-lg">Welcome back! Please login to your account.</p>
+          <p className="text-indigo-400 text-lg">Welcome back! Please login to your account.</p>
         </div>
         <div>
-          <p className="text-[#B8860B] text-sm">© {new Date().getFullYear()} WebGen. All rights reserved.</p>
+          <p className="text-slate-400 text-sm">© {new Date().getFullYear()} WebGen. All rights reserved.</p>
         </div>
       </div>
 
@@ -47,8 +47,8 @@ const Login: React.FC = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="text-left mb-8">
-            <h1 className="text-2xl font-bold text-gray-800 mb-1">Login to your account</h1>
-            <p className="text-gray-500 text-sm">Welcome back! Please enter your details</p>
+            <h1 className="text-2xl font-bold text-slate-800 mb-1">Login to your account</h1>
+            <p className="text-slate-500 text-sm">Welcome back! Please enter your details</p>
           </div>
 
           {/* Error Message */}
@@ -62,11 +62,11 @@ const Login: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="email" className="block text-sm font-medium text-slate-700">
                   Email Address
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#B8860B]">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                     <Mail className="h-5 w-5" />
                   </div>
                   <input
@@ -74,7 +74,7 @@ const Login: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#B8860B] focus:border-[#B8860B]"
+                    className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Enter your email address"
                     required
                   />
@@ -82,19 +82,19 @@ const Login: React.FC = () => {
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="password" className="block text-sm font-medium text-slate-700">
                   Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#B8860B]">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                    <Lock className="h-5 w-5" />
                   </div>
                   <input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#B8860B] focus:border-[#B8860B]"
+                    className="block w-full pl-10 pr-3 py-3 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                     placeholder="Enter your password"
                     required
                   />
@@ -103,7 +103,7 @@ const Login: React.FC = () => {
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute inset-y-0 right-0 flex items-center pr-3"
                   >
-                    <span className="text-gray-500 text-sm">{showPassword ? 'Hide' : 'Show'}</span>
+                    <span className="text-slate-500 text-sm">{showPassword ? 'Hide' : 'Show'}</span>
                   </button>
                 </div>
               </div>
@@ -113,7 +113,7 @@ const Login: React.FC = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-[#B8860B] hover:bg-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#CD853F] transition-colors ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
+                className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors ${loading ? 'opacity-75 cursor-not-allowed' : ''}`}
               >
                 {loading ? (
                   <>
