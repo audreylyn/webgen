@@ -15,7 +15,7 @@ export const HeroCentered: React.FC<HeroCenteredProps> = ({
   const { content, theme } = website;
 
   return (
-    <section id="hero" className="relative pt-24 pb-12 lg:pt-32 lg:pb-24 overflow-hidden text-center">
+    <section id="hero" className="relative pt-24 pb-12 lg:pt-32 lg:pb-24 overflow-hidden text-center hero-centered">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center gap-8">
         <h1 className="text-4xl lg:text-6xl font-extrabold tracking-tight mb-4 leading-tight">
           {content.hero.title}

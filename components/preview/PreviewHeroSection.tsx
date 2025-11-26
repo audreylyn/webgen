@@ -4,6 +4,8 @@ import { HeroDefault } from './hero-sections/HeroDefault';
 import { HeroCentered } from './hero-sections/HeroCentered';
 import { HeroImageLeft } from './hero-sections/HeroImageLeft';
 
+import './hero-sections/HeroSections.css'; // Import new CSS file
+
 interface PreviewHeroSectionProps {
   website: Website;
   textMuted: string;

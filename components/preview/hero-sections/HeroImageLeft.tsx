@@ -15,7 +15,7 @@ export const HeroImageLeft: React.FC<HeroImageLeftProps> = ({
   const { content, theme } = website;
 
   return (
-    <section id="hero" className="relative pt-24 pb-12 lg:pt-32 lg:pb-24 overflow-hidden">
+    <section id="hero" className="relative pt-24 pb-12 lg:pt-32 lg:pb-24 overflow-hidden hero-image-left">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center gap-12">
         <div className="lg:w-1/2">
           <img

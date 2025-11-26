@@ -1,0 +1,21 @@
+/* Add any common styles for hero sections here if needed */
+
+/* Hero Centered Specific Styles */
+.hero-centered .max-w-4xl {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* Hero Image Left Specific Styles */
+.hero-image-left .max-w-7xl {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.hero-image-left h1 {
+  color: #333; /* Example: Darker text for better contrast */
+}
+
+.hero-image-left p {
+  color: #555; /* Example: Slightly lighter text */
+}

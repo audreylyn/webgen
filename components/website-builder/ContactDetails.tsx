@@ -8,16 +8,22 @@ const Label: React.FC<React.LabelHTMLAttributes<HTMLLabelElement>> = ({ children
   </label>
 );
 
-const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = ({ className, ...props }) => (
+const Input: React.FC<React.InputHTMLAttributes<HTMLInputElement>> = ({
+  className,
+  ...props
+}) => (
   <input
-    className={`block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${className}`}
+    className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${className}`}
     {...props}
   />
 );
 
-const Textarea: React.FC<React.TextareaHTMLAttributes<HTMLTextAreaElement>> = ({ className, ...props }) => (
+const Textarea: React.FC<React.TextareaHTMLAttributes<HTMLTextAreaElement>> = ({
+  className,
+  ...props
+}) => (
   <textarea
-    className={`block w-full rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${className}`}
+    className={`mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${className}`}
     {...props}
   />
 );
@@ -35,9 +41,8 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
   isDark,
   theme,
 }) => {
-
   return (
-    <section className="p-6 space-y-6">
+    <section className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md space-y-6">
       <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Contact Details</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-4">
@@ -76,7 +81,6 @@ export const ContactDetails: React.FC<ContactDetailsProps> = ({
             />
           </div>
         </div>
-        {/* Removed Google Maps Embed URL input */}
       </div>
     </section>
   );
