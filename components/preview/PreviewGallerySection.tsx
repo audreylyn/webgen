@@ -41,9 +41,6 @@ export const PreviewGallerySection: React.FC<PreviewGallerySectionProps> = ({
         <h2 className="text-3xl font-bold mb-4" style={{ color: isDark ? 'white' : theme.primary }}>Our Gallery</h2>
       </div>
       <div className="base-template__wrapper wrapper">
-        <h1 className="base-template__title" style={{ color: isDark ? 'white' : theme.primary }}>
-          Gallery
-        </h1>
         <div className="base-template__content">
           <div className="booking-slider">
             {/* Slider Navigation */}

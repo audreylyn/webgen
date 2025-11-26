@@ -100,6 +100,7 @@ export interface WebsiteContent {
     subtext: string;
     image: string;
     buttonLink?: string; // New: Optional link for the hero button
+    heroType?: HeroType; // Add this line
   };
   about: string;
   contact: {
@@ -175,3 +176,5 @@ export interface AIMarketingResponse {
   keywords: string[];
   socialPost: string;
 }
+
+export type HeroType = 'default' | 'centered' | 'imageLeft';

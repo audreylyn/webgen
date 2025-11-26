@@ -33,7 +33,13 @@ export const DEFAULT_WEBSITE: Website = {
     callToAction: false,
   },
   content: {
-    hero: { title: 'Welcome', subtext: 'We are glad you are here.', image: 'https://placehold.co/1200x600?text=Hero+Image', buttonLink: '#about' },
+    hero: {
+      title: 'Your Awesome Headline',
+      subtext: 'A compelling subtext to describe your business.',
+      image: '/hero.jpg',
+      buttonLink: '#products',
+      heroType: 'default',
+    },
     about: 'About our company...',
     contact: { phone: '', email: '', address: '' },
     products: [],

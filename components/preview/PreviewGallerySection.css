@@ -25,7 +25,7 @@
 .booking-slider__slide {
 	display: flex;
 	align-items: center;
-	min-height: 650px;
+	height: 100%;
 }
 @media screen and (max-width: 991.9px) {
 	.booking-slider {
@@ -127,6 +127,10 @@
 	background: var(--color-gray-dark);
 	position: relative;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	height: 500px;
+	width: 350px;
 }
 .booking-slider-item__badge {
 	display: flex;
@@ -316,10 +320,10 @@
 	right: 100%;
 }
 .booking-slider__slide:not(.swiper-slide-active) .booking-slider-item__image {
-	height: 204px;
+	height: 244px;
 }
 .booking-slider__slide:not(.swiper-slide-active) .booking-slider-item__footer {
-	max-height: 0;
+	max-height: 150px;
 }
 @media (hover: hover) and (pointer: fine) {
 	.booking-slider-item__btn:hover .booking-slider-item__btn-icon::before,

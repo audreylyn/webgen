@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { ImageIcon, Upload, Loader2 } from 'lucide-react';
-import { Website, HeroContent as HeroContentType } from '../../types';
+import { Website, HeroContent as HeroContentType, HeroType } from '../../types';
 
 interface HeroContentProps {
   website: Website;
@@ -23,6 +23,20 @@ export const HeroContent: React.FC<HeroContentProps> = ({
         <ImageIcon className="w-5 h-5 text-slate-500" /> Hero Section
       </h3>
       <div className="grid gap-4">
+        <div className="mb-4">
+          <label htmlFor="heroType" className="block text-sm font-medium text-slate-700">Hero Section Type</label>
+          <select
+            id="heroType"
+            name="heroType"
+            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+            value={website.content.hero.heroType || 'default'}
+            onChange={(e) => updateContent('hero', { ...website.content.hero, heroType: e.target.value as HeroType })}
+          >
+            <option value="default">Default</option>
+            <option value="centered">Centered</option>
+            <option value="imageLeft">Image Left</option>
+          </select>
+        </div>
         <input
           type="text"
           placeholder="Headline"
