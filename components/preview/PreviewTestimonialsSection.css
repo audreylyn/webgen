@@ -20,3 +20,10 @@
   padding-left: 50px;
   padding-right: 50px;
 }
+
+.mySwiper .swiper-pagination {
+  position: relative;
+  margin-top: 20px;
+  bottom: 0 !important;
+  top: auto !important;
+}

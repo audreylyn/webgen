@@ -77,6 +77,9 @@ export const PreviewGallerySection: React.FC<PreviewGallerySectionProps> = ({
                 },
               }}
               className="booking-slider__slider swiper"
+              style={{
+                '--swiper-theme-primary': theme.primary,
+              } as React.CSSProperties}
             >
               {content.gallery.map((item) => (
                 <SwiperSlide key={item.id} className="booking-slider__slide swiper-slide">

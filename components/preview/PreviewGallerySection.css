@@ -107,6 +107,7 @@
 .slider-pagination__item.active {
 	width: 30px;
 	opacity: 1;
+	background: var(--swiper-theme-primary, #fff);
 }
 /**
  * Slider Item
