@@ -106,7 +106,7 @@ export const PreviewGallerySection: React.FC<PreviewGallerySectionProps> = ({
                     <a title={item.caption || "Gallery Item"} href="#" className="booking-slider-item__image" onClick={(e) => { e.preventDefault(); openImage(item.image); }}>
                       <img src={item.image} alt={item.caption || "Gallery Item"} />
                     </a>
-                    <div className="booking-slider-item__content" style={{ color: isDark ? 'white' : 'inherit' }}>
+                    <div className="booking-slider-item__content" style={{ color: 'white' }}>
                       {item.price && (
                         <div className="booking-slider-item__price">
                           {item.price} <small>/month</small>
