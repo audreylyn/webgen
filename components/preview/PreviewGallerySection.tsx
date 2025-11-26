@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Website } from '../../types';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Pagination } from 'swiper/modules';
 
 // Import Swiper styles
 import 'swiper/css';
-import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
 import { X } from 'lucide-react';
@@ -43,22 +42,9 @@ export const PreviewGallerySection: React.FC<PreviewGallerySectionProps> = ({
       <div className="base-template__wrapper wrapper">
         <div className="base-template__content">
           <div className="booking-slider">
-            {/* Slider Navigation */}
-            <div className="booking-slider__nav slider-nav">
-              <div title="Newest offers" tabIndex={0} className="slider-nav__item slider-nav__item_prev">
-                <svg width="16" height="28" viewBox="0 0 16 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M14 26L2 14L14 2" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-              <div title="Oldest offers" tabIndex={0} className="slider-nav__item slider-nav__item_next">
-                <svg width="16" height="28" viewBox="0 0 16 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 26L14 14L2 2" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-            </div>
             {/* Slider Content */}
             <Swiper
-              modules={[Navigation, Pagination]}
+              modules={[Pagination]}
               slidesPerView={1.15}
               spaceBetween={20}
               slidesOffsetBefore={20}
@@ -67,11 +53,6 @@ export const PreviewGallerySection: React.FC<PreviewGallerySectionProps> = ({
               observer={true}
               watchOverflow={true}
               watchSlidesProgress={true}
-              navigation={{
-                nextEl: '.booking-slider__nav .slider-nav__item_next',
-                prevEl: '.booking-slider__nav .slider-nav__item_prev',
-                disabledClass: 'disabled',
-              }}
               pagination={{
                 el: '.booking-slider__pagination',
                 type: 'bullets',

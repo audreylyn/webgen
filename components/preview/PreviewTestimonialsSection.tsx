@@ -46,6 +46,10 @@ export const PreviewTestimonialsSection: React.FC<PreviewTestimonialsSectionProp
             disableOnInteraction: false,
           }}
           breakpoints={{
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 15,
+            },
             640: {
               slidesPerView: 1,
               spaceBetween: 20,
@@ -60,6 +64,9 @@ export const PreviewTestimonialsSection: React.FC<PreviewTestimonialsSectionProp
             },
           }}
           className="mySwiper"
+          style={{
+            '--swiper-theme-primary': theme.primary,
+          } as React.CSSProperties}
         >
           {content.testimonials.map(t => (
             <SwiperSlide key={t.id}>
