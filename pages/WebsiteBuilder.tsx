@@ -157,9 +157,21 @@ export const WebsiteBuilder: React.FC = () => {
           // Ensure new fields exist if loading legacy data
           const merged = { ...DEFAULT_WEBSITE, ...existing };
           merged.enabledSections = { ...DEFAULT_WEBSITE.enabledSections, ...existing.enabledSections };
+          // Handle legacy about data (string) vs new structure (object)
+          let aboutData = existing.content.about;
+          if (typeof aboutData === 'string') {
+            aboutData = {
+              image: DEFAULT_WEBSITE.content.about.image,
+              subtitle: DEFAULT_WEBSITE.content.about.subtitle,
+              title: 'About Us',
+              paragraphs: aboutData ? [aboutData] : DEFAULT_WEBSITE.content.about.paragraphs,
+            };
+          }
+
           merged.content = { 
             ...DEFAULT_WEBSITE.content, 
             ...existing.content,
+            about: aboutData || DEFAULT_WEBSITE.content.about,
             products: existing.content.products.map(p => ({...p, price: p.price || ''})),
             benefits: existing.content.benefits || [],
             testimonials: existing.content.testimonials || [],
@@ -297,7 +309,12 @@ export const WebsiteBuilder: React.FC = () => {
           newWebsite.title = aiPrompt.name;
           newWebsite.content.hero.title = result.heroTitle;
           newWebsite.content.hero.subtext = result.heroSubtext;
-          newWebsite.content.about = result.aboutText;
+          newWebsite.content.about = {
+            image: generateImageUrl('about section image'),
+            subtitle: 'OUR PHILOSOPHY',
+            title: result.aboutText?.split('.')[0] || 'About Us',
+            paragraphs: result.aboutText ? result.aboutText.split('.').filter(p => p.trim()).map(p => p.trim() + '.') : ['Tell your story here...']
+          };
           newWebsite.content.benefits = result.benefits?.map((b) => ({
             id: generateId(),
             title: b.title,
@@ -548,7 +565,12 @@ export const WebsiteBuilder: React.FC = () => {
 
               {/* About */}
               {website.enabledSections.about && (
-                <AboutContent website={website} updateContent={updateContent} />
+                <AboutContent 
+                  website={website} 
+                  updateContent={updateContent}
+                  handleFileUpload={handleFileUpload}
+                  isUploadingImage={isUploadingImage}
+                />
               )}
 
               {/* Products */}

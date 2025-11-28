@@ -40,7 +40,12 @@ export const DEFAULT_WEBSITE: Website = {
       buttonLink: '#products',
       heroType: 'default',
     },
-    about: 'About our company...',
+    about: {
+      image: 'https://placehold.co/800x600?text=About+Us',
+      subtitle: 'OUR PHILOSOPHY',
+      title: 'About Us',
+      paragraphs: ['Tell your story here...', 'Add more details about your business...']
+    },
     contact: { phone: '', email: '', address: '' },
     products: [],
     benefits: [],

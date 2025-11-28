@@ -103,7 +103,12 @@ export interface WebsiteContent {
     buttonLink?: string; // New: Optional link for the hero button
     heroType?: HeroType; // Add this line
   };
-  about: string;
+  about: {
+    image: string;
+    subtitle: string;
+    title: string;
+    paragraphs: string[];
+  };
   contact: {
     phone: string;
     email: string;
