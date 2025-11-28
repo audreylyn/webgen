@@ -91,7 +91,7 @@ export const PreviewBenefitsSection: React.FC<PreviewBenefitsSectionProps> = ({
               key={b.id}
               className="benefit-card-wrapper"
               style={{
-                background: `linear-gradient(to bottom, ${theme.secondary}, ${theme.primary}40)`,
+                backgroundColor: theme.secondary,
               }}
             >
               {/* Corner element that expands on hover */}
