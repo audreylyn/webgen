@@ -26,12 +26,6 @@ export const FooterConfig: React.FC<FooterConfigProps> = ({
 
   const footer = website.content.footer || {
     tagline: '',
-    about: '',
-    newsletter: {
-      title: '',
-      placeholder: '',
-      buttonText: '',
-    },
     exploreLinks: [],
     hours: [],
     copyright: '',
@@ -86,45 +80,6 @@ export const FooterConfig: React.FC<FooterConfigProps> = ({
             onChange={(e) => handleFooterChange('tagline', e.target.value)}
             className="w-full px-4 py-2 border border-slate-300 rounded-lg h-20 resize-none"
           />
-        </div>
-
-        {/* About */}
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-2">About the Website</label>
-          <textarea
-            placeholder="We are passionate about creating exceptional baked goods..."
-            value={footer.about}
-            onChange={(e) => handleFooterChange('about', e.target.value)}
-            className="w-full px-4 py-2 border border-slate-300 rounded-lg h-24 resize-none"
-          />
-        </div>
-
-        {/* Newsletter */}
-        <div>
-          <label className="block text-sm font-medium text-slate-700 mb-3">Newsletter</label>
-          <div className="space-y-3">
-            <input
-              type="text"
-              value={footer.newsletter.title}
-              onChange={(e) => handleFooterChange('newsletter', { ...footer.newsletter, title: e.target.value })}
-              placeholder="Newsletter Title"
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg"
-            />
-            <input
-              type="text"
-              value={footer.newsletter.placeholder}
-              onChange={(e) => handleFooterChange('newsletter', { ...footer.newsletter, placeholder: e.target.value })}
-              placeholder="Input Placeholder Text"
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg"
-            />
-            <input
-              type="text"
-              value={footer.newsletter.buttonText}
-              onChange={(e) => handleFooterChange('newsletter', { ...footer.newsletter, buttonText: e.target.value })}
-              placeholder="Button Text"
-              className="w-full px-4 py-2 border border-slate-300 rounded-lg"
-            />
-          </div>
         </div>
 
         {/* Explore Links */}
