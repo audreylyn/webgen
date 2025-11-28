@@ -173,9 +173,18 @@ export const WebsiteBuilder: React.FC = () => {
           if (!footerData && (existing.content as any).footerText) {
             footerData = {
               tagline: DEFAULT_WEBSITE.content.footer.tagline,
+              about: DEFAULT_WEBSITE.content.footer.about,
+              newsletter: DEFAULT_WEBSITE.content.footer.newsletter,
               exploreLinks: DEFAULT_WEBSITE.content.footer.exploreLinks,
               hours: DEFAULT_WEBSITE.content.footer.hours,
               copyright: (existing.content as any).footerText || DEFAULT_WEBSITE.content.footer.copyright,
+            };
+          } else if (footerData && !footerData.about) {
+            // Handle footer without about and newsletter fields
+            footerData = {
+              ...footerData,
+              about: footerData.about || DEFAULT_WEBSITE.content.footer.about,
+              newsletter: footerData.newsletter || DEFAULT_WEBSITE.content.footer.newsletter,
             };
           }
 

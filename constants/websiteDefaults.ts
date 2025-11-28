@@ -57,6 +57,12 @@ export const DEFAULT_WEBSITE: Website = {
     callToAction: { text: 'Ready to get started?', buttonText: 'Contact Us', buttonLink: '#contact', backgroundColor: '#4f46e5', textColor: '#ffffff' },
     footer: {
       tagline: 'Handcrafting moments of joy through the art of baking. Sustainable, organic, and always fresh.',
+      about: 'We are passionate about creating exceptional baked goods using only the finest ingredients. Our commitment to quality and tradition sets us apart.',
+      newsletter: {
+        title: 'Subscribe to Our Newsletter',
+        placeholder: 'Enter your email address',
+        buttonText: 'Subscribe',
+      },
       exploreLinks: [
         { label: 'Home', href: '#hero' },
         { label: 'About', href: '#about' },

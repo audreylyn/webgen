@@ -124,6 +124,12 @@ export interface WebsiteContent {
   callToAction: CallToAction;
   footer: {
     tagline: string;
+    about: string;
+    newsletter: {
+      title: string;
+      placeholder: string;
+      buttonText: string;
+    };
     exploreLinks: { label: string; href: string }[];
     hours: { day: string; time: string }[];
     copyright: string;

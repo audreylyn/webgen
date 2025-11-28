@@ -1,5 +1,5 @@
-import React from 'react';
-import { Facebook, Instagram, Twitter, Linkedin, Youtube, Link as LinkIcon, MapPin, Phone, Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import { Facebook, Instagram, Twitter, Linkedin, Youtube, Link as LinkIcon, MapPin, Phone, Mail, Send } from 'lucide-react';
 import { Website } from '../../types';
 
 interface PreviewFooterProps {
@@ -18,9 +18,32 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
   // Handle legacy footerText
   const footer = (content as any).footer || {
     tagline: '',
+    about: '',
+    newsletter: {
+      title: 'Subscribe to Our Newsletter',
+      placeholder: 'Enter your email address',
+      buttonText: 'Subscribe',
+    },
     exploreLinks: [],
     hours: [],
     copyright: (content as any).footerText || '© 2024 All rights reserved.',
+  };
+
+  // Ensure newsletter object exists
+  const newsletter = footer.newsletter || {
+    title: 'Subscribe to Our Newsletter',
+    placeholder: 'Enter your email address',
+    buttonText: 'Subscribe',
+  };
+
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle newsletter subscription (you can integrate with your backend here)
+    console.log('Newsletter subscription:', newsletterEmail);
+    setNewsletterEmail('');
+    // You can add a toast notification here
   };
 
   const getSocialIcon = (platform: string) => {
@@ -49,9 +72,9 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
   return (
     <footer className={`py-16 ${isDark ? 'bg-slate-900' : 'bg-black'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-12 mb-12">
           {/* Brand Section */}
-          <div>
+          <div className="lg:col-span-2">
             <h3 className="text-3xl font-bold mb-4" style={{ 
               color: isDark ? '#f3f4f6' : '#fbbf24',
               fontFamily: 'serif'
@@ -59,8 +82,13 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
               {website.title}
             </h3>
             {footer.tagline && (
-              <p className={`text-sm mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-amber-100'}`}>
+              <p className={`text-sm mb-4 leading-relaxed ${isDark ? 'text-slate-400' : 'text-amber-100'}`}>
                 {footer.tagline}
+              </p>
+            )}
+            {footer.about && (
+              <p className={`text-sm mb-6 leading-relaxed ${isDark ? 'text-slate-400' : 'text-amber-100'}`}>
+                {footer.about}
               </p>
             )}
             {content.socialLinks && content.socialLinks.filter(l => l.enabled).length > 0 && (
@@ -158,6 +186,38 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
                   </li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {/* Newsletter Section */}
+          {newsletter && newsletter.title && (
+            <div>
+              <h4 className={`text-sm font-bold uppercase tracking-wider mb-4 ${isDark ? 'text-slate-300' : 'text-amber-200'}`}>
+                {newsletter.title}
+              </h4>
+              <form onSubmit={handleNewsletterSubmit} className="space-y-3">
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    placeholder={newsletter.placeholder || 'Enter your email'}
+                    className={`flex-1 px-4 py-2 rounded-lg border ${isDark ? 'bg-slate-800 border-slate-700 text-white placeholder-slate-400' : 'bg-slate-900 border-amber-200/30 text-amber-100 placeholder-amber-200/50'} focus:outline-none focus:ring-2 focus:ring-amber-400/50`}
+                    required
+                  />
+                  <button
+                    type="submit"
+                    className={`px-4 py-2 rounded-lg font-semibold transition-all flex items-center gap-2 ${isDark ? 'bg-slate-700 hover:bg-slate-600 text-white' : 'bg-amber-400 hover:bg-amber-500 text-black'}`}
+                    style={{
+                      backgroundColor: isDark ? undefined : theme.primary,
+                      color: isDark ? undefined : 'white',
+                    }}
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>{newsletter.buttonText || 'Subscribe'}</span>
+                  </button>
+                </div>
+              </form>
             </div>
           )}
         </div>
