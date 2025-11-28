@@ -1,5 +1,9 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
+import { 
+  Sparkles, Star, Heart, Award, Shield, Zap, Leaf, Clock, Users, CheckCircle, ArrowRight,
+  Gift, Trophy, Target, Flame, Coffee, ShoppingBag, Truck, Headphones, Mail, Phone,
+  Globe, Lock, Eye, ThumbsUp, Smile, Package, Wrench, Lightbulb, Rocket, TrendingUp
+} from 'lucide-react';
 import { Website } from '../../types';
 
 interface PreviewBenefitsSectionProps {
@@ -15,6 +19,73 @@ const darkenColor = (hex: string, percent: number): string => {
   const g = Math.max(0, Math.floor(((num >> 8) & 0x00ff) * (1 - percent)));
   const b = Math.max(0, Math.floor((num & 0x0000ff) * (1 - percent)));
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+};
+
+// Icon mapping for Lucide icons
+const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
+  Star,
+  Heart,
+  Award,
+  Shield,
+  Zap,
+  Leaf,
+  Clock,
+  Users,
+  CheckCircle,
+  ArrowRight,
+  Sparkles,
+  Gift,
+  Trophy,
+  Target,
+  Flame,
+  Coffee,
+  ShoppingBag,
+  Truck,
+  Headphones,
+  Mail,
+  Phone,
+  Globe,
+  Lock,
+  Eye,
+  ThumbsUp,
+  Smile,
+  Package,
+  Wrench,
+  Lightbulb,
+  Rocket,
+  TrendingUp,
+};
+
+// Helper to check if icon is a URL
+const isImageUrl = (icon: string): boolean => {
+  return icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('data:');
+};
+
+// Helper to render icon
+const renderIcon = (icon: string, theme: { primary: string }) => {
+  if (!icon) {
+    const IconComponent = iconMap['Star'] || Star;
+    return <IconComponent className="w-6 h-6" style={{ color: theme.primary }} />;
+  }
+  
+  if (isImageUrl(icon)) {
+    return (
+      <img 
+        src={icon} 
+        alt="Benefit icon" 
+        className="w-6 h-6 object-contain"
+        onError={(e) => {
+          const target = e.target as HTMLImageElement;
+          target.style.display = 'none';
+          const fallback = target.nextElementSibling as HTMLElement;
+          if (fallback) fallback.style.display = 'block';
+        }}
+      />
+    );
+  }
+  
+  const IconComponent = iconMap[icon] || Star;
+  return <IconComponent className="w-6 h-6" style={{ color: theme.primary }} />;
 };
 
 export const PreviewBenefitsSection: React.FC<PreviewBenefitsSectionProps> = ({
@@ -112,6 +183,20 @@ export const PreviewBenefitsSection: React.FC<PreviewBenefitsSectionProps> = ({
                   background: `linear-gradient(135deg, ${darkPrimary}, ${darkButton})`,
                 }}
               />
+              
+              {/* Icon at top left */}
+              {b.icon && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '1.2em',
+                    left: '1.2em',
+                    zIndex: 1,
+                  }}
+                >
+                  {renderIcon(b.icon, theme)}
+                </div>
+              )}
               
               {/* Arrow in corner */}
               <div
