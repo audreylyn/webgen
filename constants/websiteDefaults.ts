@@ -57,18 +57,23 @@ export const DEFAULT_WEBSITE: Website = {
     callToAction: { text: 'Ready to get started?', buttonText: 'Contact Us', buttonLink: '#contact', backgroundColor: '#4f46e5', textColor: '#ffffff' },
     footer: {
       tagline: 'Handcrafting moments of joy through the art of baking. Sustainable, organic, and always fresh.',
-      exploreLinks: [
+      quickLinks: [
         { label: 'Home', href: '#hero' },
         { label: 'About', href: '#about' },
         { label: 'Products', href: '#products' },
         { label: 'Contact', href: '#contact' },
+      ],
+      exploreLinks: [
+        { label: 'Order Online', href: '#products' },
+        { label: 'Our Story', href: '#about' },
+        { label: 'Contact & Custom Orders', href: '#contact' },
       ],
       hours: [
         { day: 'Monday', time: 'Closed' },
         { day: 'Tuesday - Friday', time: '7am - 4pm' },
         { day: 'Saturday - Sunday', time: '8am - 3pm' },
       ],
-      copyright: '© 2024 All rights reserved.',
+      copyright: 'All rights reserved.',
     },
     socialLinks: [
       { platform: 'facebook', url: '', enabled: false },

@@ -26,6 +26,7 @@ export const FooterConfig: React.FC<FooterConfigProps> = ({
 
   const footer = website.content.footer || {
     tagline: '',
+    quickLinks: [],
     exploreLinks: [],
     hours: [],
     copyright: '',
@@ -80,6 +81,53 @@ export const FooterConfig: React.FC<FooterConfigProps> = ({
             onChange={(e) => handleFooterChange('tagline', e.target.value)}
             className="w-full px-4 py-2 border border-slate-300 rounded-lg h-20 resize-none"
           />
+        </div>
+
+        {/* Quick Links (Primary Links) */}
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-medium text-slate-700">Quick Links (Primary Links)</label>
+            <button
+              onClick={() => handleFooterChange('quickLinks', [...footer.quickLinks, { label: '', href: '' }])}
+              className="text-xs flex items-center gap-1 text-indigo-600 hover:underline"
+            >
+              <Plus className="w-3 h-3" /> Add Link
+            </button>
+          </div>
+          <div className="space-y-2">
+            {footer.quickLinks.map((link, index) => (
+              <div key={index} className="flex gap-2">
+                <input
+                  type="text"
+                  value={link.label}
+                  onChange={(e) => {
+                    const newLinks = [...footer.quickLinks];
+                    newLinks[index] = { ...newLinks[index], label: e.target.value };
+                    handleFooterChange('quickLinks', newLinks);
+                  }}
+                  placeholder="Label (e.g., Home)"
+                  className="flex-1 px-4 py-2 border border-slate-300 rounded-lg"
+                />
+                <input
+                  type="text"
+                  value={link.href}
+                  onChange={(e) => {
+                    const newLinks = [...footer.quickLinks];
+                    newLinks[index] = { ...newLinks[index], href: e.target.value };
+                    handleFooterChange('quickLinks', newLinks);
+                  }}
+                  placeholder="Link (e.g., #home)"
+                  className="flex-1 px-4 py-2 border border-slate-300 rounded-lg"
+                />
+                <button
+                  onClick={() => handleFooterChange('quickLinks', footer.quickLinks.filter((_, i) => i !== index))}
+                  className="text-slate-400 hover:text-red-500 p-2"
+                >
+                  <Trash className="w-4 h-4" />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Explore Links */}

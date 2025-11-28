@@ -124,6 +124,7 @@ export interface WebsiteContent {
   callToAction: CallToAction;
   footer: {
     tagline: string;
+    quickLinks: { label: string; href: string }[];
     exploreLinks: { label: string; href: string }[];
     hours: { day: string; time: string }[];
     copyright: string;

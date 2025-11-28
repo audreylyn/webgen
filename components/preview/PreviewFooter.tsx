@@ -18,10 +18,14 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
   // Handle legacy footerText
   const footer = (content as any).footer || {
     tagline: '',
+    quickLinks: [],
     exploreLinks: [],
     hours: [],
-    copyright: (content as any).footerText || '© 2024 All rights reserved.',
+    copyright: (content as any).footerText || 'All rights reserved.',
   };
+
+  // Get current year dynamically
+  const currentYear = new Date().getFullYear();
 
   const getSocialIcon = (platform: string) => {
     switch (platform) {
@@ -49,7 +53,7 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
   return (
     <footer className={`py-16 ${isDark ? 'bg-slate-900' : 'bg-black'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+        <div className={`grid grid-cols-1 md:grid-cols-2 ${(footer.quickLinks && footer.quickLinks.length > 0) ? 'lg:grid-cols-5' : 'lg:grid-cols-4'} gap-12 mb-12`}>
           {/* Brand Section */}
           <div>
             <h3 className="text-3xl font-bold mb-4" style={{ 
@@ -82,6 +86,28 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
               </div>
             )}
           </div>
+
+          {/* Quick Links Section */}
+          {footer.quickLinks && footer.quickLinks.length > 0 && (
+            <div>
+              <h4 className={`text-sm font-bold uppercase tracking-wider mb-4 ${isDark ? 'text-slate-300' : 'text-amber-200'}`}>
+                QUICK LINKS
+              </h4>
+              <ul className="space-y-3">
+                {footer.quickLinks.map((link, index) => (
+                  <li key={index}>
+                    <a
+                      href={link.href}
+                      onClick={(e) => handleNavClick(link.href, e)}
+                      className={`text-sm transition-colors ${isDark ? 'text-slate-400 hover:text-white' : 'text-amber-100 hover:text-amber-50'}`}
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Explore Section */}
           {footer.exploreLinks && footer.exploreLinks.length > 0 && (
@@ -148,12 +174,17 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
                 {footer.hours.map((hour, index) => (
                   <li key={index}>
                     <div className={`text-sm ${isDark ? 'text-slate-400' : 'text-amber-100'}`}>
-                      <span className="font-medium">{hour.day}:</span>{' '}
-                      <span className={hour.time.toLowerCase().includes('closed') 
-                        ? (isDark ? 'text-slate-500' : 'text-amber-200/70') 
-                        : ''}>
-                        {hour.time}
-                      </span>
+                      <span className="font-medium">{hour.day}</span>
+                      {hour.time && (
+                        <>
+                          {' '}
+                          <span className={hour.time.toLowerCase().includes('closed') 
+                            ? (isDark ? 'text-slate-500' : 'text-amber-200/70') 
+                            : ''}>
+                            {hour.time}
+                          </span>
+                        </>
+                      )}
                     </div>
                   </li>
                 ))}
@@ -169,9 +200,20 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
         />
 
         {/* Copyright */}
-        <div className="text-center">
+        <div className="text-center space-y-2">
           <p className={`text-sm ${isDark ? 'text-slate-500' : 'text-amber-200/70'}`}>
-            {footer.copyright}
+            © {currentYear} {website.title}. {footer.copyright}
+          </p>
+          <p className={`text-xs ${isDark ? 'text-slate-600' : 'text-amber-200/60'}`}>
+            Website created by{' '}
+            <a
+              href="https://likhasiteworks.studio"
+              target="_blank"
+              rel="noreferrer"
+              className={`hover:underline ${isDark ? 'text-slate-400 hover:text-slate-300' : 'text-amber-200/80 hover:text-amber-200'}`}
+            >
+              LikhaSiteWorks
+            </a>
           </p>
         </div>
       </div>
