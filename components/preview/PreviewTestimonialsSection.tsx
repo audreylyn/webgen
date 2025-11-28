@@ -2,17 +2,6 @@ import React from 'react';
 import { Quote, Star } from 'lucide-react';
 import { Website } from '../../types';
 
-// Import Swiper React components
-import { Swiper, SwiperSlide } from 'swiper/react';
-
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-
-// Import required modules
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-
 interface PreviewTestimonialsSectionProps {
   website: Website;
   isDark: boolean;
@@ -29,137 +18,155 @@ export const PreviewTestimonialsSection: React.FC<PreviewTestimonialsSectionProp
   const { content, theme } = website;
 
   return (
-    <section id="testimonials" className={`py-20 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+    <section id="testimonials" className={`py-20 relative ${isDark ? 'bg-slate-900' : 'bg-gradient-to-b from-white to-slate-50'}`}>
       <style>{`
-        .testimonial-card {
+        .testimonial-grid-item {
           position: relative;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .testimonial-card:hover {
-          transform: translateY(-5px);
+        .testimonial-grid-item:hover {
+          transform: translateY(-8px) scale(1.02);
         }
-        .quote-icon {
+        .testimonial-card-inner {
+          position: relative;
+          height: 100%;
+          transition: all 0.3s ease;
+        }
+        .testimonial-grid-item:hover .testimonial-card-inner {
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        .quote-decoration {
           position: absolute;
-          top: 20px;
-          left: 24px;
-          opacity: 0.1;
-          transition: all 0.3s ease;
-        }
-        .testimonial-card:hover .quote-icon {
-          opacity: 0.15;
-          transform: scale(1.1);
-        }
-        .testimonial-avatar {
-          transition: all 0.3s ease;
-        }
-        .testimonial-card:hover .testimonial-avatar {
-          transform: scale(1.05);
-          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-        .swiper-button-next,
-        .swiper-button-prev {
-          color: ${theme.primary} !important;
-          background: ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.9)'};
-          width: 44px !important;
-          height: 44px !important;
+          top: -10px;
+          left: 20px;
+          width: 60px;
+          height: 60px;
           border-radius: 50%;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
           transition: all 0.3s ease;
         }
-        .swiper-button-next:hover,
-        .swiper-button-prev:hover {
-          background: ${theme.primary};
-          color: white !important;
+        .testimonial-grid-item:hover .quote-decoration {
+          transform: scale(1.1) rotate(5deg);
+        }
+        .testimonial-avatar-wrapper {
+          position: relative;
+          transition: all 0.3s ease;
+        }
+        .testimonial-grid-item:hover .testimonial-avatar-wrapper {
           transform: scale(1.1);
         }
-        .swiper-button-next::after,
-        .swiper-button-prev::after {
-          font-size: 20px !important;
+        .testimonial-avatar-wrapper::before {
+          content: '';
+          position: absolute;
+          inset: -4px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, ${theme.primary}, ${theme.button});
+          opacity: 0;
+          transition: opacity 0.3s ease;
         }
-        .swiper-pagination-bullet {
-          background: ${theme.primary} !important;
+        .testimonial-grid-item:hover .testimonial-avatar-wrapper::before {
           opacity: 0.3;
-          width: 10px;
-          height: 10px;
-          transition: all 0.3s ease;
         }
-        .swiper-pagination-bullet-active {
-          opacity: 1;
-          width: 30px;
-          border-radius: 5px;
+        @media (max-width: 768px) {
+          .testimonial-grid {
+            grid-template-columns: 1fr;
+          }
         }
       `}</style>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      {/* Background decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div 
+          className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl opacity-10"
+          style={{ backgroundColor: theme.primary }}
+        />
+        <div 
+          className="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl opacity-10"
+          style={{ backgroundColor: theme.secondary }}
+        />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: theme.primary }}>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ 
+            backgroundColor: theme.primary + '15',
+            border: `1px solid ${theme.primary}30`
+          }}>
+            <Star className="w-4 h-4" style={{ color: theme.primary }} />
+            <span className="text-sm font-semibold" style={{ color: theme.primary }}>Testimonials</span>
+          </div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6" style={{ color: theme.primary }}>
             What People Say
           </h2>
-          <p className={`text-lg ${textMuted} max-w-2xl mx-auto`}>
-            Hear from our satisfied customers
+          <p className={`text-lg md:text-xl ${textMuted} max-w-2xl mx-auto`}>
+            Real feedback from real customers who love our service
           </p>
         </div>
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={30}
-          slidesPerView={1}
-          navigation
-          pagination={{ clickable: true }}
-          autoplay={{
-            delay: 5000,
-            disableOnInteraction: false,
-          }}
-          breakpoints={{
-            320: {
-              slidesPerView: 1,
-              spaceBetween: 15,
-            },
-            640: {
-              slidesPerView: 1,
-              spaceBetween: 20,
-            },
-            768: {
-              slidesPerView: 2,
-              spaceBetween: 25,
-            },
-            1024: {
-              slidesPerView: 2,
-              spaceBetween: 30,
-            },
-          }}
-          className="testimonials-swiper"
-        >
-          {content.testimonials.map(t => (
-            <SwiperSlide key={t.id}>
-              <div className={`testimonial-card p-8 rounded-2xl ${isDark ? 'bg-slate-800/90' : 'bg-white'} border ${isDark ? 'border-slate-700' : 'border-slate-100'} shadow-xl`}>
-                <Quote className="quote-icon w-16 h-16" style={{ color: theme.primary }} />
-                
-                <div className="relative z-10">
-                  <p className={`text-base md:text-lg mb-8 leading-relaxed ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
-                    {t.content}
-                  </p>
-                  
-                  <div className="flex items-center gap-4 pt-4 border-t border-slate-200">
-                    {t.avatar ? (
-                      <img
-                        src={t.avatar}
-                        alt={t.name}
-                        onError={handleAvatarError}
-                        className="testimonial-avatar w-14 h-14 rounded-full object-cover border-2"
-                        style={{ borderColor: theme.primary + '40' }}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 testimonial-grid">
+          {content.testimonials.map((t, index) => (
+            <div key={t.id} className="testimonial-grid-item">
+              <div 
+                className={`testimonial-card-inner p-8 rounded-3xl ${isDark ? 'bg-slate-800/90' : 'bg-white'} border ${isDark ? 'border-slate-700/50' : 'border-slate-200/50'} shadow-lg backdrop-blur-sm`}
+                style={{
+                  borderTop: `4px solid ${theme.primary}`,
+                }}
+              >
+                {/* Quote decoration */}
+                <div 
+                  className="quote-decoration"
+                  style={{ 
+                    backgroundColor: theme.primary + '15',
+                  }}
+                >
+                  <Quote className="w-6 h-6" style={{ color: theme.primary }} />
+                </div>
+
+                {/* Testimonial content */}
+                <div className="pt-4">
+                  <div className="flex items-center gap-1 mb-6">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className="w-4 h-4 fill-current" 
+                        style={{ color: theme.primary }}
                       />
-                    ) : (
-                      <div 
-                        className="testimonial-avatar w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl text-white"
-                        style={{ 
-                          backgroundColor: theme.primary,
-                          boxShadow: `0 4px 15px ${theme.primary}40`
-                        }}
-                      >
-                        {t.name.charAt(0)}
-                      </div>
-                    )}
-                    <div>
-                      <p className={`font-bold text-lg ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    ))}
+                  </div>
+
+                  <p className={`text-base md:text-lg mb-8 leading-relaxed ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
+                    "{t.content}"
+                  </p>
+
+                  {/* Author info */}
+                  <div className="flex items-center gap-4 pt-6 border-t" style={{ 
+                    borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
+                  }}>
+                    <div className="testimonial-avatar-wrapper relative">
+                      {t.avatar ? (
+                        <img
+                          src={t.avatar}
+                          alt={t.name}
+                          onError={handleAvatarError}
+                          className="w-14 h-14 rounded-full object-cover border-2 relative z-10"
+                          style={{ borderColor: theme.primary }}
+                        />
+                      ) : (
+                        <div 
+                          className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl text-white relative z-10"
+                          style={{ 
+                            backgroundColor: theme.primary,
+                            boxShadow: `0 4px 15px ${theme.primary}40`
+                          }}
+                        >
+                          {t.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1">
+                      <p className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>
                         {t.name}
                       </p>
                       <p className={`text-sm ${textMuted}`}>
@@ -169,9 +176,9 @@ export const PreviewTestimonialsSection: React.FC<PreviewTestimonialsSectionProp
                   </div>
                 </div>
               </div>
-            </SwiperSlide>
+            </div>
           ))}
-        </Swiper>
+        </div>
       </div>
     </section>
   );

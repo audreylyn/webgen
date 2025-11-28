@@ -32,7 +32,7 @@ export const PreviewGallerySection: React.FC<PreviewGallerySectionProps> = ({
   };
 
   return (
-    <section className="base-template" style={{
+    <section id="gallery" className="base-template" style={{
       backgroundColor: isDark ? theme.primary : '#f9fafb',
       color: isDark ? 'white' : '#1f2937'
     }}>

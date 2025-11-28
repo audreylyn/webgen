@@ -35,7 +35,7 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
   };
 
   return (
-    <section className="py-16 px-4 bg-gray-50 dark:bg-gray-900" style={{
+    <section id="contact" className="py-16 px-4 bg-gray-50 dark:bg-gray-900" style={{
       backgroundColor: isDark ? theme.primary : '#f9fafb',
       color: isDark ? 'white' : '#1f2937'
     }}>

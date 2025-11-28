@@ -64,7 +64,18 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8 items-center">
             {navLinks.map((link) => (
-              <a key={link.id} href={link.href} className="hover:text-opacity-80 transition-opacity">
+              <a 
+                key={link.id} 
+                href={link.href} 
+                className="hover:text-opacity-80 transition-opacity"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.querySelector(link.href);
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+              >
                 {link.name}
               </a>
             ))}
@@ -99,7 +110,14 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
                 key={link.id}
                 href={link.href}
                 className="text-slate-600 hover:bg-slate-50 hover:text-slate-800 block px-3 py-2 rounded-md text-base font-medium"
-                onClick={() => setMobileMenuOpen(false)} // Close menu on link click
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMobileMenuOpen(false); // Close menu on link click
+                  const element = document.querySelector(link.href);
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
               >
                 {link.name}
               </a>
