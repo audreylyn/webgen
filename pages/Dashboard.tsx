@@ -12,26 +12,49 @@ export const Dashboard: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
+
+  // Immediately redirect editors - don't render dashboard at all
+  useEffect(() => {
+    if (user?.role === 'editor') {
+      setIsRedirecting(true);
+      // Load websites to get the first assigned website
+      getWebsites().then((data) => {
+        const userEmail = user.name?.toLowerCase();
+        const filtered = data.filter((site: Website) => {
+          const assigned = (site.assignedEditors || []).map((e: string) => e.toLowerCase());
+          return assigned.includes(user.id?.toLowerCase() || '') || assigned.includes(userEmail || '');
+        });
+        
+        if (filtered.length > 0) {
+          navigate(`/edit/${filtered[0].id}`, { replace: true });
+        } else {
+          // No websites assigned - show error or redirect to login
+          navigate('/login', { replace: true });
+        }
+      }).catch(() => {
+        navigate('/login', { replace: true });
+      });
+    }
+  }, [user?.role, navigate, user?.id, user?.name]);
+
+  // Don't render anything for editors - they're being redirected
+  if (user?.role === 'editor' || isRedirecting) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+      </div>
+    );
+  }
 
   const loadWebsites = async () => {
     setIsLoading(true);
     try {
       const data = await getWebsites();
-      // Filter websites for editors - only show assigned websites
-      if (user?.role === 'editor') {
-        const userEmail = user.name?.toLowerCase(); // user.name is the email
-        const filtered = data.filter((site: Website) => {
-          // Editors can see websites assigned to them (by email or user ID)
-          const assigned = (site.assignedEditors || []).map((e: string) => e.toLowerCase());
-          return assigned.includes(user.id?.toLowerCase() || '') || assigned.includes(userEmail || '');
-        });
-        setWebsites(filtered);
-      } else {
-        // Admins see all websites
-        setWebsites(data);
-      }
+      // Admins see all websites
+      setWebsites(data);
     } catch (error) {
       console.error("Failed to load websites:", error);
     } finally {
@@ -40,15 +63,10 @@ export const Dashboard: React.FC = () => {
   };
 
   useEffect(() => {
-    loadWebsites();
-  }, []);
-
-  // Redirect editors to edit page after websites load
-  useEffect(() => {
-    if (user?.role === 'editor' && !isLoading && websites.length > 0) {
-      navigate(`/edit/${websites[0].id}`);
+    if (user?.role === 'admin') {
+      loadWebsites();
     }
-  }, [user?.role, isLoading, websites, navigate]);
+  }, [user?.role]);
 
   const handleDelete = async (id: string) => {
     await deleteWebsite(id);

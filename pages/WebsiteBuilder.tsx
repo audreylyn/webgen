@@ -613,6 +613,12 @@ export const WebsiteBuilder: React.FC = () => {
                 {/* Integrations */}
                 <Integrations website={website} setWebsite={setWebsite} />
 
+                {/* Contact Form Configuration */}
+                <ContactFormConfig
+                  website={website}
+                  setWebsite={setWebsite}
+                />
+
               </div>
             </div>
           )}
@@ -749,18 +755,12 @@ export const WebsiteBuilder: React.FC = () => {
 
               {/* Contact */}
               {website.enabledSections.contact && (
-                <>
-                  <ContactDetails
-                    content={website.content.contact}
-                    onContentChange={(newContent) => updateContent('contact', newContent)}
-                    isDark={website.theme.background === 'dark'}
-                    theme={website.theme}
-                  />
-                  <ContactFormConfig
-                    website={website}
-                    setWebsite={setWebsite}
-                  />
-                </>
+                <ContactDetails
+                  content={website.content.contact}
+                  onContentChange={(newContent) => updateContent('contact', newContent)}
+                  isDark={website.theme.background === 'dark'}
+                  theme={website.theme}
+                />
               )}
 
               {/* Footer Configuration */}
