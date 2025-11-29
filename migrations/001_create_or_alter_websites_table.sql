@@ -8,6 +8,7 @@ create table if not exists public.websites (
   title text,
   logo text,
   favicon text,
+  titlefont text,
   status text,
   createdAt timestamptz,
   theme jsonb,
@@ -20,6 +21,7 @@ create table if not exists public.websites (
 -- Add any missing columns if table already existed but lacked fields
 alter table public.websites
   add column if not exists createdAt timestamptz,
+  add column if not exists titlefont text,
   add column if not exists theme jsonb,
   add column if not exists messenger jsonb,
   add column if not exists enabledSections jsonb,

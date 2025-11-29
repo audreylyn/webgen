@@ -68,6 +68,7 @@ export const getWebsites = async () => {
       const copy = { ...r } as any;
       if ('enabledsections' in copy) { copy.enabledSections = copy.enabledsections; delete copy.enabledsections; }
       if ('createdat' in copy) { copy.createdAt = copy.createdat; delete copy.createdat; }
+      if ('titlefont' in copy) { copy.titleFont = copy.titlefont; delete copy.titlefont; }
       return copy;
     });
     return normalized;
@@ -89,6 +90,7 @@ export const getWebsiteById = async (id: string) => {
     const copy = { ...data } as any;
     if ('enabledsections' in copy) { copy.enabledSections = copy.enabledsections; delete copy.enabledsections; }
     if ('createdat' in copy) { copy.createdAt = copy.createdat; delete copy.createdat; }
+    if ('titlefont' in copy) { copy.titleFont = copy.titlefont; delete copy.titlefont; }
     return copy as Website;
   } catch (err) {
     console.error('getWebsiteById error', err);
@@ -114,6 +116,7 @@ export const getWebsiteBySubdomain = async (subdomain: string) => {
     const copy = { ...data } as any;
     if ('enabledsections' in copy) { copy.enabledSections = copy.enabledsections; delete copy.enabledsections; }
     if ('createdat' in copy) { copy.createdAt = copy.createdat; delete copy.createdat; }
+    if ('titlefont' in copy) { copy.titleFont = copy.titlefont; delete copy.titlefont; }
     return copy as Website;
   } catch (err) {
     console.error('getWebsiteBySubdomain error', err);
@@ -163,6 +166,7 @@ export const saveWebsite = async (website: Website) => {
     const copy = { ...data } as any;
     if ('enabledsections' in copy) { copy.enabledSections = copy.enabledsections; delete copy.enabledsections; }
     if ('createdat' in copy) { copy.createdAt = copy.createdat; delete copy.createdat; }
+    if ('titlefont' in copy) { copy.titleFont = copy.titlefont; delete copy.titlefont; }
     return copy as Website;
     } catch (err) {
     console.error('saveWebsite error', err);
