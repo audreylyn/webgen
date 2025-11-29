@@ -1,6 +1,6 @@
 import React from 'react';
 import { 
-  Sparkles, Star, Heart, Award, Shield, Zap, Leaf, Clock, Users, CheckCircle, ArrowRight,
+  Star, Heart, Award, Shield, Zap, Leaf, Clock, Users, CheckCircle, ArrowRight,
   Gift, Trophy, Target, Flame, Coffee, ShoppingBag, Truck, Headphones, Mail, Phone,
   Globe, Lock, Eye, ThumbsUp, Smile, Package, Wrench, Lightbulb, Rocket, TrendingUp
 } from 'lucide-react';
@@ -12,13 +12,26 @@ interface PreviewBenefitsSectionProps {
   textMuted: string;
 }
 
-// Helper function to darken a color
-const darkenColor = (hex: string, percent: number): string => {
-  const num = parseInt(hex.replace('#', ''), 16);
-  const r = Math.max(0, Math.floor((num >> 16) * (1 - percent)));
-  const g = Math.max(0, Math.floor(((num >> 8) & 0x00ff) * (1 - percent)));
-  const b = Math.max(0, Math.floor((num & 0x0000ff) * (1 - percent)));
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+// Helper function to convert hex to RGB
+const hexToRgb = (hex: string): { r: number; g: number; b: number } => {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : { r: 139, g: 90, b: 43 }; // Default warm brown
+};
+
+// Helper function to get warm brown color from theme
+const getWarmBrown = (theme: { primary: string }): string => {
+  const rgb = hexToRgb(theme.primary);
+  // Create a warm brown tone from the primary color
+  const brown = {
+    r: Math.max(100, Math.min(180, rgb.r + 20)),
+    g: Math.max(70, Math.min(150, rgb.g - 10)),
+    b: Math.max(40, Math.min(100, rgb.b - 30))
+  };
+  return `rgb(${brown.r}, ${brown.g}, ${brown.b})`;
 };
 
 // Icon mapping for Lucide icons
@@ -33,7 +46,6 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; style?: 
   Users,
   CheckCircle,
   ArrowRight,
-  Sparkles,
   Gift,
   Trophy,
   Target,
@@ -63,9 +75,11 @@ const isImageUrl = (icon: string): boolean => {
 
 // Helper to render icon
 const renderIcon = (icon: string, theme: { primary: string }) => {
+  const warmBrown = getWarmBrown(theme);
+  
   if (!icon) {
     const IconComponent = iconMap['Star'] || Star;
-    return <IconComponent className="w-6 h-6" style={{ color: theme.primary }} />;
+    return <IconComponent className="w-8 h-8" style={{ color: warmBrown }} />;
   }
   
   if (isImageUrl(icon)) {
@@ -73,19 +87,18 @@ const renderIcon = (icon: string, theme: { primary: string }) => {
       <img 
         src={icon} 
         alt="Benefit icon" 
-        className="w-6 h-6 object-contain"
+        className="w-8 h-8 object-contain"
+        style={{ color: warmBrown }}
         onError={(e) => {
           const target = e.target as HTMLImageElement;
           target.style.display = 'none';
-          const fallback = target.nextElementSibling as HTMLElement;
-          if (fallback) fallback.style.display = 'block';
         }}
       />
     );
   }
   
   const IconComponent = iconMap[icon] || Star;
-  return <IconComponent className="w-6 h-6" style={{ color: theme.primary }} />;
+  return <IconComponent className="w-8 h-8" style={{ color: warmBrown }} />;
 };
 
 export const PreviewBenefitsSection: React.FC<PreviewBenefitsSectionProps> = ({
@@ -94,145 +107,70 @@ export const PreviewBenefitsSection: React.FC<PreviewBenefitsSectionProps> = ({
   textMuted,
 }) => {
   const { content, theme } = website;
-
-  // Create dynamic gradient colors from theme
-  const darkPrimary = darkenColor(theme.primary, 0.2);
-  const darkButton = darkenColor(theme.button, 0.15);
+  const warmBrown = getWarmBrown(theme);
+  const lightBeige = isDark ? 'rgba(245, 245, 240, 0.15)' : 'rgba(245, 245, 240, 0.8)';
+  const darkBrown = isDark ? 'rgba(139, 90, 43, 0.9)' : 'rgb(101, 67, 33)';
+  const darkGray = isDark ? 'rgba(107, 114, 128, 0.8)' : 'rgb(75, 85, 99)';
 
   return (
-    <section id="benefits" className="py-20">
-      <style>{`
-        .benefit-card-wrapper {
-          position: relative;
-          max-width: 300px;
-          max-height: 320px;
-          border-radius: 10px;
-          padding: 2em 1.2em;
-          margin: 12px;
-          text-decoration: none;
-          z-index: 0;
-          overflow: hidden;
-          font-family: Arial, Helvetica, sans-serif;
-          width: 100%;
-          cursor: pointer;
-        }
-        .benefit-card-corner {
-          position: absolute;
-          z-index: -1;
-          top: -16px;
-          right: -16px;
-          height: 32px;
-          width: 32px;
-          border-radius: 32px;
-          transform: scale(1);
-          transform-origin: 50% 50%;
-          transition: transform 0.35s ease-out;
-        }
-        .benefit-card-wrapper:hover .benefit-card-corner {
-          transform: scale(28);
-        }
-        .benefit-card-title {
-          color: #262626;
-          font-size: 1.5em;
-          line-height: normal;
-          font-weight: 700;
-          margin-bottom: 0.5em;
-          transition: all 0.5s ease-out;
-        }
-        .benefit-card-wrapper:hover .benefit-card-title {
-          color: #ffffff;
-        }
-        .benefit-card-desc {
-          font-size: 1em;
-          font-weight: 400;
-          line-height: 1.5em;
-          color: #452c2c;
-          transition: all 0.5s ease-out;
-        }
-        .benefit-card-wrapper:hover .benefit-card-desc {
-          color: rgba(255, 255, 255, 0.8);
-        }
-      `}</style>
+    <section id="benefits" className={`py-20 ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header with title and divider line */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ 
-            backgroundColor: theme.primary + '15',
-            border: `1px solid ${theme.primary}30`
-          }}>
-            <Sparkles className="w-4 h-4" style={{ color: theme.primary }} />
-            <span className="text-sm font-semibold" style={{ color: theme.primary }}>Benefits</span>
-          </div>
-          <h2 className="text-3xl font-bold mb-4" style={{ color: theme.primary }}>Why Choose Us</h2>
-          <p className={`text-lg ${textMuted} max-w-2xl mx-auto`}>
-            Discover what makes us the perfect choice for you
-          </p>
+          <h2 
+            className="text-4xl md:text-5xl font-bold mb-6" 
+            style={{ 
+              color: darkBrown,
+              fontFamily: 'serif'
+            }}
+          >
+            Why Choose Us
+          </h2>
+          <div 
+            className="w-24 h-0.5 mx-auto"
+            style={{ 
+              backgroundColor: warmBrown + '80',
+              marginTop: '0.5rem'
+            }}
+          />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 justify-items-center">
+
+        {/* Benefits Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {content.benefits.map(b => (
             <div
               key={b.id}
-              className="benefit-card-wrapper"
-              style={{
-                backgroundColor: theme.secondary,
-              }}
+              className="flex flex-col items-center text-center"
             >
-              {/* Corner element that expands on hover */}
+              {/* Icon in circular background */}
               <div
-                className="benefit-card-corner"
+                className="w-20 h-20 rounded-full flex items-center justify-center mb-6"
                 style={{
-                  background: `linear-gradient(135deg, ${darkPrimary}, ${darkButton})`,
-                }}
-              />
-              
-              {/* Icon at top left */}
-              {b.icon && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '1.2em',
-                    left: '1.2em',
-                    zIndex: 1,
-                  }}
-                >
-                  {renderIcon(b.icon, theme)}
-                </div>
-              )}
-              
-              {/* Arrow in corner */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'absolute',
-                  width: '2em',
-                  height: '2em',
-                  overflow: 'hidden',
-                  top: 0,
-                  right: 0,
-                  background: `linear-gradient(135deg, ${theme.primary}, ${darkButton})`,
-                  borderRadius: '0 4px 0 32px',
+                  backgroundColor: lightBeige,
                 }}
               >
-                <div
-                  style={{
-                    marginTop: '-4px',
-                    marginRight: '-4px',
-                    color: 'white',
-                    fontFamily: 'courier, sans',
-                  }}
-                >
-                  →
-                </div>
+                {renderIcon(b.icon || 'Star', theme)}
               </div>
 
-              {/* Card Title */}
-              <p className="benefit-card-title">
+              {/* Heading */}
+              <h3 
+                className="text-xl font-bold mb-4"
+                style={{ 
+                  color: darkBrown,
+                  lineHeight: '1.3'
+                }}
+              >
                 {b.title}
-              </p>
+              </h3>
 
-              {/* Card Description */}
-              <p className="benefit-card-desc">
+              {/* Description */}
+              <p 
+                className="text-base leading-relaxed"
+                style={{ 
+                  color: darkGray,
+                  lineHeight: '1.6'
+                }}
+              >
                 {b.description}
               </p>
             </div>
