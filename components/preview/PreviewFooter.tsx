@@ -55,11 +55,13 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
   const exploreLinks = footer.exploreLinks || [];
   const hours = footer.hours || [];
 
-  // Use theme colors from presets - dark background with accent colors
+  // Use theme colors from presets - dark background with light text for readability
   const footerBg = theme.colors?.brand900 || '#0a0e1a';
   const accentColor = theme.colors?.brand500 || '#c58550';
-  const textColor = accentColor;
-  const textMutedColor = isDark ? 'rgba(255, 255, 255, 0.6)' : accentColor + 'CC';
+  // Use white/light colors for better contrast on dark background
+  const textColor = 'rgba(255, 255, 255, 0.95)'; // Nearly white for headings
+  const textMutedColor = 'rgba(255, 255, 255, 0.8)'; // Light white for body text
+  const textSubtleColor = 'rgba(255, 255, 255, 0.6)'; // More muted for less important text
   
   return (
     <footer className="py-16" style={{ backgroundColor: footerBg }}>
@@ -98,7 +100,7 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
                     className="p-2 rounded-full transition-all hover:opacity-80"
                     style={{
                       color: textMutedColor,
-                      border: `1px solid ${accentColor}40`
+                      border: `1px solid rgba(255, 255, 255, 0.2)`
                     }}
                   >
                     {getSocialIcon(link.platform)}
@@ -140,7 +142,7 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
             ) : (
               <p 
                 className="text-xs"
-                style={{ color: textMutedColor + '80' }}
+                style={{ color: textSubtleColor }}
               >
                 No quick links added
               </p>
@@ -253,7 +255,7 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
             ) : (
               <p 
                 className="text-xs"
-                style={{ color: textMutedColor + '80' }}
+                style={{ color: textSubtleColor }}
               >
                 No hours added
               </p>
@@ -264,7 +266,7 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
         {/* Divider */}
         <div 
           className="border-t mb-8"
-          style={{ borderColor: accentColor + '40' }}
+          style={{ borderColor: 'rgba(255, 255, 255, 0.2)' }}
         />
 
         {/* Copyright */}
@@ -281,7 +283,7 @@ export const PreviewFooter: React.FC<PreviewFooterProps> = ({
           <p 
             className="text-xs"
             style={{ 
-              color: textMutedColor + 'CC',
+              color: textSubtleColor,
               fontFamily: 'var(--body-font)'
             }}
           >
