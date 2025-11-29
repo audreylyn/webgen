@@ -1,5 +1,9 @@
 import React from 'react';
-import { Plus, Trash, Heart, Star } from 'lucide-react';
+import { 
+  Plus, Trash, Heart, Star, Award, Shield, Zap, Leaf, Clock, Users, CheckCircle, ArrowRight,
+  Gift, Trophy, Target, Flame, Coffee, ShoppingBag, Truck, Headphones, Mail, Phone,
+  Globe, Lock, Eye, ThumbsUp, Smile, Package, Wrench, Lightbulb, Rocket, TrendingUp
+} from 'lucide-react';
 import { Website, Benefit } from '../../types';
 
 interface BenefitListProps {
@@ -9,6 +13,40 @@ interface BenefitListProps {
   updateItem: <T extends keyof Website['content'], K extends keyof Website['content'][T][number]>(section: T, id: string, key: K, value: Website['content'][T][number][K]) => void;
 }
 
+// Icon mapping for Lucide icons
+const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
+  Star,
+  Heart,
+  Award,
+  Shield,
+  Zap,
+  Leaf,
+  Clock,
+  Users,
+  CheckCircle,
+  ArrowRight,
+  Gift,
+  Trophy,
+  Target,
+  Flame,
+  Coffee,
+  ShoppingBag,
+  Truck,
+  Headphones,
+  Mail,
+  Phone,
+  Globe,
+  Lock,
+  Eye,
+  ThumbsUp,
+  Smile,
+  Package,
+  Wrench,
+  Lightbulb,
+  Rocket,
+  TrendingUp,
+};
+
 // Helper to check if icon is a URL
 const isImageUrl = (icon: string): boolean => {
   return icon.startsWith('http://') || icon.startsWith('https://') || icon.startsWith('data:');
@@ -16,11 +54,37 @@ const isImageUrl = (icon: string): boolean => {
 
 // Helper to render icon preview
 const renderIconPreview = (icon: string) => {
-  if (!icon) return <Star className="w-5 h-5 text-slate-400" />;
-  if (isImageUrl(icon)) {
-    return <img src={icon} alt="Icon" className="w-5 h-5 object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />;
+  if (!icon || icon.trim() === '') {
+    return <Star className="w-5 h-5 text-slate-400" />;
   }
-  return <Star className="w-5 h-5 text-slate-400" />;
+  
+  if (isImageUrl(icon)) {
+    return (
+      <img 
+        src={icon} 
+        alt="Icon" 
+        className="w-5 h-5 object-contain" 
+        onError={(e) => { 
+          (e.target as HTMLImageElement).style.display = 'none'; 
+        }} 
+      />
+    );
+  }
+  
+  // Case-insensitive icon name matching
+  const iconName = icon.trim();
+  // Try exact match first
+  let IconComponent = iconMap[iconName];
+  // Try capitalized version (e.g., "leaf" -> "Leaf")
+  if (!IconComponent) {
+    const capitalized = iconName.charAt(0).toUpperCase() + iconName.slice(1).toLowerCase();
+    IconComponent = iconMap[capitalized];
+  }
+  // Fallback to Star if not found
+  if (!IconComponent) {
+    IconComponent = Star;
+  }
+  return <IconComponent className="w-5 h-5 text-slate-400" />;
 };
 
 export const BenefitList: React.FC<BenefitListProps> = ({

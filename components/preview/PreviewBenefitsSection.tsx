@@ -77,7 +77,7 @@ const isImageUrl = (icon: string): boolean => {
 const renderIcon = (icon: string, theme: { primary: string }) => {
   const warmBrown = getWarmBrown(theme);
   
-  if (!icon) {
+  if (!icon || icon.trim() === '') {
     const IconComponent = iconMap['Star'] || Star;
     return <IconComponent className="w-8 h-8" style={{ color: warmBrown }} />;
   }
@@ -88,7 +88,12 @@ const renderIcon = (icon: string, theme: { primary: string }) => {
         src={icon} 
         alt="Benefit icon" 
         className="w-8 h-8 object-contain"
-        style={{ color: warmBrown }}
+        style={{ 
+          maxWidth: '2rem',
+          maxHeight: '2rem',
+          width: 'auto',
+          height: 'auto'
+        }}
         onError={(e) => {
           const target = e.target as HTMLImageElement;
           target.style.display = 'none';
@@ -97,7 +102,19 @@ const renderIcon = (icon: string, theme: { primary: string }) => {
     );
   }
   
-  const IconComponent = iconMap[icon] || Star;
+  // Case-insensitive icon name matching
+  const iconName = icon.trim();
+  // Try exact match first
+  let IconComponent = iconMap[iconName];
+  // Try capitalized version (e.g., "leaf" -> "Leaf")
+  if (!IconComponent) {
+    const capitalized = iconName.charAt(0).toUpperCase() + iconName.slice(1).toLowerCase();
+    IconComponent = iconMap[capitalized];
+  }
+  // Fallback to Star if not found
+  if (!IconComponent) {
+    IconComponent = Star;
+  }
   return <IconComponent className="w-8 h-8" style={{ color: warmBrown }} />;
 };
 
