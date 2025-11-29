@@ -203,6 +203,7 @@ export interface Website {
   title: string;
   logo: string;
   favicon: string;
+  titleFont?: string; // Font style for website name in navbar (e.g., 'serif', 'sans-serif', 'monospace')
   status: WebsiteStatus;
   createdAt: string;
   theme: ThemeConfig;

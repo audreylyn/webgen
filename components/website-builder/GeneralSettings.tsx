@@ -1,27 +1,61 @@
 import React from 'react';
 import { Website } from '../../types';
+import { Upload, Loader2 } from 'lucide-react';
+import { WebsiteBuilderImageUpload } from './WebsiteBuilderImageUpload';
 
 interface GeneralSettingsProps {
   website: Website;
   setWebsite: React.Dispatch<React.SetStateAction<Website | null>>;
+  handleFileUpload: (file: File, callback: (url: string) => void) => void;
+  isUploadingImage: boolean;
 }
 
 export const GeneralSettings: React.FC<GeneralSettingsProps> = ({
   website,
   setWebsite,
+  handleFileUpload,
+  isUploadingImage,
 }) => {
   return (
     <div>
       <h3 className="text-lg font-bold text-slate-800 border-b pb-2">General Information</h3>
-      <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1">Website Title</label>
-        <input
-          type="text"
-          value={website.title}
-          onChange={(e) => setWebsite({ ...website, title: e.target.value })}
-          className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-        />
-      </div>
+      <div className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Website Title</label>
+          <input
+            type="text"
+            value={website.title}
+            onChange={(e) => setWebsite({ ...website, title: e.target.value })}
+            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+          />
+        </div>
+        
+        {/* Logo Upload */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Logo</label>
+          <WebsiteBuilderImageUpload
+            label=""
+            imageUrl={website.logo}
+            onFileUpload={(file) => handleFileUpload(file, (url) => setWebsite({ ...website, logo: url }))}
+            isUploading={isUploadingImage}
+          />
+          <p className="text-xs text-slate-500 mt-1">Logo will appear beside the website name in the navbar</p>
+        </div>
+
+        {/* Title Font Style */}
+        <div>
+          <label className="block text-sm font-medium text-slate-700 mb-1">Website Name Font Style</label>
+          <select
+            value={website.titleFont || 'serif'}
+            onChange={(e) => setWebsite({ ...website, titleFont: e.target.value })}
+            className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
+          >
+            <option value="serif">Serif (Elegant, Traditional)</option>
+            <option value="sans-serif">Sans-serif (Modern, Clean)</option>
+            <option value="monospace">Monospace (Technical, Bold)</option>
+          </select>
+          <p className="text-xs text-slate-500 mt-1">Font style for the website name in the navbar</p>
+        </div>
       <div>
         <label className="block text-sm font-medium text-slate-700 mb-1">Subdomain</label>
         <div className="flex">

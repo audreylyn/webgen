@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Website } from '../../types';
 import { Menu, X, ShoppingBag } from 'lucide-react';
 
@@ -17,8 +17,24 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
 }) => {
   const { theme, enabledSections } = website;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const cartItemCount = totalItems();
   const hasCartItems = cartItemCount > 0;
+
+  // Detect scroll position to change navbar background
+  useEffect(() => {
+    const handleScroll = () => {
+      const heroSection = document.querySelector('#hero');
+      if (heroSection) {
+        const heroBottom = heroSection.getBoundingClientRect().bottom;
+        setIsScrolled(heroBottom < 0);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial position
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Scroll to section helper
   const scrollToSection = (sectionId: string) => {
@@ -58,25 +74,59 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
 
   const darkBrown = theme.colors?.brand900 || '#67392b';
   const brand600 = theme.colors?.brand600 || theme.primary || '#b96b40';
+  
+  // Get title font style
+  const getTitleFontFamily = () => {
+    const titleFont = website.titleFont || 'serif';
+    switch (titleFont) {
+      case 'serif':
+        return 'var(--heading-font)';
+      case 'sans-serif':
+        return 'var(--body-font)';
+      case 'monospace':
+        return 'monospace';
+      default:
+        return 'var(--heading-font)';
+    }
+  };
+
+  // Navbar background changes based on scroll position
+  const navbarBg = isScrolled 
+    ? darkBrown // Plain dark background after hero
+    : 'rgba(0, 0, 0, 0.3)'; // Transparent with blur on hero
 
   return (
     <nav 
-      className="fixed w-full z-50 backdrop-blur-md border-b border-white/20"
+      className="fixed w-full z-50 backdrop-blur-md border-b transition-all duration-300"
       style={{ 
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        backgroundColor: navbarBg,
+        borderColor: isScrolled ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.2)',
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
-          <div 
-            className="text-2xl font-bold uppercase"
-            style={{ 
-              color: 'white',
-              fontFamily: 'var(--heading-font)'
-            }}
-          >
-            {website.title || 'LIKHA'}
+          {/* Logo and Title */}
+          <div className="flex items-center gap-3">
+            {website.logo && (
+              <img
+                src={website.logo}
+                alt={website.title || 'Logo'}
+                className="h-10 w-auto object-contain"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                }}
+              />
+            )}
+            <div 
+              className="text-2xl font-bold uppercase"
+              style={{ 
+                color: 'white',
+                fontFamily: getTitleFontFamily()
+              }}
+            >
+              {website.title || 'LIKHA'}
+            </div>
           </div>
 
           {/* Desktop Navigation */}
@@ -169,8 +219,11 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
       {/* Mobile Menu Panel */}
       {mobileMenuOpen && (
         <div 
-          className="md:hidden border-t border-white/20"
-          style={{ backgroundColor: 'rgba(0, 0, 0, 0.9)' }}
+          className="md:hidden border-t transition-all duration-300"
+          style={{ 
+            backgroundColor: isScrolled ? darkBrown : 'rgba(0, 0, 0, 0.9)',
+            borderColor: isScrolled ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.2)',
+          }}
         >
           <div className="px-4 pt-2 pb-4 space-y-1">
             {navLinks.map((link) => (

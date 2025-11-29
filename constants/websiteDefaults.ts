@@ -6,6 +6,7 @@ export const DEFAULT_WEBSITE: Website = {
   title: 'My New Website',
   logo: '',
   favicon: '',
+  titleFont: 'serif',
   status: 'active',
   createdAt: '',
   theme: {
