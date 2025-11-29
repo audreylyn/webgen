@@ -15,6 +15,7 @@ export const NavLinkReorder: React.FC<NavLinkReorderProps> = ({
     hero: 'Home',
     about: 'About',
     products: 'Products',
+    featured: 'Featured',
     benefits: 'Benefits',
     testimonials: 'Testimonials',
     faq: 'FAQ',
@@ -31,9 +32,18 @@ export const NavLinkReorder: React.FC<NavLinkReorderProps> = ({
     .filter(([sectionKey, isEnabled]) => isEnabled && !excludedSections.includes(sectionKey))
     .map(([sectionKey]) => {
       const displayKey = sectionKey as keyof typeof website.enabledSections;
+      const sectionName = sectionMap[displayKey];
+      if (sectionName) {
+        return {
+          id: sectionKey,
+          name: sectionName,
+        };
+      }
+      // Fallback: capitalize sectionKey safely
+      const safeKey = sectionKey || '';
       return {
         id: sectionKey,
-        name: sectionMap[displayKey] || sectionKey.charAt(0).toUpperCase() + sectionKey.slice(1),
+        name: safeKey.charAt(0).toUpperCase() + safeKey.slice(1),
       };
     });
 

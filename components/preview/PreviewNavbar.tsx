@@ -23,6 +23,7 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
     hero: 'Home',
     about: 'About',
     products: 'Products',
+    featured: 'Featured',
     benefits: 'Benefits',
     testimonials: 'Testimonials',
     faq: 'FAQ',
@@ -39,9 +40,11 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
     .filter(([sectionKey, isEnabled]) => isEnabled && !excludedSections.includes(sectionKey))
     .map(([sectionKey]) => {
       const displayKey = sectionKey as keyof typeof enabledSections;
+      const sectionName = sectionMap[displayKey];
+      const safeKey = sectionKey || '';
       return {
         id: sectionKey,
-        name: sectionMap[displayKey] || sectionKey.charAt(0).toUpperCase() + sectionKey.slice(1),
+        name: sectionName || (safeKey ? safeKey.charAt(0).toUpperCase() + safeKey.slice(1) : 'Section'),
         href: `#${sectionKey}`,
       };
     })

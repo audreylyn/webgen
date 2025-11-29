@@ -72,11 +72,11 @@ const renderIconPreview = (icon: string) => {
   }
   
   // Case-insensitive icon name matching
-  const iconName = icon.trim();
+  const iconName = (icon || '').trim();
   // Try exact match first
-  let IconComponent = iconMap[iconName];
+  let IconComponent = iconName ? iconMap[iconName] : null;
   // Try capitalized version (e.g., "leaf" -> "Leaf")
-  if (!IconComponent) {
+  if (!IconComponent && iconName) {
     const capitalized = iconName.charAt(0).toUpperCase() + iconName.slice(1).toLowerCase();
     IconComponent = iconMap[capitalized];
   }
