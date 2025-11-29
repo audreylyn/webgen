@@ -19,6 +19,7 @@ import { AiContentWizard } from '../components/website-builder/AiContentWizard';
 import { HeroContent } from '../components/website-builder/HeroContent';
 import { AboutContent } from '../components/website-builder/AboutContent';
 import { ProductList } from '../components/website-builder/ProductList';
+import { FeaturedList } from '../components/website-builder/FeaturedList';
 import { BenefitList } from '../components/website-builder/BenefitList';
 import { TestimonialList } from '../components/website-builder/TestimonialList';
 import { FaqList } from '../components/website-builder/FaqList';
@@ -621,6 +622,16 @@ export const WebsiteBuilder: React.FC = () => {
                   addItem={addItem}
                   removeItem={removeItem}
                   updateItem={updateItem}
+                  handleFileUpload={handleFileUpload}
+                  isUploadingImage={isUploadingImage}
+                />
+              )}
+
+              {/* Featured (Quick Hook) */}
+              {website.enabledSections.featured && (
+                <FeaturedList
+                  website={website}
+                  setWebsite={setWebsite}
                   handleFileUpload={handleFileUpload}
                   isUploadingImage={isUploadingImage}
                 />

@@ -44,6 +44,16 @@ export interface Product {
   category?: string;
 }
 
+export interface FeaturedItem {
+  id: string;
+  name: string;
+  description: string;
+  image: string;
+  price: string;
+  badge?: string; // e.g., "TOP PICK", "FRESH", "SEASONAL"
+  buttonStyle?: 'primary' | 'secondary'; // primary = dark brown bg, secondary = light cream bg
+}
+
 export interface GalleryItem {
   id: string;
   image: string;
@@ -146,6 +156,14 @@ export interface WebsiteContent {
     inquiryTypes?: string[];
   };
   products: Product[];
+  featured?: {
+    subtitle: string;
+    title: string;
+    titleAccent?: string; // The part of title that should be styled differently (e.g., "Bakes")
+    viewMenuLink?: string;
+    viewMenuText?: string;
+    items: FeaturedItem[];
+  };
   benefits: Benefit[];
   testimonials: Testimonial[];
   faq: FAQ[];
@@ -188,6 +206,7 @@ export interface Website {
   enabledSections: {
     hero: boolean;
     products: boolean;
+    featured: boolean;
     about: boolean;
     contact: boolean;
     benefits: boolean;

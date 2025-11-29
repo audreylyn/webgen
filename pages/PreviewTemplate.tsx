@@ -11,6 +11,7 @@ import { PreviewHeroSection } from '../components/preview/PreviewHeroSection';
 import { PreviewAboutSection } from '../components/preview/PreviewAboutSection';
 import { PreviewBenefitsSection } from '../components/preview/PreviewBenefitsSection';
 import { PreviewProductsSection } from '../components/preview/PreviewProductsSection';
+import { PreviewFeaturedSection } from '../components/preview/PreviewFeaturedSection';
 import { PreviewTestimonialsSection } from '../components/preview/PreviewTestimonialsSection';
 import { PreviewFaqSection } from '../components/preview/PreviewFaqSection';
 import { PreviewContactSection } from '../components/preview/PreviewContactSection';
@@ -212,6 +213,16 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
           textMuted={textMuted}
           handleImageError={handleImageError}
           addToCart={addToCart}
+        />
+      )}
+
+      {/* Featured Section */}
+      {enabledSections.featured && content.featured && content.featured.items.length > 0 && (
+        <PreviewFeaturedSection
+          website={website}
+          isDark={isDark}
+          textMuted={textMuted}
+          handleImageError={handleImageError}
         />
       )}
 
