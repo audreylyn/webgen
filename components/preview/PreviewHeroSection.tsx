@@ -3,6 +3,7 @@ import { Website } from '../../types';
 import { HeroDefault } from './hero-sections/HeroDefault';
 import { HeroCentered } from './hero-sections/HeroCentered';
 import { HeroImageLeft } from './hero-sections/HeroImageLeft';
+import { HeroPremium } from './hero-sections/HeroPremium';
 
 import './hero-sections/HeroSections.css'; // Import new CSS file
 
@@ -21,6 +22,14 @@ export const PreviewHeroSection: React.FC<PreviewHeroSectionProps> = ({
 
   // Render different hero sections based on content.hero.heroType
   switch (content.hero.heroType) {
+    case 'premium':
+      return (
+        <HeroPremium
+          website={website}
+          textMuted={textMuted}
+          handleImageError={handleImageError}
+        />
+      );
     case 'default':
       return (
         <HeroDefault
@@ -47,7 +56,7 @@ export const PreviewHeroSection: React.FC<PreviewHeroSectionProps> = ({
       );
     default:
       return (
-        <HeroDefault
+        <HeroPremium
           website={website}
           textMuted={textMuted}
           handleImageError={handleImageError}

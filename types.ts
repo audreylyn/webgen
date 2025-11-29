@@ -239,4 +239,4 @@ export interface AIMarketingResponse {
   socialPost: string;
 }
 
-export type HeroType = 'default' | 'centered' | 'imageLeft';
+export type HeroType = 'premium' | 'default' | 'centered' | 'imageLeft';

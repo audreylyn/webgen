@@ -35,6 +35,7 @@ export const HeroContent: React.FC<HeroContentProps> = ({
             value={website.content.hero.heroType || 'default'}
             onChange={(e) => updateContent('hero', { ...website.content.hero, heroType: e.target.value as HeroType })}
           >
+            <option value="premium">Premium (Full-Screen with Ken Burns)</option>
             <option value="default">Default</option>
             <option value="centered">Centered</option>
             <option value="imageLeft">Image Left</option>

@@ -47,11 +47,11 @@ export const DEFAULT_WEBSITE: Website = {
   },
   content: {
     hero: {
-      title: 'Your Awesome Headline',
-      subtext: 'A compelling subtext to describe your business.',
+      title: 'Rise & Shine',
+      subtext: 'Experience the art of slow-fermented sourdough and hand-laminated pastries. Baked fresh daily in the heart of the Artisan District.',
       image: '/hero.jpg',
       buttonLink: '#products',
-      heroType: 'default',
+      heroType: 'premium',
     },
     about: {
       image: 'https://placehold.co/800x600?text=About+Us',
