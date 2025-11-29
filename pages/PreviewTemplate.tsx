@@ -158,6 +158,120 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
   const bgSecondary = isDark ? 'bg-slate-800' : 'bg-slate-50';
   const textMuted = isDark ? 'text-slate-400' : 'text-slate-600';
 
+  // Get section order from navLinkOrder or use default order
+  const navLinkOrder = content.navLinkOrder;
+  const defaultOrder: (keyof typeof enabledSections)[] = [
+    'featured',
+    'about',
+    'benefits',
+    'products',
+    'gallery',
+    'pricing',
+    'team',
+    'testimonials',
+    'faq',
+  ];
+  const sectionOrder = navLinkOrder && navLinkOrder.length > 0 
+    ? navLinkOrder.filter(section => enabledSections[section] && section !== 'hero' && section !== 'callToAction' && section !== 'contact')
+    : defaultOrder.filter(section => enabledSections[section]);
+
+  // Section renderer map
+  const renderSection = (sectionKey: keyof typeof enabledSections) => {
+    switch (sectionKey) {
+      case 'featured':
+        return enabledSections.featured && content.featured && content.featured.items.length > 0 ? (
+          <PreviewFeaturedSection
+            key="featured"
+            website={website}
+            isDark={isDark}
+            textMuted={textMuted}
+            handleImageError={handleImageError}
+          />
+        ) : null;
+      case 'about':
+        return enabledSections.about ? (
+          <PreviewAboutSection
+            key="about"
+            website={website}
+            bgSecondary={bgSecondary}
+            textMuted={textMuted}
+          />
+        ) : null;
+      case 'benefits':
+        return enabledSections.benefits && content.benefits.length > 0 ? (
+          <PreviewBenefitsSection
+            key="benefits"
+            website={website}
+            isDark={isDark}
+            textMuted={textMuted}
+          />
+        ) : null;
+      case 'products':
+        return enabledSections.products ? (
+          <PreviewProductsSection
+            key="products"
+            website={website}
+            bgSecondary={bgSecondary}
+            isDark={isDark}
+            textMuted={textMuted}
+            handleImageError={handleImageError}
+            addToCart={addToCart}
+          />
+        ) : null;
+      case 'gallery':
+        return enabledSections.gallery && content.gallery.length > 0 ? (
+          <PreviewGallerySection
+            key="gallery"
+            website={website}
+            bgSecondary={bgSecondary}
+            isDark={isDark}
+            handleImageError={handleImageError}
+          />
+        ) : null;
+      case 'pricing':
+        return enabledSections.pricing && content.pricing.length > 0 ? (
+          <PreviewPricingSection
+            key="pricing"
+            website={website}
+            bgSecondary={bgSecondary}
+            isDark={isDark}
+          />
+        ) : null;
+      case 'team':
+        return enabledSections.team && content.team.length > 0 ? (
+          <PreviewTeamSection
+            key="team"
+            website={website}
+            bgSecondary={bgSecondary}
+            isDark={isDark}
+            handleAvatarError={handleAvatarError}
+          />
+        ) : null;
+      case 'testimonials':
+        return enabledSections.testimonials && content.testimonials.length > 0 ? (
+          <PreviewTestimonialsSection
+            key="testimonials"
+            website={website}
+            isDark={isDark}
+            textMuted={textMuted}
+            handleAvatarError={handleAvatarError}
+          />
+        ) : null;
+      case 'faq':
+        return enabledSections.faq && content.faq.length > 0 ? (
+          <PreviewFaqSection
+            key="faq"
+            website={website}
+            bgSecondary={bgSecondary}
+            isDark={isDark}
+            textMuted={textMuted}
+          />
+        ) : null;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className={`min-h-screen ${bgMain}`} style={{ fontFamily: `'${bodyFont}', sans-serif` }}>
       <style>{`
@@ -177,7 +291,7 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
       {/* Navigation */}
       <PreviewNavbar website={website} isDark={isDark} totalItems={totalItems} openCart={openCart} />
 
-      {/* Hero Section */}
+      {/* Hero Section - Always first, fixed position */}
       {enabledSections.hero && (
         <PreviewHeroSection
           website={website}
@@ -186,109 +300,21 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
         />
       )}
 
-      {/* About Section */}
-      {enabledSections.about && (
-        <PreviewAboutSection
-          website={website}
-          bgSecondary={bgSecondary}
-          textMuted={textMuted}
-        />
-      )}
+      {/* Render sections in the order specified by navLinkOrder */}
+      {sectionOrder.map(sectionKey => renderSection(sectionKey))}
 
-      {/* Benefits Section */}
-      {enabledSections.benefits && content.benefits.length > 0 && (
-        <PreviewBenefitsSection
-          website={website}
-          isDark={isDark}
-          textMuted={textMuted}
-        />
-      )}
-
-      {/* Products Section */}
-      {enabledSections.products && (
-        <PreviewProductsSection
-          website={website}
-          bgSecondary={bgSecondary}
-          isDark={isDark}
-          textMuted={textMuted}
-          handleImageError={handleImageError}
-          addToCart={addToCart}
-        />
-      )}
-
-      {/* Featured Section */}
-      {enabledSections.featured && content.featured && content.featured.items.length > 0 && (
-        <PreviewFeaturedSection
-          website={website}
-          isDark={isDark}
-          textMuted={textMuted}
-          handleImageError={handleImageError}
-        />
-      )}
-
-      {/* Gallery Section */}
-      {enabledSections.gallery && content.gallery.length > 0 && (
-        <PreviewGallerySection
-          website={website}
-          bgSecondary={bgSecondary}
-          isDark={isDark}
-          handleImageError={handleImageError}
-        />
-      )}
-
-      {/* Team Section */}
-      {enabledSections.team && content.team.length > 0 && (
-        <PreviewTeamSection
-          website={website}
-          bgSecondary={bgSecondary}
-          isDark={isDark}
-          handleAvatarError={handleAvatarError}
-        />
-      )}
-
-      {/* Pricing Section */}
-      {enabledSections.pricing && content.pricing.length > 0 && (
-        <PreviewPricingSection
-          website={website}
-          bgSecondary={bgSecondary}
-          isDark={isDark}
-        />
-      )}
-
-      {/* Testimonials Section */}
-      {enabledSections.testimonials && content.testimonials.length > 0 && (
-        <PreviewTestimonialsSection
-          website={website}
-          isDark={isDark}
-          textMuted={textMuted}
-          handleAvatarError={handleAvatarError}
-        />
-      )}
-
-      {/* FAQ Section */}
-      {enabledSections.faq && content.faq.length > 0 && (
-        <PreviewFaqSection
-          website={website}
-          bgSecondary={bgSecondary}
-          isDark={isDark}
-          textMuted={textMuted}
-        />
-      )}
-
-      {/* CTA Section */}
+      {/* CTA Section - Fixed position before Contact */}
       {enabledSections.callToAction && content.callToAction && (
         <PreviewCallToActionSection
           website={website}
         />
       )}
 
-      {/* Contact Section */}
-      {/* {enabledSections.contact && ( */} {/* Temporarily removed for styling */} 
-        <PreviewContactSection
-          website={website}
-          isDark={isDark}
-        />
-      {/* )} */}
+      {/* Contact Section - Always last, fixed position */}
+      <PreviewContactSection
+        website={website}
+        isDark={isDark}
+      />
 
       {/* Footer */}
       <PreviewFooter
