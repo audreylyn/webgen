@@ -53,10 +53,12 @@ export interface TeamMember {
 export interface PricingPlan {
   id: string;
   name: string;
+  tagline?: string;
   price: string;
   features: string[];
   buttonText: string;
   buttonLink: string;
+  isPopular?: boolean;
 }
 
 export interface CallToAction {
