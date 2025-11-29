@@ -33,6 +33,7 @@ export interface MessengerConfig {
   enabled: boolean;
   pageId: string;
   welcomeMessage: string;
+  googleScriptUrl?: string; // Google Apps Script URL for order tracking
 }
 
 export interface Product {

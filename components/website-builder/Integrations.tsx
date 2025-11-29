@@ -40,13 +40,31 @@ export const Integrations: React.FC<IntegrationsProps> = ({
         </div>
         {website.messenger.enabled && website.enabledSections.products && (
           <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
-            <input
-              type="text"
-              placeholder="Page ID"
-              value={website.messenger.pageId}
-              onChange={(e) => setWebsite(prev => prev ? ({ ...prev, messenger: { ...prev.messenger, pageId: e.target.value } }) : prev)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none"
-            />
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Facebook Page ID</label>
+              <input
+                type="text"
+                placeholder="Your Facebook Page ID or username"
+                value={website.messenger.pageId}
+                onChange={(e) => setWebsite(prev => prev ? ({ ...prev, messenger: { ...prev.messenger, pageId: e.target.value } }) : prev)}
+                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">
+                Google Spreadsheet Integration (Optional)
+              </label>
+              <input
+                type="text"
+                placeholder="Google Apps Script Web App URL"
+                value={website.messenger.googleScriptUrl || ''}
+                onChange={(e) => setWebsite(prev => prev ? ({ ...prev, messenger: { ...prev.messenger, googleScriptUrl: e.target.value } }) : prev)}
+                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              />
+              <p className="text-xs text-slate-500 mt-1">
+                Orders will be automatically saved to Google Spreadsheet. See setup guide in docs.
+              </p>
+            </div>
           </div>
         )}
       </div>

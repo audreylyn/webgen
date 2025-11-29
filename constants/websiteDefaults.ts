@@ -31,6 +31,7 @@ export const DEFAULT_WEBSITE: Website = {
     enabled: false,
     pageId: '',
     welcomeMessage: '',
+    googleScriptUrl: '',
   },
   contactFormConfig: {
     googleScriptUrl: '',

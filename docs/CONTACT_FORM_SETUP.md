@@ -297,8 +297,10 @@ function doPost(e) {
       bcc: bccEmail, // You get a backup copy only if email goes to client
       subject: emailSubject,
       htmlBody: emailBody,
-      name: `${businessName} Bot`,
-      replyTo: data.email // Allows direct reply to customer
+      name: `${businessName} Contact Form`, // Professional sender name (avoid "Bot")
+      replyTo: data.email, // Allows direct reply to customer
+      // Note: If using Google Workspace, you can set 'from' to your workspace email
+      // from: 'notifications@yourdomain.com' // Uncomment if using custom domain
     });
 
     // ============================================
@@ -636,6 +638,121 @@ Set up Google Sheets notifications:
 
 ---
 
+## Improving Email Deliverability (Avoiding Spam)
+
+### Why Emails Go to Spam
+
+Emails sent via Google Apps Script can sometimes end up in spam folders due to:
+- Sending from a personal Gmail account (lower reputation)
+- Missing email authentication headers
+- Spam trigger words in subject/body
+- High volume from a new sender
+- Recipient's email filters
+
+### Best Practices to Avoid Spam
+
+#### 1. **Use Google Workspace (Recommended)**
+- **Best solution:** Use a Google Workspace (formerly G Suite) account instead of personal Gmail
+- Google Workspace emails have better deliverability and reputation
+- Professional domain emails (e.g., `noreply@yourdomain.com`) are more trusted
+- Cost: ~$6/month per user
+
+#### 2. **Optimize Email Headers**
+Update your script to include proper headers:
+
+```javascript
+MailApp.sendEmail({
+  to: recipientEmail,
+  bcc: bccEmail,
+  subject: emailSubject,
+  htmlBody: emailBody,
+  name: `${businessName} Notification`, // Professional sender name
+  replyTo: data.email,
+  // Add these for better deliverability:
+  from: ADMIN_EMAIL, // Use your Google Workspace email if available
+  noReply: false // Allow replies
+});
+```
+
+#### 3. **Avoid Spam Trigger Words**
+**Avoid in subject line:**
+- ❌ "Free", "Act Now", "Limited Time", "Click Here", "Urgent"
+- ✅ Use: "New Inquiry", "Website Contact", "Customer Message"
+
+**Good subject examples:**
+- ✅ `New Inquiry for ${businessName}: ${data.type}`
+- ✅ `Website Contact Form Submission - ${businessName}`
+- ✅ `New Lead: ${data.name} - ${businessName}`
+
+#### 4. **Warm Up Your Email Address**
+- **Start slow:** Send a few test emails first
+- **Gradual increase:** Don't send 100 emails on day one
+- **Regular sending:** Consistent sending improves reputation
+
+#### 5. **Add Proper Email Structure**
+The updated email template already includes:
+- ✅ Proper HTML structure
+- ✅ Professional formatting
+- ✅ Clear sender information
+- ✅ Reply-to address
+
+#### 6. **Ask Recipients to Whitelist**
+Add this to your email footer:
+
+```javascript
+<p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px;">
+  To ensure you receive future inquiries, please add ${ADMIN_EMAIL} to your contacts.
+</p>
+```
+
+#### 7. **Use a Custom Domain Email (Best Practice)**
+If you have a domain (e.g., `likhasiteworks.studio`):
+1. Set up Google Workspace for that domain
+2. Use `noreply@likhasiteworks.studio` or `notifications@likhasiteworks.studio`
+3. Configure SPF, DKIM, and DMARC records (Google provides instructions)
+4. This significantly improves deliverability
+
+#### 8. **Monitor and Adjust**
+- Check spam folder regularly
+- Ask clients if they're receiving emails
+- Adjust subject lines if needed
+- Consider using a professional email service if issues persist
+
+### Quick Fixes for Current Setup
+
+**Immediate improvements you can make:**
+
+1. **Update sender name** to be more professional:
+   ```javascript
+   name: `${businessName} Contact Form` // Instead of "Bot"
+   ```
+
+2. **Use a professional "From" email:**
+   - If you have Google Workspace, use that email
+   - Otherwise, ensure ADMIN_EMAIL is a professional-looking Gmail
+
+3. **Add to email footer:**
+   ```javascript
+   <p style="margin: 8px 0 0 0; color: #9ca3af; font-size: 11px; text-align: center;">
+     This is an automated notification. Please add this email to your contacts to ensure delivery.
+   </p>
+   ```
+
+4. **Test with different email providers:**
+   - Send test emails to Gmail, Outlook, Yahoo
+   - Check where they land (inbox vs spam)
+
+### Alternative: Use Professional Email Service (If Spam Persists)
+
+If emails consistently go to spam, consider:
+- **Resend** (3,000 emails/month free) - Better deliverability
+- **SendGrid** (100 emails/day free) - Enterprise-grade
+- **Mailgun** (5,000 emails/month free) - Developer-friendly
+
+These services require API integration but offer much better deliverability.
+
+---
+
 ## Security Considerations
 
 ### Is this secure?
@@ -651,6 +768,7 @@ Set up Google Sheets notifications:
 2. **Regular backups:** Export your Google Sheet periodically
 3. **Monitor submissions:** Check the sheet regularly for spam
 4. **Use strong ClientIDs:** Don't use obvious IDs like "test" or "admin"
+5. **Use Google Workspace:** Better email deliverability than personal Gmail
 
 ---
 

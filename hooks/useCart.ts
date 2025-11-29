@@ -59,8 +59,53 @@ export function useCart(website?: Website | null) {
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!website?.messenger.pageId || cart.length === 0) return;
+    
+    // Prepare order data for spreadsheet
+    const orderItems = cart.map(ci => {
+      const unit = parseCurrency(ci.product.price);
+      const subtotal = unit * ci.quantity;
+      return {
+        name: ci.product.name,
+        quantity: ci.quantity,
+        unitPrice: unit.toFixed(2),
+        subtotal: subtotal
+      };
+    });
+
+    const orderData = {
+      websiteId: website.id || website.subdomain,
+      websiteTitle: website.title,
+      order: {
+        customerName: checkoutForm.name,
+        location: checkoutForm.location,
+        items: orderItems,
+        total: cartTotal(),
+        totalFormatted: formatCurrency(cartTotal()),
+        note: checkoutForm.message || ''
+      }
+    };
+
+    // Send to Google Spreadsheet if configured
+    if (website.messenger.googleScriptUrl) {
+      try {
+        await fetch(website.messenger.googleScriptUrl, {
+          method: 'POST',
+          mode: 'no-cors', // Important: prevents CORS errors with Google Scripts
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(orderData),
+        });
+        // Note: With 'no-cors', we can't read the response, but if no error is thrown, assume success
+      } catch (error) {
+        console.error('Error saving order to spreadsheet:', error);
+        // Continue with Messenger checkout even if spreadsheet save fails
+      }
+    }
+
+    // Prepare Messenger message
     const lines: string[] = [];
     lines.push('New Order Request');
     lines.push('------------------');

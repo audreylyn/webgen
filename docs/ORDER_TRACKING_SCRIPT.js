@@ -1,0 +1,337 @@
+/**
+ * Google Apps Script for Order Tracking
+ * 
+ * This script handles order submissions from websites and stores them in
+ * Google Spreadsheets organized by website in a Drive folder.
+ * 
+ * SETUP INSTRUCTIONS:
+ * 1. Go to script.google.com
+ * 2. Create a new project
+ * 3. Paste this entire code
+ * 4. Update ADMIN_EMAIL with your email
+ * 5. Deploy as Web App (Execute as: Me, Who has access: Anyone)
+ * 6. Copy the Web App URL and use it in your website configuration
+ */
+
+// ============================================
+// CONFIGURATION
+// ============================================
+const ADMIN_EMAIL = "likhasiteworks@gmail.com"; // Change this to your email
+const DRIVE_FOLDER_NAME = "Messenger/Order Tracking";
+const ORDER_STATUS_OPTIONS = ["Pending", "Processing", "Preparing", "Ready", "Out for Delivery", "Delivered", "Cancelled"];
+
+// ============================================
+// MAIN FUNCTION - Handles Order Submissions
+// ============================================
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.tryLock(10000); // Wait up to 10 seconds for lock
+
+  try {
+    // Parse the incoming JSON data
+    const data = JSON.parse(e.postData.contents);
+    
+    // Extract order data
+    const websiteId = data.websiteId || "unknown";
+    const websiteTitle = data.websiteTitle || "Unknown Website";
+    const orderData = data.order || {};
+    
+    // Validate required fields
+    if (!orderData.customerName || !orderData.items || !orderData.items.length) {
+      throw new Error("Missing required order data: customerName and items are required");
+    }
+
+    // Get or create the Drive folder
+    const folder = getOrCreateFolder(DRIVE_FOLDER_NAME);
+    
+    // Get or create spreadsheet for this website
+    const spreadsheet = getOrCreateSpreadsheet(folder, websiteId, websiteTitle);
+    
+    // Get or create the Orders sheet
+    const sheet = getOrCreateOrdersSheet(spreadsheet);
+    
+    // Add the order to the spreadsheet
+    addOrderToSheet(sheet, orderData);
+    
+    // Return success response
+    return ContentService.createTextOutput(
+      JSON.stringify({ 
+        result: "success",
+        message: "Order saved successfully",
+        spreadsheetUrl: spreadsheet.getUrl()
+      })
+    ).setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    // Log error for debugging
+    console.error("Error processing order:", error);
+    
+    // Send error notification email
+    try {
+      MailApp.sendEmail({
+        to: ADMIN_EMAIL,
+        subject: "Order Tracking Script Error",
+        body: "An error occurred processing an order:\n\n" + error.toString() + "\n\nData: " + JSON.stringify(e.postData.contents)
+      });
+    } catch (emailError) {
+      console.error("Failed to send error email:", emailError);
+    }
+    
+    return ContentService.createTextOutput(
+      JSON.stringify({ 
+        result: "error", 
+        error: error.toString() 
+      })
+    ).setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// ============================================
+// CORS HANDLER - Required for React/Vite
+// ============================================
+function doOptions(e) {
+  return ContentService.createTextOutput("")
+    .setMimeType(ContentService.MimeType.JSON)
+    .setHeaders({
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type"
+    });
+}
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+/**
+ * Get or create the Drive folder for storing spreadsheets
+ */
+function getOrCreateFolder(folderName) {
+  const folders = DriveApp.getFoldersByName(folderName);
+  
+  if (folders.hasNext()) {
+    return folders.next();
+  } else {
+    // Create the folder structure (handles nested folders)
+    const parts = folderName.split('/');
+    let currentFolder = DriveApp.getRootFolder();
+    
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i].trim();
+      if (!part) continue;
+      
+      const subFolders = currentFolder.getFoldersByName(part);
+      if (subFolders.hasNext()) {
+        currentFolder = subFolders.next();
+      } else {
+        currentFolder = currentFolder.createFolder(part);
+      }
+    }
+    
+    return currentFolder;
+  }
+}
+
+/**
+ * Get or create a spreadsheet for a specific website
+ */
+function getOrCreateSpreadsheet(folder, websiteId, websiteTitle) {
+  // Search for existing spreadsheet by name
+  const files = folder.getFilesByName(websiteId);
+  
+  if (files.hasNext()) {
+    const file = files.next();
+    return SpreadsheetApp.openById(file.getId());
+  } else {
+    // Create new spreadsheet
+    const spreadsheet = SpreadsheetApp.create(websiteTitle + " - Orders");
+    const file = DriveApp.getFileById(spreadsheet.getId());
+    
+    // Move to the folder
+    folder.addFile(file);
+    DriveApp.getRootFolder().removeFile(file);
+    
+    return spreadsheet;
+  }
+}
+
+/**
+ * Get or create the Orders sheet with proper headers and data validation
+ */
+function getOrCreateOrdersSheet(spreadsheet) {
+  let sheet = spreadsheet.getSheetByName("Orders");
+  
+  if (!sheet) {
+    // Create new sheet
+    sheet = spreadsheet.insertSheet("Orders");
+    
+    // Set up headers
+    const headers = [
+      "Order ID",
+      "Date/Time",
+      "Customer Name",
+      "Location",
+      "Items",
+      "Item Details",
+      "Total Amount",
+      "Note",
+      "Status"
+    ];
+    
+    sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+    
+    // Format header row
+    const headerRange = sheet.getRange(1, 1, 1, headers.length);
+    headerRange.setFontWeight("bold");
+    headerRange.setBackground("#4285f4");
+    headerRange.setFontColor("#ffffff");
+    headerRange.setHorizontalAlignment("center");
+    
+    // Set up data validation for Status column (column I)
+    const statusColumn = 9; // Column I
+    const statusRange = sheet.getRange(2, statusColumn, 1000, 1); // 1000 rows initially
+    const rule = SpreadsheetApp.newDataValidation()
+      .requireValueInList(ORDER_STATUS_OPTIONS, true)
+      .setAllowInvalid(false)
+      .setHelpText("Select order status from dropdown")
+      .build();
+    statusRange.setDataValidation(rule);
+    
+    // Set default status for new orders
+    statusRange.setValue("Pending");
+    
+    // Format columns
+    sheet.setColumnWidth(1, 120); // Order ID
+    sheet.setColumnWidth(2, 150); // Date/Time
+    sheet.setColumnWidth(3, 150); // Customer Name
+    sheet.setColumnWidth(4, 200); // Location
+    sheet.setColumnWidth(5, 300); // Items
+    sheet.setColumnWidth(6, 400); // Item Details
+    sheet.setColumnWidth(7, 120); // Total Amount
+    sheet.setColumnWidth(8, 300); // Note
+    sheet.setColumnWidth(9, 150); // Status
+    
+    // Freeze header row
+    sheet.setFrozenRows(1);
+    
+    // Apply alternating row colors for better readability
+    const dataRange = sheet.getRange(2, 1, 1000, headers.length);
+    const conditionalFormatRules = [
+      SpreadsheetApp.newConditionalFormatRule()
+        .setRanges([dataRange])
+        .whenFormulaSatisfied('=MOD(ROW(),2)=0')
+        .setBackground("#f8f9fa")
+        .build()
+    ];
+    sheet.setConditionalFormatRules(conditionalFormatRules);
+  }
+  
+  return sheet;
+}
+
+/**
+ * Add order data to the spreadsheet
+ */
+function addOrderToSheet(sheet, orderData) {
+  // Generate unique Order ID (timestamp + random)
+  const orderId = "ORD-" + new Date().getTime() + "-" + Math.floor(Math.random() * 1000);
+  
+  // Format date/time
+  const now = new Date();
+  const dateTime = Utilities.formatDate(now, Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm:ss");
+  
+  // Format items list
+  const itemsList = orderData.items.map(item => 
+    `${item.name} x${item.quantity}`
+  ).join(", ");
+  
+  // Format item details (more detailed breakdown)
+  const itemDetails = orderData.items.map(item => {
+    const unitPrice = parseFloat(item.unitPrice) || 0;
+    const subtotal = unitPrice * item.quantity;
+    return `${item.name}\n  Quantity: ${item.quantity}\n  Unit Price: ${item.unitPrice}\n  Subtotal: ${formatCurrency(subtotal)}`;
+  }).join("\n\n");
+  
+  // Calculate total
+  const total = orderData.total || 0;
+  
+  // Prepare row data
+  const rowData = [
+    orderId,
+    dateTime,
+    orderData.customerName || "",
+    orderData.location || "",
+    itemsList,
+    itemDetails,
+    orderData.totalFormatted || formatCurrency(total),
+    orderData.note || "",
+    "Pending" // Default status
+  ];
+  
+  // Append row to sheet
+  sheet.appendRow(rowData);
+  
+  // Apply data validation to the new Status cell
+  const lastRow = sheet.getLastRow();
+  const statusCell = sheet.getRange(lastRow, 9); // Column I
+  const rule = SpreadsheetApp.newDataValidation()
+    .requireValueInList(ORDER_STATUS_OPTIONS, true)
+    .setAllowInvalid(false)
+    .setHelpText("Select order status from dropdown")
+    .build();
+  statusCell.setDataValidation(rule);
+  
+  // Highlight new order row (optional - can be removed if not needed)
+  const newRowRange = sheet.getRange(lastRow, 1, 1, 9);
+  newRowRange.setBackground("#fff3cd"); // Light yellow
+  newRowRange.setBorder(true, true, true, true, true, true);
+  
+  // Auto-resize columns if needed
+  sheet.autoResizeColumns(1, 9);
+  
+  return orderId;
+}
+
+/**
+ * Format currency (adjust format as needed)
+ */
+function formatCurrency(amount) {
+  return "₱" + amount.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/**
+ * Test function - can be run manually to verify setup
+ */
+function testSetup() {
+  const testOrder = {
+    websiteId: "test-website",
+    websiteTitle: "Test Website",
+    order: {
+      customerName: "Test Customer",
+      location: "123 Test St",
+      items: [
+        {
+          name: "Test Product",
+          quantity: 2,
+          unitPrice: "100.00",
+          subtotal: 200
+        }
+      ],
+      total: 200,
+      totalFormatted: "₱200.00",
+      note: "Test order"
+    }
+  };
+  
+  const mockEvent = {
+    postData: {
+      contents: JSON.stringify(testOrder)
+    }
+  };
+  
+  const result = doPost(mockEvent);
+  Logger.log(result.getContent());
+}
+
