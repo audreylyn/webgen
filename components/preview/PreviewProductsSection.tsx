@@ -216,17 +216,13 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
                   {product.description}
                 </p>
 
-                <button
-                  className="add-to-cart-btn w-full py-3.5 rounded-xl text-white font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 relative z-10"
-                  style={{ 
-                    backgroundColor: theme.button,
-                    boxShadow: `0 4px 15px ${theme.button}30`
-                  }}
-                  onClick={() => addToCart(product)}
-                >
-                  <Plus className="w-5 h-5" />
-                  <span>Add to Cart</span>
-                </button>
+                      <button
+                        className="btn-primary w-full py-3.5 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 relative z-10 shadow-lg hover:shadow-xl"
+                        onClick={() => addToCart(product)}
+                      >
+                        <Plus className="w-5 h-5" />
+                        <span>Add to Cart</span>
+                      </button>
               </div>
             </div>
           ))}
@@ -298,11 +294,7 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
 
                   <div className="flex gap-3">
                     <button
-                      className="flex-1 py-3.5 rounded-xl text-white font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2"
-                      style={{ 
-                        backgroundColor: theme.button,
-                        boxShadow: `0 4px 15px ${theme.button}30`
-                      }}
+                      className="btn-primary flex-1 py-3.5 rounded-xl font-semibold text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
                       onClick={() => {
                         addToCart(quickViewProduct);
                         setQuickViewProduct(null);
@@ -312,12 +304,7 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
                       <span>Add to Cart</span>
                     </button>
                     <button
-                      className="px-6 py-3.5 rounded-xl font-semibold text-sm transition-all border-2"
-                      style={{ 
-                        borderColor: theme.primary,
-                        color: theme.primary,
-                        backgroundColor: 'transparent'
-                      }}
+                      className="btn-secondary px-6 py-3.5 rounded-xl font-semibold text-sm transition-all"
                       onClick={() => setQuickViewProduct(null)}
                     >
                       Close

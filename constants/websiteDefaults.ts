@@ -9,12 +9,22 @@ export const DEFAULT_WEBSITE: Website = {
   status: 'active',
   createdAt: '',
   theme: {
-    primary: '#4f46e5',
-    secondary: '#e0e7ff',
-    button: '#4338ca',
+    primary: '#b96b40', // brand-600 (Terracotta)
+    secondary: '#fbf8f3', // brand-50 (Warm Cream)
+    button: '#b96b40', // brand-600 (Primary Action Button)
+    accent: '#c58550', // brand-500 (Golden Bronze)
     background: 'light',
     headingFont: 'Playfair Display',
     bodyFont: 'Lato',
+    colors: {
+      brand50: '#fbf8f3', // Warm Cream
+      brand100: '#f5efe4', // Secondary button hover
+      brand200: '#ebdcc4', // Secondary button border
+      brand500: '#c58550', // Golden Bronze - Accent
+      brand600: '#b96b40', // Terracotta - Primary button
+      brand700: '#9a5336', // Primary button hover
+      brand900: '#67392b', // Deep Coffee - Secondary button text
+    },
   },
   messenger: {
     enabled: false,

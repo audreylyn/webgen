@@ -170,11 +170,9 @@ export const PreviewPricingSection: React.FC<PreviewPricingSectionProps> = ({
                   href={plan.buttonLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block w-full py-3 px-6 rounded-lg text-center font-semibold transition-all hover:opacity-90"
-                  style={{
-                    backgroundColor: isPopular ? darkerBrown : lightBrown,
-                    color: 'white',
-                  }}
+                  className={`block w-full py-3 px-6 rounded-lg text-center font-semibold transition-all shadow-lg hover:shadow-xl ${
+                    isPopular ? 'btn-primary' : 'btn-primary'
+                  }`}
                 >
                   {plan.buttonText}
                 </a>

@@ -10,12 +10,23 @@ export interface User {
 }
 
 export interface ThemeConfig {
-  primary: string;
-  secondary: string;
-  button: string;
+  primary: string; // brand-600 (Primary Action Button)
+  secondary: string; // brand-50 (Secondary Action Button background)
+  button: string; // brand-600 (Primary Action Button - same as primary)
+  accent: string; // brand-500 (Accent/Highlight)
   background: ThemeMode;
   headingFont?: string; // Font family for headings (e.g., 'Playfair Display')
   bodyFont?: string; // Font family for body text (e.g., 'Lato')
+  // Color variations (auto-generated or manually set)
+  colors?: {
+    brand50?: string; // Warm Cream - Secondary button background
+    brand100?: string; // Secondary button hover
+    brand200?: string; // Secondary button border
+    brand500?: string; // Golden Bronze - Accent
+    brand600?: string; // Terracotta - Primary button
+    brand700?: string; // Primary button hover
+    brand900?: string; // Deep Coffee - Secondary button text
+  };
 }
 
 export interface MessengerConfig {

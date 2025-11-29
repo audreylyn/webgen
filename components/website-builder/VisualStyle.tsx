@@ -90,22 +90,115 @@ export const VisualStyle: React.FC<VisualStyleProps> = ({
         </div>
         <div>
           <label className="text-sm font-medium text-slate-700 block mb-3">Brand Colors</label>
-          <div className="grid grid-cols-1 gap-4">
-            <ColorPicker
-              label="Primary Brand Color"
-              value={website.theme.primary}
-              onChange={(v) => website && setTheme({ ...website.theme, primary: v })}
-            />
-            <ColorPicker
-              label="Secondary / Accent"
-              value={website.theme.secondary}
-              onChange={(v) => website && setTheme({ ...website.theme, secondary: v })}
-            />
-            <ColorPicker
-              label="Action Button"
-              value={website.theme.button}
-              onChange={(v) => website && setTheme({ ...website.theme, button: v })}
-            />
+          <div className="bg-white p-4 rounded-lg border border-slate-200 space-y-4">
+            {/* Primary Action Button */}
+            <div>
+              <div className="mb-2">
+                <label className="text-sm font-semibold text-slate-800">Primary Action Button</label>
+                <p className="text-xs text-slate-500">Used for main calls-to-action like "Order Now", "Add to Cart", and "Checkout"</p>
+              </div>
+              <div className="space-y-2">
+                <ColorPicker
+                  label="Color (brand-600)"
+                  value={website.theme.colors?.brand600 || website.theme.primary}
+                  onChange={(v) => {
+                    const colors = website.theme.colors || {};
+                    website && setTheme({ 
+                      ...website.theme, 
+                      primary: v,
+                      button: v,
+                      colors: { ...colors, brand600: v }
+                    });
+                  }}
+                />
+                <ColorPicker
+                  label="Hover State (brand-700)"
+                  value={website.theme.colors?.brand700 || '#9a5336'}
+                  onChange={(v) => {
+                    const colors = website.theme.colors || {};
+                    website && setTheme({ 
+                      ...website.theme, 
+                      colors: { ...colors, brand700: v }
+                    });
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Secondary Action Button */}
+            <div className="border-t pt-4">
+              <div className="mb-2">
+                <label className="text-sm font-semibold text-slate-800">Secondary Action Button</label>
+                <p className="text-xs text-slate-500">Used for alternative actions like "View Menu", "Contact Us", or selecting filters</p>
+              </div>
+              <div className="space-y-2">
+                <ColorPicker
+                  label="Background (brand-50)"
+                  value={website.theme.colors?.brand50 || website.theme.secondary}
+                  onChange={(v) => {
+                    const colors = website.theme.colors || {};
+                    website && setTheme({ 
+                      ...website.theme, 
+                      secondary: v,
+                      colors: { ...colors, brand50: v }
+                    });
+                  }}
+                />
+                <ColorPicker
+                  label="Text Color (brand-900)"
+                  value={website.theme.colors?.brand900 || '#67392b'}
+                  onChange={(v) => {
+                    const colors = website.theme.colors || {};
+                    website && setTheme({ 
+                      ...website.theme, 
+                      colors: { ...colors, brand900: v }
+                    });
+                  }}
+                />
+                <ColorPicker
+                  label="Border (brand-200)"
+                  value={website.theme.colors?.brand200 || '#ebdcc4'}
+                  onChange={(v) => {
+                    const colors = website.theme.colors || {};
+                    website && setTheme({ 
+                      ...website.theme, 
+                      colors: { ...colors, brand200: v }
+                    });
+                  }}
+                />
+                <ColorPicker
+                  label="Hover State (brand-100)"
+                  value={website.theme.colors?.brand100 || '#f5efe4'}
+                  onChange={(v) => {
+                    const colors = website.theme.colors || {};
+                    website && setTheme({ 
+                      ...website.theme, 
+                      colors: { ...colors, brand100: v }
+                    });
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Accent / Highlight */}
+            <div className="border-t pt-4">
+              <div className="mb-2">
+                <label className="text-sm font-semibold text-slate-800">Accent / Highlight</label>
+                <p className="text-xs text-slate-500">Used for badges (e.g., "Bestseller"), stars, and icons</p>
+              </div>
+              <ColorPicker
+                label="Color (brand-500)"
+                value={website.theme.colors?.brand500 || website.theme.accent || '#c58550'}
+                onChange={(v) => {
+                  const colors = website.theme.colors || {};
+                  website && setTheme({ 
+                    ...website.theme, 
+                    accent: v,
+                    colors: { ...colors, brand500: v }
+                  });
+                }}
+              />
+            </div>
           </div>
         </div>
 

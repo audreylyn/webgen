@@ -20,6 +20,7 @@ import { PreviewPricingSection } from '../components/preview/PreviewPricingSecti
 import { PreviewCallToActionSection } from '../components/preview/PreviewCallToActionSection';
 import { PreviewFooter } from '../components/preview/PreviewFooter';
 import { ScrollToTopButton } from '../components/preview/ScrollToTopButton';
+import { generateThemeCSS } from '../utils/themeColors';
 
 export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain }) => {
   const { id } = useParams<{ id: string }>();
@@ -169,6 +170,7 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
         body, p, span, div, button, a, input, textarea, select, .font-sans {
           font-family: var(--body-font) !important;
         }
+        ${generateThemeCSS(theme)}
       `}</style>
       
       {/* Navigation */}

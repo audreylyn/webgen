@@ -92,11 +92,7 @@ export const PreviewCallToActionSection: React.FC<PreviewCallToActionSectionProp
                   href={button.link}
                   target={button.link.startsWith('#') ? '_self' : '_blank'}
                   rel="noopener noreferrer"
-                  className="cta-button-solid inline-flex items-center gap-2 px-8 py-3 rounded-lg font-semibold text-base"
-                  style={{ 
-                    backgroundColor: lightBrown,
-                    color: darkBrown
-                  }}
+                  className="btn-primary inline-flex items-center gap-2 px-8 py-3 rounded-lg font-semibold text-base shadow-lg hover:shadow-xl"
                 >
                   <span>{button.text}</span>
                   <ArrowRight className="w-5 h-5" />
@@ -109,12 +105,7 @@ export const PreviewCallToActionSection: React.FC<PreviewCallToActionSectionProp
                   href={button.link}
                   target={button.link.startsWith('#') ? '_self' : '_blank'}
                   rel="noopener noreferrer"
-                  className="cta-button-outlined inline-flex items-center px-8 py-3 rounded-lg font-semibold text-base rounded-lg border-2"
-                  style={{ 
-                    borderColor: 'white',
-                    color: 'white',
-                    backgroundColor: 'transparent'
-                  }}
+                  className="btn-secondary inline-flex items-center px-8 py-3 rounded-lg font-semibold text-base"
                 >
                   {button.text}
                 </a>

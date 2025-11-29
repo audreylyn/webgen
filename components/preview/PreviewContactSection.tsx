@@ -348,8 +348,7 @@ export const PreviewContactSection: React.FC<PreviewContactSectionProps> = ({
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full py-3 px-6 rounded-lg font-semibold text-white transition-all hover:opacity-90"
-                style={{ backgroundColor: darkBrown }}
+                className="btn-primary w-full py-3 px-6 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl"
               >
                 Send Message
               </button>
