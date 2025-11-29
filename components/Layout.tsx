@@ -37,10 +37,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           </Link>
           
           {user && user.role === 'admin' && (
-            <Link to="/create" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive('/create')}`}>
-              <PlusCircle className="w-5 h-5" />
-              <span className="font-medium">Create New</span>
-            </Link>
+            <>
+              <Link to="/create" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive('/create')}`}>
+                <PlusCircle className="w-5 h-5" />
+                <span className="font-medium">Create New</span>
+              </Link>
+              <Link to="/admin/users" className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/users')}`}>
+                <Shield className="w-5 h-5" />
+                <span className="font-medium">Users</span>
+              </Link>
+            </>
           )}
         </nav>
 
