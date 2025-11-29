@@ -27,12 +27,13 @@ export const FeaturedList: React.FC<FeaturedListProps> = ({
   const updateFeatured = (updates: Partial<typeof featured>) => {
     setWebsite((prev) => {
       if (!prev) return null;
+      const currentFeatured = prev.content.featured || featured;
       return {
         ...prev,
         content: {
           ...prev.content,
           featured: {
-            ...featured,
+            ...currentFeatured,
             ...updates,
           },
         },
@@ -50,14 +51,36 @@ export const FeaturedList: React.FC<FeaturedListProps> = ({
       badge: 'TOP PICK',
       buttonStyle: 'secondary',
     };
-    updateFeatured({
-      items: [...featured.items, newItem],
+    setWebsite((prev) => {
+      if (!prev) return null;
+      const currentFeatured = prev.content.featured || featured;
+      return {
+        ...prev,
+        content: {
+          ...prev.content,
+          featured: {
+            ...currentFeatured,
+            items: [...(currentFeatured.items || []), newItem],
+          },
+        },
+      };
     });
   };
 
   const removeItem = (id: string) => {
-    updateFeatured({
-      items: featured.items.filter((item) => item.id !== id),
+    setWebsite((prev) => {
+      if (!prev) return null;
+      const currentFeatured = prev.content.featured || featured;
+      return {
+        ...prev,
+        content: {
+          ...prev.content,
+          featured: {
+            ...currentFeatured,
+            items: (currentFeatured.items || []).filter((item) => item.id !== id),
+          },
+        },
+      };
     });
   };
 
@@ -66,10 +89,21 @@ export const FeaturedList: React.FC<FeaturedListProps> = ({
     key: K,
     value: FeaturedItem[K]
   ) => {
-    updateFeatured({
-      items: featured.items.map((item) =>
-        item.id === id ? { ...item, [key]: value } : item
-      ),
+    setWebsite((prev) => {
+      if (!prev) return null;
+      const currentFeatured = prev.content.featured || featured;
+      return {
+        ...prev,
+        content: {
+          ...prev.content,
+          featured: {
+            ...currentFeatured,
+            items: (currentFeatured.items || []).map((item) =>
+              item.id === id ? { ...item, [key]: value } : item
+            ),
+          },
+        },
+      };
     });
   };
 

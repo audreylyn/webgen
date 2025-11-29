@@ -32,7 +32,7 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
 
   // Cart hook (moved to a separate module for clarity)
   const cartHook = useCart(website);
-  const { cart, addToCart, updateQuantity, removeFromCart, cartTotal, totalItems, isCartOpen, openCart, closeCart, checkoutForm, setCheckoutForm, handleCheckout, parseCurrency, formatCurrency, clearCart } = cartHook;
+  const { cart, addToCart, updateQuantity, removeFromCart, cartTotal, totalItems, isCartOpen, openCart, closeCart, checkoutForm, setCheckoutForm, handleCheckout, parseCurrency, formatCurrency, clearCart, isCheckingOut } = cartHook;
 
   useEffect(() => {
     const fetchWebsite = async () => {
@@ -347,6 +347,7 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
           isDark={isDark}
           handleImageError={handleImageError}
           website={website}
+          isCheckingOut={isCheckingOut}
         />
       )}
     </div>

@@ -7,6 +7,7 @@ export function useCart(website?: Website | null) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [checkoutForm, setCheckoutForm] = useState({ name: '', location: '', message: '' });
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   const parseCurrency = (s?: string) => {
     if (!s) return 0;
@@ -60,7 +61,9 @@ export function useCart(website?: Website | null) {
   const closeCart = () => setIsCartOpen(false);
 
   const handleCheckout = async () => {
-    if (!website?.messenger.pageId || cart.length === 0) return;
+    if (!website?.messenger.pageId || cart.length === 0 || isCheckingOut) return;
+    
+    setIsCheckingOut(true);
     
     // Prepare order data for spreadsheet
     const orderItems = cart.map(ci => {
@@ -87,24 +90,6 @@ export function useCart(website?: Website | null) {
       }
     };
 
-    // Send to Google Spreadsheet if configured
-    if (website.messenger.googleScriptUrl) {
-      try {
-        await fetch(website.messenger.googleScriptUrl, {
-          method: 'POST',
-          mode: 'no-cors', // Important: prevents CORS errors with Google Scripts
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(orderData),
-        });
-        // Note: With 'no-cors', we can't read the response, but if no error is thrown, assume success
-      } catch (error) {
-        console.error('Error saving order to spreadsheet:', error);
-        // Continue with Messenger checkout even if spreadsheet save fails
-      }
-    }
-
     // Prepare Messenger message
     const lines: string[] = [];
     lines.push('New Order Request');
@@ -124,11 +109,35 @@ export function useCart(website?: Website | null) {
 
     const fullMessage = lines.join('\n');
     const encodedMessage = encodeURIComponent(fullMessage);
-    const url = `https://m.me/${website.messenger.pageId}?text=${encodedMessage}`;
-    window.open(url, '_blank');
+    const messengerUrl = `https://m.me/${website.messenger.pageId}?text=${encodedMessage}`;
+
+    // Send to Google Spreadsheet in background (fire and forget)
+    // Don't wait for it - open Messenger immediately for better UX
+    if (website.messenger.googleScriptUrl) {
+      fetch(website.messenger.googleScriptUrl, {
+        method: 'POST',
+        mode: 'no-cors', // Important: prevents CORS errors with Google Scripts
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      }).catch((error) => {
+        console.error('Error saving order to spreadsheet:', error);
+        // Continue even if spreadsheet save fails
+      });
+    }
+
+    // Open Messenger immediately (don't wait for spreadsheet)
+    window.open(messengerUrl, '_blank');
+    
+    // Small delay to show loading state and prevent double-clicks
+    await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // Clear cart and form
     setCart([]);
     setCheckoutForm({ name: '', location: '', message: '' });
     closeCart();
+    setIsCheckingOut(false);
   };
 
   const clearCart = () => setCart([]);
@@ -148,6 +157,7 @@ export function useCart(website?: Website | null) {
     handleCheckout,
     parseCurrency,
     formatCurrency,
-    clearCart
+    clearCart,
+    isCheckingOut
   } as const;
 }
