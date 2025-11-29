@@ -158,9 +158,8 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
   const bgSecondary = isDark ? 'bg-slate-800' : 'bg-slate-50';
   const textMuted = isDark ? 'text-slate-400' : 'text-slate-600';
 
-  // Get section order from navLinkOrder or use default order
-  const navLinkOrder = content.navLinkOrder;
-  const defaultOrder: (keyof typeof enabledSections)[] = [
+  // Fixed section order
+  const sectionOrder: (keyof typeof enabledSections)[] = [
     'featured',
     'about',
     'benefits',
@@ -170,10 +169,7 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
     'team',
     'testimonials',
     'faq',
-  ];
-  const sectionOrder = navLinkOrder && navLinkOrder.length > 0 
-    ? navLinkOrder.filter(section => enabledSections[section] && section !== 'hero' && section !== 'callToAction' && section !== 'contact')
-    : defaultOrder.filter(section => enabledSections[section]);
+  ].filter(section => enabledSections[section]);
 
   // Section renderer map
   const renderSection = (sectionKey: keyof typeof enabledSections) => {
@@ -328,28 +324,26 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
       {/* Scroll To Top */}
       <ScrollToTopButton showScrollTop={showScrollTop} scrollToTop={scrollToTop} />
 
-      {enabledSections.products && (
-        <CartDrawer
-          isOpen={isCartOpen}
-          cart={cart}
-          closeCart={closeCart}
-          setCartEmpty={clearCart}
-          updateQuantity={updateQuantity}
-          removeFromCart={removeFromCart}
-          cartTotal={cartTotal}
-          totalItems={totalItems}
-          checkoutForm={checkoutForm}
-          setCheckoutForm={setCheckoutForm}
-          handleCheckout={handleCheckout}
-          parseCurrency={parseCurrency}
-          formatCurrency={formatCurrency}
-          theme={theme}
-          isDark={isDark}
-          handleImageError={handleImageError}
-          website={website}
-          isCheckingOut={isCheckingOut}
-        />
-      )}
+      <CartDrawer
+        isOpen={isCartOpen}
+        cart={cart}
+        closeCart={closeCart}
+        setCartEmpty={clearCart}
+        updateQuantity={updateQuantity}
+        removeFromCart={removeFromCart}
+        cartTotal={cartTotal}
+        totalItems={totalItems}
+        checkoutForm={checkoutForm}
+        setCheckoutForm={setCheckoutForm}
+        handleCheckout={handleCheckout}
+        parseCurrency={parseCurrency}
+        formatCurrency={formatCurrency}
+        theme={theme}
+        isDark={isDark}
+        handleImageError={handleImageError}
+        website={website}
+        isCheckingOut={isCheckingOut}
+      />
     </div>
   );
 };

@@ -29,6 +29,10 @@ export function useCart(website?: Website | null) {
   };
 
   const addToCart = (product: Product, qty = 1) => {
+    if (!product || !product.id) {
+      console.error('Cannot add product to cart: product is missing or has no id', product);
+      return;
+    }
     setCart(prev => {
       const idx = prev.findIndex(ci => ci.product.id === product.id);
       if (idx >= 0) {

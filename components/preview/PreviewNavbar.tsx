@@ -58,53 +58,25 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
     setMobileMenuOpen(false);
   };
 
-  // Section name mapping
-  const sectionNameMap: { [key: string]: string } = {
-    hero: 'HOME',
-    about: 'ABOUT',
-    products: 'MENU',
-    featured: 'FEATURED',
-    benefits: 'BENEFITS',
-    testimonials: 'TESTIMONIALS',
-    faq: 'FAQ',
-    gallery: 'GALLERY',
-    team: 'TEAM',
-    pricing: 'PRICING',
-    contact: 'VISIT US',
-  };
-
-  // Get navigation order from content, or use default order
-  const navLinkOrder = (website.content as any)?.navLinkOrder;
-  const excludedSections = ['hero', 'callToAction'];
-  
-  // Build list of enabled sections (excluding hero and callToAction)
-  const enabledSectionKeys = Object.entries(enabledSections)
-    .filter(([key, enabled]) => enabled && !excludedSections.includes(key))
-    .map(([key]) => key as keyof typeof enabledSections);
-
-  // Use navLinkOrder if available, otherwise use default order
-  const orderedSectionKeys = navLinkOrder && navLinkOrder.length > 0
-    ? navLinkOrder.filter(key => enabledSectionKeys.includes(key))
-    : enabledSectionKeys;
-
-  // Build navigation links array
+  // Define fixed navigation links in order
   const navLinks = [
-    // Always show Home first
     { id: 'hero', name: 'HOME', href: '#hero' },
-    // Then show ordered sections
-    ...orderedSectionKeys.map(key => ({
-      id: key,
-      name: sectionNameMap[key] || key.toUpperCase(),
-      href: `#${key}`,
-    })),
-    // Always show Contact last
+    { id: 'featured', name: 'FEATURED', href: '#featured' },
+    { id: 'about', name: 'ABOUT', href: '#about' },
+    { id: 'products', name: 'MENU', href: '#products' },
+    { id: 'gallery', name: 'GALLERY', href: '#gallery' },
     { id: 'contact', name: 'VISIT US', href: '#contact' },
   ].filter(link => {
-    // Only show links for enabled sections (except hero and contact which are always shown)
-    if (link.id === 'hero') return true;
-    if (link.id === 'contact') return enabledSections.contact;
+    // Only show links for enabled sections
+    if (link.id === 'hero') return true; // Always show Home
+    if (link.id === 'contact') return enabledSections.contact; // Show if contact is enabled
     return enabledSections[link.id as keyof typeof enabledSections];
   });
+  
+  // Remove duplicates by id (in case of any duplicates)
+  const uniqueNavLinks = navLinks.filter((link, index, self) => 
+    index === self.findIndex(l => l.id === link.id)
+  );
 
   const darkBrown = theme.colors?.brand900 || '#67392b';
   const brand600 = theme.colors?.brand600 || theme.primary || '#b96b40';
@@ -165,7 +137,7 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => (
+            {uniqueNavLinks.map((link) => (
               <a 
                 key={link.id} 
                 href={link.href} 
@@ -260,7 +232,7 @@ export const PreviewNavbar: React.FC<PreviewNavbarProps> = ({
           }}
         >
           <div className="px-4 pt-2 pb-4 space-y-1">
-            {navLinks.map((link) => (
+            {uniqueNavLinks.map((link) => (
               <a
                 key={link.id}
                 href={link.href}

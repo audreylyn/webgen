@@ -31,7 +31,6 @@ import { ContactDetails } from '../components/website-builder/ContactDetails';
 import { ContactFormConfig } from '../components/website-builder/ContactFormConfig';
 import { FooterConfig } from '../components/website-builder/FooterConfig';
 import { AiMarketingKit } from '../components/website-builder/AiMarketingKit';
-import { NavLinkReorder } from '../components/website-builder/NavLinkReorder'; // Import NavLinkReorder
 
 export enum WebsiteType {
   Custom = 'Custom',
@@ -593,7 +592,12 @@ export const WebsiteBuilder: React.FC = () => {
                   websiteType={websiteType}
                   handlePresetChange={handlePresetChange}
                 />
-                <NavLinkReorder website={website} setWebsite={setWebsite} /> {/* Add NavLinkReorder */} 
+
+                {/* Contact Form Configuration */}
+                <ContactFormConfig
+                  website={website}
+                  setWebsite={setWebsite}
+                />
 
               </div>
 
@@ -612,12 +616,6 @@ export const WebsiteBuilder: React.FC = () => {
 
                 {/* Integrations */}
                 <Integrations website={website} setWebsite={setWebsite} />
-
-                {/* Contact Form Configuration */}
-                <ContactFormConfig
-                  website={website}
-                  setWebsite={setWebsite}
-                />
 
               </div>
             </div>

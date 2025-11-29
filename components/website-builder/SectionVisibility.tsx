@@ -65,6 +65,12 @@ export const SectionVisibility: React.FC<SectionVisibilityProps> = ({
           );
         })}
       </div>
+      
+      <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+        <p className="text-xs text-blue-800">
+          <strong>Note:</strong> The navigation order is fixed based on the standard website layout. Sections will appear in the navigation menu in the following order: Home → Featured → About → Menu → Gallery → Visit Us.
+        </p>
+      </div>
     </div>
   );
 };
