@@ -9,16 +9,17 @@ interface PreviewCallToActionSectionProps {
 export const PreviewCallToActionSection: React.FC<PreviewCallToActionSectionProps> = ({
   website,
 }) => {
-  const { content } = website;
+  const { content, theme } = website;
   const cta = content.callToAction;
 
   if (!cta || !cta.text || !cta.buttons || cta.buttons.length === 0) {
     return null;
   }
 
-  // Helper to get warm brown colors
-  const lightBrown = 'rgba(180, 130, 80, 0.95)';
-  const darkBrown = cta.backgroundColor || '#8B5A3C';
+  // Use theme colors
+  const bgColor = theme.primary; // Primary color for background
+  const solidButtonBg = theme.secondary; // Secondary color for "Order Now" button
+  const solidButtonText = theme.colors?.brand900 || '#67392b'; // Dark text for solid button
 
   return (
     <section id="cta" className="py-20 relative overflow-hidden">
@@ -43,17 +44,21 @@ export const PreviewCallToActionSection: React.FC<PreviewCallToActionSectionProp
         }
         .cta-button-outlined {
           transition: all 0.3s ease;
+          background-color: transparent;
+          border: 2px solid white;
+          color: white;
         }
         .cta-button-outlined:hover {
-          background-color: rgba(255, 255, 255, 0.1);
+          background-color: white;
+          color: ${bgColor};
           transform: translateY(-2px);
         }
       `}</style>
       
-      {/* Dark brown background */}
+      {/* Primary color background */}
       <div 
         className="absolute inset-0"
-        style={{ backgroundColor: darkBrown }}
+        style={{ backgroundColor: bgColor }}
       />
       
       {/* Subtle pattern overlay */}
@@ -86,26 +91,32 @@ export const PreviewCallToActionSection: React.FC<PreviewCallToActionSectionProp
         <div className="flex flex-wrap justify-center gap-4">
           {cta.buttons.map((button) => {
             if (button.style === 'solid') {
+              // "Order Now" button - uses secondary color
               return (
                 <a
                   key={button.id}
                   href={button.link}
                   target={button.link.startsWith('#') ? '_self' : '_blank'}
                   rel="noopener noreferrer"
-                  className="btn-primary inline-flex items-center gap-2 px-8 py-3 rounded-lg font-semibold text-base shadow-lg hover:shadow-xl"
+                  className="cta-button-solid inline-flex items-center gap-2 px-8 py-3 rounded-lg font-semibold text-base shadow-lg"
+                  style={{
+                    backgroundColor: solidButtonBg,
+                    color: solidButtonText
+                  }}
                 >
                   <span>{button.text}</span>
                   <ArrowRight className="w-5 h-5" />
                 </a>
               );
             } else {
+              // "Contact Us" button - white outline, white text, becomes white on hover
               return (
                 <a
                   key={button.id}
                   href={button.link}
                   target={button.link.startsWith('#') ? '_self' : '_blank'}
                   rel="noopener noreferrer"
-                  className="btn-secondary inline-flex items-center px-8 py-3 rounded-lg font-semibold text-base"
+                  className="cta-button-outlined inline-flex items-center px-8 py-3 rounded-lg font-semibold text-base"
                 >
                   {button.text}
                 </a>
