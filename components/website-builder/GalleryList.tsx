@@ -22,7 +22,10 @@ export const GalleryList: React.FC<GalleryListProps> = ({
   return (
     <section>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-slate-800">Gallery / Portfolio</h3>
+        <div>
+          <h3 className="text-lg font-bold text-slate-800">Gallery / Portfolio</h3>
+          <p className="text-xs text-slate-500 mt-1">Note: Only the first 4 images will be displayed in the gallery grid</p>
+        </div>
         <button
           onClick={() => addItem<GalleryItem>('gallery', { id: Math.random().toString(), image: 'https://placehold.co/400x300?text=Gallery+Item', caption: 'New Gallery Item' })}
           className="text-sm flex items-center gap-1 text-indigo-600 hover:underline"
@@ -31,9 +34,19 @@ export const GalleryList: React.FC<GalleryListProps> = ({
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {website.content.gallery.map((item) => (
-          <div key={item.id} className="border border-slate-200 p-4 rounded-lg relative bg-slate-50 group">
-            <button onClick={() => removeItem('gallery', item.id)} className="absolute top-2 right-2 p-1 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+        {website.content.gallery.map((item, index) => (
+          <div key={item.id} className={`border border-slate-200 p-4 rounded-lg relative bg-slate-50 group ${index < 4 ? 'ring-2 ring-indigo-200' : 'opacity-60'}`}>
+            {index < 4 && (
+              <div className="absolute top-2 left-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded z-10">
+                Displayed
+              </div>
+            )}
+            {index >= 4 && (
+              <div className="absolute top-2 left-2 bg-slate-400 text-white text-xs px-2 py-1 rounded z-10">
+                Hidden
+              </div>
+            )}
+            <button onClick={() => removeItem('gallery', item.id)} className="absolute top-2 right-2 p-1 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity z-10">
               <Trash className="w-4 h-4" />
             </button>
             <div className="mb-2">
