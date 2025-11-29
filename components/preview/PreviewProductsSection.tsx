@@ -186,30 +186,6 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
                       : `${isDark ? 'text-slate-300 bg-slate-700/50 hover:bg-slate-600/70 border border-slate-600' : 'text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 shadow-sm'}`
                   }`}
                   style={selectedCategory === category ? { 
-                    backgroundColor: theme.button,
-                    boxShadow: `0 4px 15px ${theme.button}40`
-                  } : {}}
-                >
-                  <span className="relative z-10">{category}</span>
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-        
-          {/* Category Filter Buttons */}
-          {categories.length > 1 && (
-            <div className="flex flex-wrap justify-center gap-3 mb-12">
-              {categories.map((category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`category-btn px-6 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 ${
-                    selectedCategory === category
-                      ? 'text-white shadow-xl scale-105'
-                      : `${isDark ? 'text-slate-300 bg-slate-700/50 hover:bg-slate-600/70 border border-slate-600' : 'text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 shadow-sm'}`
-                  }`}
-                  style={selectedCategory === category ? { 
                     backgroundColor: theme.colors?.brand600 || theme.button,
                     boxShadow: `0 4px 15px ${theme.colors?.brand600 || theme.button}40`
                   } : {}}
@@ -337,10 +313,9 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
             <p className={`text-lg ${textMuted}`}>No products found in this category.</p>
           </div>
         )}
-      </div>
 
-      {/* Quick View Modal */}
-      {quickViewProduct && (
+        {/* Quick View Modal */}
+        {quickViewProduct && (
         <div
           className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4 quick-view-modal"
           onClick={() => setQuickViewProduct(null)}
@@ -419,7 +394,8 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
             </div>
           </div>
         </div>
-      )}
+        )}
+      </div>
     </section>
   );
 };
