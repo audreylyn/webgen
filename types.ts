@@ -130,8 +130,12 @@ export interface WebsiteContent {
     title: string;
     subtext: string;
     image: string;
-    buttonLink?: string; // New: Optional link for the hero button
-    heroType?: HeroType; // Add this line
+    buttonLink?: string; // Primary button link
+    heroType?: HeroType;
+    statusText?: string; // Status badge text (e.g., "OPEN TODAY | 7:00 AM - 4:00 PM")
+    primaryButtonText?: string; // Primary button text (e.g., "Order for Pickup")
+    secondaryButtonText?: string; // Secondary button text (e.g., "Our Story")
+    secondaryButtonLink?: string; // Secondary button link (e.g., "#about")
   };
   about: {
     image: string;

@@ -120,7 +120,7 @@ export const HeroPremium: React.FC<HeroPremiumProps> = ({
               />
             </span>
             <span className="text-white text-sm font-medium">
-              OPEN TODAY | 7:00 AM - 4:00 PM
+              {content.hero.statusText || 'OPEN TODAY | 7:00 AM - 4:00 PM'}
             </span>
           </div>
         </div>
@@ -164,7 +164,7 @@ export const HeroPremium: React.FC<HeroPremiumProps> = ({
 
         {/* CTA Buttons */}
         <div className="fade-in-up-4 flex flex-col sm:flex-row items-center justify-center gap-4">
-          {/* Primary Button - Order for Pickup */}
+          {/* Primary Button */}
           <a
             href={content.hero.buttonLink || '#products'}
             className="px-8 py-4 rounded-lg font-semibold text-base md:text-lg text-white shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300"
@@ -173,16 +173,16 @@ export const HeroPremium: React.FC<HeroPremiumProps> = ({
               fontFamily: 'var(--body-font)'
             }}
           >
-            Order for Pickup
+            {content.hero.primaryButtonText || 'Order for Pickup'}
           </a>
 
-          {/* Secondary Button - Our Story (Glass-like) */}
+          {/* Secondary Button (Glass-like) */}
           <a
-            href="#about"
+            href={content.hero.secondaryButtonLink || '#about'}
             className="px-8 py-4 rounded-lg font-semibold text-base md:text-lg text-white backdrop-blur-md bg-white/10 border-2 border-white/30 hover:bg-white/20 transition-all duration-300 transform hover:-translate-y-1"
             style={{ fontFamily: 'var(--body-font)' }}
           >
-            Our Story
+            {content.hero.secondaryButtonText || 'Our Story'}
           </a>
         </div>
       </div>

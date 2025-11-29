@@ -52,6 +52,10 @@ export const DEFAULT_WEBSITE: Website = {
       image: '/hero.jpg',
       buttonLink: '#products',
       heroType: 'premium',
+      statusText: 'OPEN TODAY | 7:00 AM - 4:00 PM',
+      primaryButtonText: 'Order for Pickup',
+      secondaryButtonText: 'Our Story',
+      secondaryButtonLink: '#about',
     },
     about: {
       image: 'https://placehold.co/800x600?text=About+Us',

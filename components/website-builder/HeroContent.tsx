@@ -54,8 +54,8 @@ export const HeroContent: React.FC<HeroContentProps> = ({
           onChange={(e) => website && updateContent('hero', { ...website.content.hero, subtext: e.target.value })}
         />
         <WebsiteBuilderInput
-          label="Get Started Button Link"
-          placeholder="Get Started Button Link (e.g., #products or /contact)"
+          label="Primary Button Link"
+          placeholder="Primary button link (e.g., #products or /contact)"
           value={website.content.hero.buttonLink || ''}
           onChange={(e) => website && updateContent('hero', { ...website.content.hero, buttonLink: e.target.value })}
         />
@@ -65,6 +65,39 @@ export const HeroContent: React.FC<HeroContentProps> = ({
           onFileUpload={(file) => handleFileUpload(file, (url) => updateContent('hero', { ...website.content.hero, image: url }))}
           isUploading={isUploadingImage}
         />
+        
+        {/* Premium Hero Additional Fields */}
+        {(website.content.hero.heroType === 'premium' || !website.content.hero.heroType) && (
+          <div className="mt-6 pt-6 border-t border-slate-200">
+            <h4 className="text-sm font-semibold text-slate-700 mb-4">Premium Hero Additional Settings</h4>
+            <div className="grid gap-4">
+              <WebsiteBuilderInput
+                label="Status Badge Text"
+                placeholder="OPEN TODAY | 7:00 AM - 4:00 PM"
+                value={website.content.hero.statusText || ''}
+                onChange={(e) => website && updateContent('hero', { ...website.content.hero, statusText: e.target.value })}
+              />
+              <WebsiteBuilderInput
+                label="Primary Button Text"
+                placeholder="Order for Pickup"
+                value={website.content.hero.primaryButtonText || ''}
+                onChange={(e) => website && updateContent('hero', { ...website.content.hero, primaryButtonText: e.target.value })}
+              />
+              <WebsiteBuilderInput
+                label="Secondary Button Text"
+                placeholder="Our Story"
+                value={website.content.hero.secondaryButtonText || ''}
+                onChange={(e) => website && updateContent('hero', { ...website.content.hero, secondaryButtonText: e.target.value })}
+              />
+              <WebsiteBuilderInput
+                label="Secondary Button Link"
+                placeholder="#about"
+                value={website.content.hero.secondaryButtonLink || ''}
+                onChange={(e) => website && updateContent('hero', { ...website.content.hero, secondaryButtonLink: e.target.value })}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );
