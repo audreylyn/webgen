@@ -1,6 +1,11 @@
-import React from 'react';
-import { Quote, Star } from 'lucide-react';
+import React, { useRef, useState, useEffect } from 'react';
+import { Quote, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Website } from '../../types';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation } from 'swiper/modules';
+import type { Swiper as SwiperType } from 'swiper';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 interface PreviewTestimonialsSectionProps {
   website: Website;
@@ -16,9 +21,38 @@ export const PreviewTestimonialsSection: React.FC<PreviewTestimonialsSectionProp
   handleAvatarError,
 }) => {
   const { content, theme } = website;
+  const [swiper, setSwiper] = useState<SwiperType | null>(null);
+  const [isBeginning, setIsBeginning] = useState(true);
+  const [isEnd, setIsEnd] = useState(false);
+  const navigationPrevRef = useRef<HTMLButtonElement>(null);
+  const navigationNextRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (swiper) {
+      const updateButtons = () => {
+        setIsBeginning(swiper.isBeginning);
+        setIsEnd(swiper.isEnd);
+      };
+      updateButtons();
+      swiper.on('slideChange', updateButtons);
+      return () => {
+        swiper.off('slideChange', updateButtons);
+      };
+    }
+  }, [swiper]);
+
+  if (content.testimonials.length === 0) {
+    return null;
+  }
+
+  // Get warm brown colors from theme
+  const warmBrown = theme.colors?.brand600 || theme.primary;
+  const darkBrown = theme.colors?.brand900 || '#67392b';
+  const lightCream = theme.colors?.brand50 || theme.secondary || '#fbf8f3';
+  const bgColor = theme.primary; // Dark brown background
 
   return (
-    <section id="testimonials" className={`py-20 relative ${isDark ? 'bg-slate-900' : 'bg-white'}`}>
+    <section id="testimonials" className="py-20 relative" style={{ backgroundColor: bgColor }}>
       <style>{`
         :root {
           --tw-ring-color: transparent !important;
@@ -26,157 +60,213 @@ export const PreviewTestimonialsSection: React.FC<PreviewTestimonialsSectionProp
         * {
           --tw-ring-color: transparent !important;
         }
-        .testimonial-grid-item {
-          position: relative;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .testimonial-grid-item:hover {
-          transform: translateY(-8px) scale(1.02);
-        }
-        .testimonial-card-inner {
-          position: relative;
+        .testimonial-card {
+          background-color: ${lightCream};
+          border-radius: 16px;
+          padding: 32px;
           height: 100%;
-          transition: all 0.3s ease;
+          position: relative;
+          transition: transform 0.3s ease;
         }
-        .testimonial-grid-item:hover .testimonial-card-inner {
-          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        .testimonial-card:hover {
+          transform: translateY(-4px);
         }
-        .quote-decoration {
+        .quote-mark-large {
           position: absolute;
-          top: 20px;
-          left: 24px;
+          top: 16px;
+          right: 24px;
+          font-size: 96px;
+          line-height: 1;
+          opacity: 0.2;
+          color: ${lightCream};
+          font-family: serif;
+          font-weight: 300;
+        }
+        .quote-mark-small {
+          position: absolute;
+          bottom: -4px;
+          left: -4px;
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background-color: ${lightCream};
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.3s ease;
+          font-size: 18px;
+          color: ${warmBrown};
+          font-family: serif;
+          font-weight: 300;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+          z-index: 10;
         }
-        .testimonial-grid-item:hover .quote-decoration {
-          transform: scale(1.1) rotate(5deg);
-        }
-        .testimonial-avatar-wrapper {
-          position: relative;
-          transition: all 0.3s ease;
-        }
-        .testimonial-grid-item:hover .testimonial-avatar-wrapper {
-          transform: scale(1.1);
-        }
-        .testimonial-avatar-wrapper::before {
-          content: '';
-          position: absolute;
-          inset: -4px;
+        .swiper-button-custom {
+          width: 48px;
+          height: 48px;
           border-radius: 50%;
-          background: linear-gradient(135deg, ${theme.primary}, ${theme.button});
-          opacity: 0;
-          transition: opacity 0.3s ease;
+          background-color: transparent;
+          border: 2px solid ${warmBrown};
+          color: ${warmBrown};
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.3s ease;
         }
-        .testimonial-grid-item:hover .testimonial-avatar-wrapper::before {
+        .swiper-button-custom:hover {
+          background-color: ${warmBrown};
+          color: white;
+        }
+        .swiper-button-custom:disabled {
           opacity: 0.3;
+          cursor: not-allowed;
         }
-        @media (max-width: 768px) {
-          .testimonial-grid {
-            grid-template-columns: 1fr;
-          }
+        .swiper-button-custom:disabled:hover {
+          background-color: transparent;
+          color: ${warmBrown};
+        }
+        .swiper-button-custom svg {
+          width: 20px;
+          height: 20px;
         }
       `}</style>
-      
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div 
-          className="absolute top-20 left-10 w-72 h-72 rounded-full blur-3xl opacity-10"
-          style={{ backgroundColor: theme.primary }}
-        />
-        <div 
-          className="absolute bottom-20 right-10 w-96 h-96 rounded-full blur-3xl opacity-10"
-          style={{ backgroundColor: theme.secondary }}
-        />
-      </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6" style={{ 
-            backgroundColor: theme.primary + '15',
-            border: `1px solid ${theme.primary}30`
-          }}>
-            <Star className="w-4 h-4" style={{ color: theme.primary }} />
-            <span className="text-sm font-semibold" style={{ color: theme.primary }}>Testimonials</span>
-          </div>
-          <h2 className="text-3xl font-bold mb-4" style={{ color: theme.primary }}>
-            What People Say
-          </h2>
-          <p className={`text-lg ${textMuted} max-w-2xl mx-auto`}>
-            Real feedback from real customers who love our service
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 testimonial-grid">
-          {content.testimonials.map((t, index) => (
-            <div key={t.id} className="testimonial-grid-item">
-              <div 
-                className={`testimonial-card-inner p-8 rounded-3xl ${isDark ? 'bg-slate-800/90' : 'bg-white'} border ${isDark ? 'border-slate-700/50' : 'border-slate-200/50'} shadow-lg backdrop-blur-sm`}
-                style={{
-                  borderTop: `4px solid ${theme.primary}`,
+        {/* Header with Navigation */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+          <div>
+            <p 
+              className="text-sm font-semibold uppercase tracking-wider mb-2"
+              style={{ color: warmBrown }}
+            >
+              COMMUNITY LOVE
+            </p>
+            <h2 
+              className="text-4xl md:text-5xl font-bold leading-tight"
+              style={{ 
+                color: 'white',
+                fontFamily: 'serif'
+              }}
+            >
+              Words from our{' '}
+              <span 
+                style={{ 
+                  fontFamily: 'cursive, serif',
+                  fontStyle: 'italic'
                 }}
               >
-                {/* Quote decoration */}
-                <div className="quote-decoration">
-                  <Quote className="w-8 h-8" style={{ color: theme.primary, opacity: 0.2 }} />
+                Regulars
+              </span>
+            </h2>
+          </div>
+
+          {/* Navigation Buttons */}
+          <div className="flex items-center gap-3">
+            <button
+              ref={navigationPrevRef}
+              className="swiper-button-custom swiper-button-prev-custom"
+              aria-label="Previous"
+              onClick={() => swiper?.slidePrev()}
+              disabled={isBeginning}
+            >
+              <ChevronLeft />
+            </button>
+            <button
+              ref={navigationNextRef}
+              className="swiper-button-custom swiper-button-next-custom"
+              aria-label="Next"
+              onClick={() => swiper?.slideNext()}
+              disabled={isEnd}
+            >
+              <ChevronRight />
+            </button>
+          </div>
+        </div>
+
+        {/* Swiper Carousel */}
+        <Swiper
+          modules={[Navigation]}
+          spaceBetween={24}
+          slidesPerView={1}
+          breakpoints={{
+            640: {
+              slidesPerView: 1,
+            },
+            768: {
+              slidesPerView: 2,
+            },
+            1024: {
+              slidesPerView: 3,
+            },
+          }}
+          onSwiper={setSwiper}
+          className="testimonials-swiper"
+        >
+          {content.testimonials.map((t) => (
+            <SwiperSlide key={t.id}>
+              <div className="testimonial-card">
+                {/* Large decorative quote mark */}
+                <div className="quote-mark-large">"</div>
+
+                {/* Stars */}
+                <div className="flex items-center gap-1 mb-6">
+                  {[...Array(5)].map((_, i) => (
+                    <Star 
+                      key={i} 
+                      className="w-5 h-5 fill-current" 
+                      style={{ color: warmBrown }}
+                    />
+                  ))}
                 </div>
 
-                {/* Testimonial content */}
-                <div className="pt-4">
-                  <div className="flex items-center gap-1 mb-6">
-                    {[...Array(5)].map((_, i) => (
-                      <Star 
-                        key={i} 
-                        className="w-4 h-4 fill-current" 
-                        style={{ color: theme.primary }}
+                {/* Review Text */}
+                <p 
+                  className="text-base md:text-lg mb-8 leading-relaxed pr-8"
+                  style={{ color: darkBrown }}
+                >
+                  {t.content}
+                </p>
+
+                {/* Author Info */}
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    {t.avatar ? (
+                      <img
+                        src={t.avatar}
+                        alt={t.name}
+                        onError={handleAvatarError}
+                        className="w-16 h-16 rounded-full object-cover"
                       />
-                    ))}
+                    ) : (
+                      <div 
+                        className="w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl text-white"
+                        style={{ backgroundColor: warmBrown }}
+                      >
+                        {t.name.charAt(0)}
+                      </div>
+                    )}
+                    {/* Small closing quote icon on avatar */}
+                    <div className="quote-mark-small">"</div>
                   </div>
-
-                  <p className={`text-base md:text-lg mb-8 leading-relaxed ${isDark ? 'text-slate-200' : 'text-slate-700'}`}>
-                    "{t.content}"
-                  </p>
-
-                  {/* Author info */}
-                  <div className="flex items-center gap-4 pt-6 border-t" style={{ 
-                    borderColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.05)'
-                  }}>
-                    <div className="testimonial-avatar-wrapper relative">
-                      {t.avatar ? (
-                        <img
-                          src={t.avatar}
-                          alt={t.name}
-                          onError={handleAvatarError}
-                          className="w-14 h-14 rounded-full object-cover border-2 relative z-10"
-                          style={{ borderColor: theme.primary }}
-                        />
-                      ) : (
-                        <div 
-                          className="w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl text-white relative z-10"
-                          style={{ 
-                            backgroundColor: theme.primary,
-                            boxShadow: `0 4px 15px ${theme.primary}40`
-                          }}
-                        >
-                          {t.name.charAt(0)}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <p className={`font-bold text-base ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                        {t.name}
-                      </p>
-                      <p className={`text-sm ${textMuted}`}>
-                        {t.role}
-                      </p>
-                    </div>
+                  <div>
+                    <p 
+                      className="font-bold text-base mb-1"
+                      style={{ color: darkBrown }}
+                    >
+                      {t.name}
+                    </p>
+                    <p 
+                      className="text-xs font-semibold uppercase tracking-wider"
+                      style={{ color: warmBrown }}
+                    >
+                      {t.role}
+                    </p>
                   </div>
                 </div>
               </div>
-            </div>
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       </div>
     </section>
   );
