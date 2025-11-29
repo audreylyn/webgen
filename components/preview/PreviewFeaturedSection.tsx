@@ -8,6 +8,7 @@ interface PreviewFeaturedSectionProps {
   isDark: boolean;
   textMuted: string;
   handleImageError: (e: React.SyntheticEvent<HTMLImageElement, Event>) => void;
+  openCart: () => void;
 }
 
 export const PreviewFeaturedSection: React.FC<PreviewFeaturedSectionProps> = ({
@@ -15,9 +16,10 @@ export const PreviewFeaturedSection: React.FC<PreviewFeaturedSectionProps> = ({
   isDark,
   textMuted,
   handleImageError,
+  openCart,
 }) => {
   const { content, theme } = website;
-  const { addToCart } = useCart();
+  const { addToCart } = useCart(website);
 
   if (!content.featured || content.featured.items.length === 0) {
     return null;
@@ -42,8 +44,10 @@ export const PreviewFeaturedSection: React.FC<PreviewFeaturedSectionProps> = ({
       description: item.description,
       image: item.image,
       price: item.price,
+      category: '',
     };
     addToCart(product);
+    openCart();
   };
 
   return (
@@ -153,7 +157,7 @@ export const PreviewFeaturedSection: React.FC<PreviewFeaturedSectionProps> = ({
                 href={featured.viewMenuLink}
                 className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:scale-110"
                 style={{ 
-                  backgroundColor: warmBrown,
+                  backgroundColor: theme.colors?.brand600 || theme.primary || '#b96b40',
                   color: 'white'
                 }}
               >
@@ -199,13 +203,13 @@ export const PreviewFeaturedSection: React.FC<PreviewFeaturedSectionProps> = ({
                   <div className="featured-price-badge">
                     <div 
                       className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg"
-                      style={{ backgroundColor: warmBrown }}
+                      style={{ backgroundColor: theme.colors?.brand600 || theme.primary || '#b96b40' }}
                     >
                       <span 
                         className="text-sm font-bold text-white"
                         style={{ fontFamily: 'var(--body-font)' }}
                       >
-                        {item.price.startsWith('$') ? item.price : `$${item.price}`}
+                        {item.price.startsWith('₱') ? item.price : item.price.startsWith('$') ? item.price.replace('$', '₱') : `₱${item.price}`}
                       </span>
                     </div>
                   </div>

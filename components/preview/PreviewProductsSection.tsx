@@ -9,6 +9,7 @@ interface PreviewProductsSectionProps {
   textMuted: string;
   handleImageError: (e: React.SyntheticEvent<HTMLImageElement, Event>) => void;
   addToCart: (product: Product) => void;
+  openCart: () => void;
 }
 
 export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
@@ -18,6 +19,7 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
   textMuted,
   handleImageError,
   addToCart,
+  openCart,
 }) => {
   const { content, theme } = website;
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -91,7 +93,7 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
           position: absolute;
           bottom: 0;
           right: 0;
-          background-color: ${darkBrown};
+          background-color: ${theme.colors?.brand600 || theme.primary || '#b96b40'};
           color: white;
           padding: 12px 16px;
           border-radius: 12px 0 0 0;
@@ -103,7 +105,7 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
           align-items: center;
           gap: 4px;
         }
-        .price-badge .dollar-sign {
+        .price-badge .peso-sign {
           font-size: 14px;
           opacity: 0.9;
         }
@@ -224,13 +226,13 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
               const parts = cleaned.split('.');
               if (parts.length === 2) {
                 return {
-                  dollar: '$',
+                  peso: '₱',
                   main: parts[0],
                   decimal: '.' + parts[1]
                 };
               }
               return {
-                dollar: '$',
+                peso: '₱',
                 main: cleaned,
                 decimal: ''
               };
@@ -264,7 +266,7 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
                   {/* Price Badge - Bottom Right */}
                   {priceParts && (
                     <div className="price-badge">
-                      <span className="dollar-sign">{priceParts.dollar}</span>
+                      <span className="peso-sign">{priceParts.peso}</span>
                       <span className="price-main">{priceParts.main}</span>
                       {priceParts.decimal && <span className="price-decimal">{priceParts.decimal}</span>}
                     </div>
@@ -314,7 +316,10 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
                     </button>
                     <button
                       className="add-to-order-btn px-4 py-2 rounded-lg font-semibold text-sm flex items-center gap-2"
-                      onClick={() => addToCart(product)}
+                      onClick={() => {
+                        addToCart(product);
+                        openCart();
+                      }}
                       style={{ fontFamily: 'var(--body-font)' }}
                     >
                       <span>Add to Order</span>
@@ -396,6 +401,7 @@ export const PreviewProductsSection: React.FC<PreviewProductsSectionProps> = ({
                       onClick={() => {
                         addToCart(quickViewProduct);
                         setQuickViewProduct(null);
+                        openCart();
                       }}
                     >
                       <Plus className="w-5 h-5" />

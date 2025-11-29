@@ -186,6 +186,7 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
             isDark={isDark}
             textMuted={textMuted}
             handleImageError={handleImageError}
+            openCart={openCart}
           />
         ) : null;
       case 'about':
@@ -216,6 +217,7 @@ export const PreviewTemplate: React.FC<{ subdomain?: string }> = ({ subdomain })
             textMuted={textMuted}
             handleImageError={handleImageError}
             addToCart={addToCart}
+            openCart={openCart}
           />
         ) : null;
       case 'gallery':

@@ -2,6 +2,7 @@ import React from 'react';
 import { Palette, Sun, Moon, Sparkles, Loader2, Type } from 'lucide-react';
 import { ColorPicker } from '../../components/ColorPicker';
 import { Website, ThemeConfig } from '../../types';
+import { THEME_PRESETS, ThemePreset, applyPresetToTheme } from '../../constants/themePresets';
 
 interface VisualStyleProps {
   website: Website;
@@ -61,6 +62,66 @@ export const VisualStyle: React.FC<VisualStyleProps> = ({
       </div>
 
       <div className="space-y-6">
+        {/* Theme Presets */}
+        <div>
+          <label className="text-sm font-medium text-slate-700 block mb-3 flex items-center gap-2">
+            <Palette className="w-4 h-4 text-indigo-500" />
+            Color Scheme (Light Theme)
+          </label>
+          <div className="flex flex-wrap gap-3 mb-4">
+            {THEME_PRESETS.map((preset) => {
+              const isSelected = 
+                website.theme.colors?.brand600 === preset.colors.brand600 &&
+                website.theme.colors?.brand50 === preset.colors.brand50;
+              
+              return (
+                <button
+                  key={preset.id}
+                  onClick={() => {
+                    const newTheme = applyPresetToTheme(preset);
+                    setTheme(newTheme);
+                  }}
+                  className={`relative p-3 rounded-lg border-2 transition-all ${
+                    isSelected
+                      ? 'border-indigo-600 bg-indigo-50'
+                      : 'border-slate-200 bg-white hover:border-slate-300'
+                  }`}
+                  title={preset.description}
+                >
+                  {/* Color Swatches */}
+                  <div className="flex gap-1 mb-2">
+                    <div 
+                      className="w-8 h-8 rounded border border-slate-200"
+                      style={{ backgroundColor: preset.colors.brand900 }}
+                    />
+                    <div 
+                      className="w-8 h-8 rounded border border-slate-200"
+                      style={{ backgroundColor: preset.colors.brand600 }}
+                    />
+                    <div 
+                      className="w-8 h-8 rounded border border-slate-200"
+                      style={{ backgroundColor: preset.colors.brand50 }}
+                    />
+                    <div 
+                      className="w-8 h-8 rounded border border-slate-200 bg-white"
+                    />
+                  </div>
+                  <div className="text-xs font-medium text-center" style={{ 
+                    color: isSelected ? '#4f46e5' : '#475569' 
+                  }}>
+                    {preset.name}
+                  </div>
+                  {isSelected && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-indigo-600 rounded-full flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full" />
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <div>
           <label className="text-sm font-medium text-slate-700 block mb-3">Color Theme</label>
           <div className="grid grid-cols-2 gap-3">
