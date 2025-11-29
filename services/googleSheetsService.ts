@@ -38,17 +38,27 @@ export const fetchOrdersFromSheets = async (
   websiteTitle: string
 ): Promise<OrdersResponse | null> => {
   try {
-    // Build GET URL with parameters
-    const getUrl = googleScriptUrl.replace(/\/exec$/, '/exec') + 
-      `?websiteId=${encodeURIComponent(websiteId)}&websiteTitle=${encodeURIComponent(websiteTitle)}`;
+    // 1. Prepare the URL
+    // We add a timestamp parameter (&_t=) to prevent browser caching.
+    // This allows us to remove 'cache: no-cache' from the fetch options,
+    // which prevents the browser from triggering a CORS Preflight check.
+    const baseUrl = googleScriptUrl.replace(/\/exec$/, '/exec');
+    const queryParams = new URLSearchParams({
+      websiteId: websiteId,
+      websiteTitle: websiteTitle,
+      _t: Date.now().toString() // Cache buster
+    });
     
-    // Google Apps Script CORS workaround: Use a CORS proxy or direct fetch
-    // Try direct fetch first (will work if script is properly deployed)
+    const getUrl = `${baseUrl}?${queryParams.toString()}`;
+    
+    // 2. Direct Fetch (Simple Request)
+    // IMPORTANT: Do NOT add 'headers' object or 'cache: no-cache'.
+    // Keeping this a "Simple Request" is critical for Google Apps Script.
     try {
       const response = await fetch(getUrl, {
         method: 'GET',
         mode: 'cors',
-        cache: 'no-cache',
+        // cache: 'no-cache', // <--- REMOVED: This causes the CORS Preflight error
       });
 
       if (!response.ok) {
@@ -61,15 +71,18 @@ export const fetchOrdersFromSheets = async (
       try {
         data = JSON.parse(text);
       } catch (parseError) {
-        throw new Error(`Failed to parse response: ${text.substring(0, 100)}`);
+        // GAS sometimes returns HTML error pages instead of JSON on failure
+        console.error('Raw response:', text);
+        throw new Error(`Failed to parse response. Server might be down or returning HTML.`);
       }
       
       return data;
+
     } catch (corsError) {
-      // If CORS fails, try using a CORS proxy as fallback
+      // If the direct fetch still fails (e.g. strict firewall), fall back to proxy
       console.warn('Direct fetch failed, trying CORS proxy:', corsError);
       
-      // Use a public CORS proxy (you can replace with your own if needed)
+      // Use a public CORS proxy as fallback
       const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(getUrl)}`;
       
       const proxyResponse = await fetch(proxyUrl, {
@@ -82,15 +95,7 @@ export const fetchOrdersFromSheets = async (
       }
 
       const proxyText = await proxyResponse.text();
-      let proxyData: OrdersResponse;
-      
-      try {
-        proxyData = JSON.parse(proxyText);
-      } catch (parseError) {
-        throw new Error(`Failed to parse proxy response: ${proxyText.substring(0, 100)}`);
-      }
-      
-      return proxyData;
+      return JSON.parse(proxyText);
     }
   } catch (error) {
     console.error('Error fetching orders from Google Sheets:', error);
@@ -102,4 +107,3 @@ export const fetchOrdersFromSheets = async (
 };
 
 export type { Order, OrderStats, OrdersResponse };
-
