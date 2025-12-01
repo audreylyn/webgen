@@ -334,33 +334,17 @@ export const WebsiteBuilder: React.FC = () => {
         const processImages = async () => {
           const newWebsite = { ...prev };
 
-          // Process Hero Image
-          if (result.heroImagePrompt) {
-            const heroImageUrl = generateImageUrl(result.heroImagePrompt, 1200, 600);
-            const uploadedHeroUrl = await uploadAiImage(heroImageUrl, 'hero');
-            if (uploadedHeroUrl) {
-              newWebsite.content.hero.image = uploadedHeroUrl;
-            } else {
-              newWebsite.content.hero.image = `https://placehold.co/1200x600?text=Hero+Image`;
-            }
-          } else {
-            newWebsite.content.hero.image = `https://placehold.co/1200x600?text=Hero+Image`;
-          }
+          // Skip hero image generation - keep existing
+          // Users can upload their own images
 
-          // Process Product Images
+          // Process Product Images - skip image generation, keep existing or empty
           if (result.products && result.products.length > 0) {
-            newWebsite.content.products = await Promise.all(result.products.map(async (p, i) => {
-              const productImageUrl = p.imagePrompt
-                ? generateImageUrl(p.imagePrompt, 800, 600)
-                : `https://placehold.co/800x600?text=${encodeURIComponent(p.name)}`;
-              const uploadedProductUrl = await uploadAiImage(productImageUrl, `product_${i}`);
-              return {
-                id: generateId(),
-                name: p.name,
-                description: p.description,
-                price: p.price.includes('₱') ? p.price : `₱${p.price.replace('$', '')}`, // Ensure Peso sign
-                image: uploadedProductUrl || `https://placehold.co/800x600?text=${encodeURIComponent(p.name)}`
-              };
+            newWebsite.content.products = result.products.map((p, i) => ({
+              id: generateId(),
+              name: p.name,
+              description: p.description,
+              price: p.price.includes('₱') ? p.price : `₱${p.price.replace('$', '')}`,
+              image: '' // Users can upload their own product images
             }));
           } else {
             newWebsite.content.products = [];
@@ -376,10 +360,10 @@ export const WebsiteBuilder: React.FC = () => {
             newWebsite.content.hero.subtext = result.heroSubtext;
           }
           
-          // About section - only if enabled
+          // About section - only if enabled (no image generation)
           if (prev.enabledSections.about) {
             newWebsite.content.about = {
-              image: generateImageUrl('about section image'),
+              image: '', // Users can upload their own image
               subtitle: 'OUR PHILOSOPHY',
               title: result.aboutText?.split('.')[0] || 'About Us',
               paragraphs: result.aboutText ? result.aboutText.split('.').filter(p => p.trim()).map(p => p.trim() + '.') : ['Tell your story here...']
@@ -396,14 +380,14 @@ export const WebsiteBuilder: React.FC = () => {
             })) || [];
           }
           
-          // Testimonials - only if enabled
+          // Testimonials - only if enabled (no avatar generation)
           if (prev.enabledSections.testimonials) {
             newWebsite.content.testimonials = result.testimonials?.map((t, i) => ({
               id: generateId(),
               name: t.name,
               role: t.role,
               content: t.content,
-              avatar: `https://placehold.co/150x150?text=${t.name.charAt(0)}`
+              avatar: '' // Users can upload their own avatars
             })) || [];
           }
           
@@ -424,36 +408,24 @@ export const WebsiteBuilder: React.FC = () => {
           // Don't auto-enable sections - respect user's current enabled sections
           newWebsite.enabledSections = { ...prev.enabledSections };
 
-          // Process Gallery Images - only if enabled
+          // Process Gallery - only if enabled (no image generation)
           if (prev.enabledSections.gallery && result.gallery && result.gallery.length > 0) {
-            newWebsite.content.gallery = await Promise.all(result.gallery.map(async (item, i) => {
-              const galleryImageUrl = item.imagePrompt
-                ? generateImageUrl(item.imagePrompt, 800, 600)
-                : `https://placehold.co/800x600?text=${encodeURIComponent(item.caption || `Gallery ${i + 1}`)}`;
-              const uploadedGalleryUrl = await uploadAiImage(galleryImageUrl, `gallery_${i}`);
-              return {
-                id: generateId(),
-                image: uploadedGalleryUrl || `https://placehold.co/800x600?text=${encodeURIComponent(item.caption || `Gallery ${i + 1}`)}`,
-                caption: item.caption
-              };
+            newWebsite.content.gallery = result.gallery.map((item, i) => ({
+              id: generateId(),
+              image: '', // Users can upload their own gallery images
+              caption: item.caption
             }));
           } else if (!prev.enabledSections.gallery) {
             newWebsite.content.gallery = prev.content.gallery; // Keep existing gallery
           }
 
-          // Process Team Images - only if enabled
+          // Process Team - only if enabled (no image generation)
           if (prev.enabledSections.team && result.team && result.team.length > 0) {
-            newWebsite.content.team = await Promise.all(result.team.map(async (member, i) => {
-              const teamImageUrl = member.imagePrompt
-                ? generateImageUrl(member.imagePrompt, 150, 150)
-                : `https://placehold.co/150x150?text=${encodeURIComponent(member.name.charAt(0))}`;
-              const uploadedTeamUrl = await uploadAiImage(teamImageUrl, `team_${i}`);
-              return {
-                id: generateId(),
-                name: member.name,
-                role: member.role,
-                image: uploadedTeamUrl || `https://placehold.co/150x150?text=${encodeURIComponent(member.name.charAt(0))}`
-              };
+            newWebsite.content.team = result.team.map((member, i) => ({
+              id: generateId(),
+              name: member.name,
+              role: member.role,
+              image: '' // Users can upload their own team photos
             }));
           } else if (!prev.enabledSections.team) {
             newWebsite.content.team = prev.content.team; // Keep existing team
