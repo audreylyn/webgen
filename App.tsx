@@ -14,12 +14,13 @@ const SubdomainRouter: React.FC = () => {
   const host = window.location.host; // e.g., "my-site.likhasiteworks.dev"
   const parts = host.split('.');
   const { user } = useAuth();
+  const mainDomain = import.meta.env.VITE_MAIN_DOMAIN || 'likhasiteworks.dev';
 
   // Determine if it's a custom subdomain (e.g., my-site.likhasiteworks.dev, not www.likhasiteworks.dev or just likhasiteworks.dev)
   // For Vercel deployments, the default URL will be like webgen-xi.vercel.app, which also has 3 parts.
   // We need to differentiate the main app host from a user-defined subdomain.
   // Assuming the main app is accessed at likhasiteworks.dev or www.likhasiteworks.dev (or webgen-xi.vercel.app)
-  const isMainAppHost = parts.length <= 2 || parts[0] === 'www' || host.includes('vercel.app');
+  const isMainAppHost = host === mainDomain || host === `www.${mainDomain}` || host.includes('vercel.app') || host.includes('localhost');
 
   if (!isMainAppHost) {
     const subdomain = parts[0];

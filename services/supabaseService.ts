@@ -2,9 +2,9 @@ import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type { Website } from '../types';
 import imageCompression from 'browser-image-compression';
 
-const SUPABASE_URL = (import.meta as any).env?.VITE_SUPABASE_URL as string;
-const SUPABASE_ANON_KEY = (import.meta as any).env?.VITE_SUPABASE_ANON_KEY as string;
-const IMAGE_BUCKET = ((import.meta as any).env?.VITE_SUPABASE_IMAGE_BUCKET as string) || 'webgen-images';
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const IMAGE_BUCKET = import.meta.env.VITE_SUPABASE_IMAGE_BUCKET || 'webgen-images';
 
 if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
   console.warn('Supabase keys not found. Make sure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set.');
@@ -15,7 +15,7 @@ const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Auth helpers
 export const signUp = async (email: string, password: string, role: string = 'editor') => {
   // Pass role into user_metadata so we can read it after sign up
-  return supabase.auth.signUp({ email, password, options: { data: { role } } as any } as any);
+  return supabase.auth.signUp({ email, password, options: { data: { role } } });
 };
 
 export const signIn = async (email: string, password: string) => {
@@ -47,7 +47,7 @@ export const uploadImage = async (file: File, bucket = IMAGE_BUCKET, path?: stri
     if (uploadError) throw uploadError;
 
     const { data } = supabase.storage.from(bucket).getPublicUrl(filePath);
-    const publicUrl = (data as any)?.publicUrl;
+    const publicUrl = data.publicUrl;
     if (!publicUrl) throw new Error('Could not obtain public URL for uploaded image');
     return publicUrl;
   } catch (err) {
