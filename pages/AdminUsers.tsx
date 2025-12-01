@@ -241,7 +241,7 @@ const AdminUsers: React.FC = () => {
               )}
             </button>
             <p className="text-xs text-red-700 mt-2">
-              ⚠️ Warning: This action cannot be undone!
+              Warning: This action cannot be undone!
             </p>
           </div>
 

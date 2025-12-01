@@ -28,67 +28,6 @@ const DRIVE_FOLDER_NAME = "Messenger/Order Tracking";
 const ORDER_STATUS_OPTIONS = ["Pending", "Processing", "Preparing", "Ready", "Out for Delivery", "Delivered", "Cancelled"];
 
 // ============================================
-// ADMIN MENU & TRIGGER SETUP
-// ============================================
-
-/**
- * Adds a custom menu to the spreadsheet when opened.
- * NOTE: This only works if the script is bound to the spreadsheet.
- */
-function onOpen() {
-  try {
-    const ui = SpreadsheetApp.getUi();
-    ui.createMenu('Admin Controls')
-      .addItem('Enable Email Notifications', 'setupTrigger')
-      .addToUi();
-  } catch (e) {
-    // Ignore errors if running in a context without UI (e.g. standalone web app)
-    console.log("Could not create menu: " + e.toString());
-  }
-}
-
-/**
- * One-Click Setup: Creates the installable trigger for email notifications.
- * Run this from the "Admin Controls" menu in the spreadsheet.
- */
-function setupTrigger() {
-  const ui = SpreadsheetApp.getUi();
-  
-  try {
-    // Check if trigger already exists to avoid duplicates
-    const triggers = ScriptApp.getProjectTriggers();
-    const handlerName = 'sendOrderStatusEmail';
-    
-    let exists = false;
-    for (let i = 0; i < triggers.length; i++) {
-      if (triggers[i].getHandlerFunction() === handlerName) {
-        exists = true;
-        break;
-      }
-    }
-    
-    if (exists) {
-      ui.alert('Email notifications are already enabled!');
-      return;
-    }
-    
-    // Create the trigger
-    const sheet = SpreadsheetApp.getActiveSpreadsheet();
-    
-    ScriptApp.newTrigger(handlerName)
-      .forSpreadsheet(sheet)
-      .onEdit()
-      .create();
-      
-    ui.alert('Success! Email notifications are now enabled.\n\nCustomers will receive emails when you change the Order Status.');
-    
-  } catch (error) {
-    console.error(error);
-    ui.alert('Error setting up trigger: ' + error.toString());
-  }
-}
-
-// ============================================
 // MAIN FUNCTION - Handles Order Submissions
 // ============================================
 function doPost(e) {
@@ -646,7 +585,7 @@ function createOrUpdateDashboardSheet(spreadsheet, ordersSheet, websiteTitle) {
   
   // Card 1: Revenue (Green Theme)
   createModernCard(dashboardSheet, "B5:E8", "TOTAL REVENUE", 
-    `=SUM(ARRAYFORMULA(IF(ISBLANK(Orders!G2:G),0,VALUE(SUBSTITUTE(SUBSTITUTE(Orders!G2:G,"₱",""),",","")))))`, 
+    `=SUM(ARRAYFORMULA(IF(ISBLANK(Orders!H2:H),0,VALUE(SUBSTITUTE(SUBSTITUTE(Orders!H2:H,"₱",""),",","")))))`, 
     "₱#,##0.00", "#0f9d58");
 
   // Card 2: Orders Count (Blue Theme)
@@ -656,7 +595,7 @@ function createOrUpdateDashboardSheet(spreadsheet, ordersSheet, websiteTitle) {
 
   // Card 3: Action Needed (Red Theme)
   createModernCard(dashboardSheet, "J5:M8", "PENDING ORDERS", 
-    `=COUNTIF(Orders!I2:I,"Pending") + COUNTIF(Orders!I2:I,"Processing")`, 
+    `=COUNTIF(Orders!J2:J,"Pending") + COUNTIF(Orders!J2:J,"Processing")`, 
     "0", "#db4437");
 
   // =======================================
@@ -673,7 +612,7 @@ function createOrUpdateDashboardSheet(spreadsheet, ordersSheet, websiteTitle) {
   ORDER_STATUS_OPTIONS.forEach((status, index) => {
     const row = 2 + index;
     dashboardSheet.getRange(row, 15).setValue(status); // Col O
-    dashboardSheet.getRange(row, 16).setFormula(`=COUNTIF(Orders!I:I, "${status}")`); // Col P
+    dashboardSheet.getRange(row, 16).setFormula(`=COUNTIF(Orders!J:J, "${status}")`); // Col P
   });
 
   // 2. TOP PRODUCTS DATA (Static Snapshot)
@@ -758,13 +697,13 @@ function createOrUpdateDashboardSheet(spreadsheet, ordersSheet, websiteTitle) {
     dashboardSheet.getRange(dashboardRow, 4).setFormula(`=IF(Orders!A${ordersRow}<>"", Orders!C${ordersRow}, "")`);
     
     // 4. Items (Truncated)
-    dashboardSheet.getRange(dashboardRow, 5).setFormula(`=IF(Orders!A${ordersRow}<>"", LEFT(Orders!E${ordersRow}, 35) & IF(LEN(Orders!E${ordersRow})>35, "...", ""), "")`);
+    dashboardSheet.getRange(dashboardRow, 5).setFormula(`=IF(Orders!A${ordersRow}<>"", LEFT(Orders!F${ordersRow}, 35) & IF(LEN(Orders!F${ordersRow})>35, "...", ""), "")`);
     
     // 5. Total
-    dashboardSheet.getRange(dashboardRow, 6).setFormula(`=IF(Orders!A${ordersRow}<>"", Orders!G${ordersRow}, "")`);
+    dashboardSheet.getRange(dashboardRow, 6).setFormula(`=IF(Orders!A${ordersRow}<>"", Orders!H${ordersRow}, "")`);
     
     // 6. Status
-    dashboardSheet.getRange(dashboardRow, 7).setFormula(`=IF(Orders!A${ordersRow}<>"", Orders!I${ordersRow}, "")`);
+    dashboardSheet.getRange(dashboardRow, 7).setFormula(`=IF(Orders!A${ordersRow}<>"", Orders!J${ordersRow}, "")`);
   }
   
   // Styling Data Rows
@@ -845,7 +784,7 @@ function calculateDashboardStats(ordersSheet) {
   const lastRow = ordersSheet.getLastRow();
   if (lastRow < 2) return { statusData: [], revenueData: [], productData: [] };
 
-  const data = ordersSheet.getRange(2, 1, lastRow - 1, 9).getValues();
+  const data = ordersSheet.getRange(2, 1, lastRow - 1, 10).getValues();
   
   const dailyTotals = {};
   const statusCounts = {};
@@ -854,16 +793,16 @@ function calculateDashboardStats(ordersSheet) {
   data.forEach(row => {
     // 1. Revenue
     let dateStr = row[1].toString().substring(0, 10);
-    let amount = parseFloat(row[6].toString().replace(/[₱,]/g, "")) || 0;
+    let amount = parseFloat(row[7].toString().replace(/[₱,]/g, "")) || 0;
     dailyTotals[dateStr] = (dailyTotals[dateStr] || 0) + amount;
 
     // 2. Status
-    let status = row[8] || "Unknown";
+    let status = row[9] || "Unknown";
     statusCounts[status] = (statusCounts[status] || 0) + 1;
 
     // 3. Top Products (Parsing "Item Name xQty")
     // Assumes format: "Product A x2, Product B x1"
-    let itemsStr = row[4].toString(); 
+    let itemsStr = row[5].toString(); 
     if (itemsStr) {
       let items = itemsStr.split(","); // Split by comma
       items.forEach(item => {
