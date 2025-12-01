@@ -74,8 +74,12 @@ const AdminUsers: React.FC = () => {
     try {
       const result = await deleteOrphanedImages();
       const sizeMB = (result.totalSize / (1024 * 1024)).toFixed(2);
-      alert(`Successfully deleted ${result.deleted} orphaned images, freeing ${sizeMB} MB of storage. ${result.errors} errors occurred.`);
+      
+      // Force refresh after deletion
+      setStats(null); // Clear old stats
       await loadStorageStats();
+      
+      alert(`Successfully deleted ${result.deleted} orphaned images, freeing ${sizeMB} MB of storage. ${result.errors} errors occurred.`);
     } catch (err) {
       alert('Delete failed: ' + ((err as any)?.message || String(err)));
     } finally {

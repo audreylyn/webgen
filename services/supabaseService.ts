@@ -222,7 +222,12 @@ export const cleanAllWebsitesImages = async (): Promise<{ cleaned: number; error
 // Storage management: get all images in storage
 export const getAllStorageImages = async (bucket = IMAGE_BUCKET) => {
   try {
-    const { data, error } = await supabase.storage.from(bucket).list();
+    // Add cache busting to ensure fresh data
+    const { data, error } = await supabase.storage.from(bucket).list('', {
+      limit: 1000,
+      offset: 0,
+      sortBy: { column: 'name', order: 'asc' }
+    });
     if (error) throw error;
     return data || [];
   } catch (err) {
