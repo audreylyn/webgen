@@ -3,6 +3,19 @@ export type WebsiteStatus = 'active' | 'inactive' | 'draft' | 'published';
 export type ThemeMode = 'light' | 'dark';
 export type UserRole = 'admin' | 'editor';
 
+export enum WebsiteType {
+  Custom = 'Custom',
+  Portfolio = 'Portfolio',
+  Ecommerce = 'E-commerce/Store',
+  LandingPage = 'Landing Page',
+  Restaurant = 'Restaurant/Food',
+  ServiceAgency = 'Service/Agency',
+  EventConference = 'Event/Conference',
+  Blog = 'Blog/Personal',
+  Nonprofit = 'Nonprofit/Charity',
+  RealEstate = 'Real Estate',
+}
+
 export interface User {
   id: string;
   name: string;
@@ -244,6 +257,10 @@ export interface AISuggestionResponse {
   benefits: { title: string; description: string; icon: string }[];
   testimonials: { name: string; role: string; content: string }[];
   faq: { question: string; answer: string }[];
+  gallery?: { imagePrompt: string; caption?: string }[];
+  team?: { name: string; role: string; description?: string; imagePrompt: string }[];
+  pricing?: { name: string; price: string; features: string[]; description?: string; buttonText?: string; buttonLink?: string }[];
+  callToAction?: { text: string; description: string; buttonText: string; buttonLink: string };
 }
 
 export interface AIMarketingResponse {

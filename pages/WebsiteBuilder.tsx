@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { ColorPicker } from '../components/ColorPicker';
-import { Website, Product, Benefit, Testimonial, FAQ, SocialLink, GalleryItem, TeamMember, PricingPlan, CallToAction } from '../types';
+import { Website, WebsiteType, Product, Benefit, Testimonial, FAQ, SocialLink, GalleryItem, TeamMember, PricingPlan, CallToAction } from '../types';
 import { saveWebsite, getWebsiteById, uploadImage, deleteImage } from '../services/supabaseService';
 import { generateWebsiteContent, generateTheme, generateMarketingContent } from '../services/geminiService';
 import { Save, ArrowLeft, Plus, Trash, Sparkles, Image as ImageIcon, Loader2, Lock, ExternalLink, Palette, Sun, Moon, MessageCircle, Layers, Star, HelpCircle, Heart, User, Facebook, Instagram, Twitter, Linkedin, Youtube, Link as LinkIcon, Megaphone, Copy, Check, Upload } from 'lucide-react';
@@ -32,12 +32,6 @@ import { ContactFormConfig } from '../components/website-builder/ContactFormConf
 import { FooterConfig } from '../components/website-builder/FooterConfig';
 import { AiMarketingKit } from '../components/website-builder/AiMarketingKit';
 
-export enum WebsiteType {
-  Custom = 'Custom',
-  Portfolio = 'Portfolio',
-  Ecommerce = 'E-commerce/Store',
-  LandingPage = 'Landing Page',
-}
 
 const WEBSITE_PRESETS: Record<WebsiteType, Partial<Website['enabledSections']>> = {
   [WebsiteType.Custom]: {},
@@ -79,6 +73,88 @@ const WEBSITE_PRESETS: Record<WebsiteType, Partial<Website['enabledSections']>> 
     about: false,
     faq: false,
     contact: true,
+  },
+  [WebsiteType.Restaurant]: {
+    hero: true,
+    featured: true,
+    gallery: true,
+    testimonials: true,
+    contact: true,
+    products: false,
+    pricing: false,
+    benefits: false,
+    faq: false,
+    team: false,
+    callToAction: false,
+  },
+  [WebsiteType.ServiceAgency]: {
+    hero: true,
+    benefits: true,
+    team: true,
+    testimonials: true,
+    contact: true,
+    products: false,
+    pricing: false,
+    gallery: false,
+    faq: false,
+    featured: false,
+    callToAction: false,
+  },
+  [WebsiteType.EventConference]: {
+    hero: true,
+    about: true,
+    team: true,
+    pricing: true,
+    faq: true,
+    callToAction: true,
+    products: false,
+    benefits: false,
+    gallery: false,
+    testimonials: false,
+    featured: false,
+    contact: true,
+  },
+  [WebsiteType.Blog]: {
+    hero: true,
+    featured: true,
+    about: true,
+    testimonials: true,
+    contact: true,
+    products: false,
+    pricing: false,
+    benefits: false,
+    faq: false,
+    team: false,
+    gallery: false,
+    callToAction: false,
+  },
+  [WebsiteType.Nonprofit]: {
+    hero: true,
+    about: true,
+    benefits: true,
+    gallery: true,
+    testimonials: true,
+    callToAction: true,
+    products: false,
+    pricing: false,
+    faq: false,
+    team: false,
+    featured: false,
+    contact: true,
+  },
+  [WebsiteType.RealEstate]: {
+    hero: true,
+    gallery: true,
+    about: true,
+    testimonials: true,
+    contact: true,
+    products: false,
+    pricing: false,
+    benefits: false,
+    faq: false,
+    team: false,
+    featured: false,
+    callToAction: false,
   },
 };
 

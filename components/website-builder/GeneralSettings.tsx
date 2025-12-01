@@ -18,7 +18,7 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({
 }) => {
   return (
     <div>
-      <h3 className="text-lg font-bold text-slate-900 border-b pb-2">General Information</h3>
+      <h3 className="text-lg font-bold text-slate-900 pb-2">General Information</h3>
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-1">Website Title</label>

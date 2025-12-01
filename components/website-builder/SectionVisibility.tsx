@@ -1,7 +1,6 @@
 import React from 'react';
-import { Layers } from 'lucide-react';
-import { Website } from '../../types';
-import { WebsiteType } from '@/pages/WebsiteBuilder'; // Import WebsiteType enum
+import { Layers, Info } from 'lucide-react';
+import { Website, WebsiteType } from '../../types';
 
 interface SectionVisibilityProps {
   website: Website;
@@ -9,6 +8,59 @@ interface SectionVisibilityProps {
   websiteType: WebsiteType; // New prop
   handlePresetChange: (type: WebsiteType) => void; // New prop
 }
+
+const WEBSITE_TYPE_INFO: Record<WebsiteType, { description: string; bestFor: string; recipe: string[] }> = {
+  [WebsiteType.Custom]: {
+    description: 'Build your website exactly how you want it',
+    bestFor: 'Advanced users who know exactly what they need',
+    recipe: ['Choose sections manually']
+  },
+  [WebsiteType.Portfolio]: {
+    description: 'Showcase your work and attract clients',
+    bestFor: 'Photographers, designers, artists, and creative professionals',
+    recipe: ['Hero', 'Gallery', 'About', 'Contact']
+  },
+  [WebsiteType.Ecommerce]: {
+    description: 'Sell products online and manage your store',
+    bestFor: 'Retailers, artisans, and businesses selling physical goods',
+    recipe: ['Hero', 'Products', 'Pricing', 'FAQ', 'Contact']
+  },
+  [WebsiteType.LandingPage]: {
+    description: 'Convert visitors into customers with a focused message',
+    bestFor: 'SaaS products, apps, courses, and single-product businesses',
+    recipe: ['Hero', 'Benefits', 'Testimonials', 'Call-to-Action', 'Contact']
+  },
+  [WebsiteType.Restaurant]: {
+    description: 'Showcase your menu and dining experience',
+    bestFor: 'Fine dining, cafes, and restaurants focused on ambiance',
+    recipe: ['Hero', 'Featured', 'Gallery', 'Testimonials', 'Contact']
+  },
+  [WebsiteType.ServiceAgency]: {
+    description: 'Explain your services and prove your expertise',
+    bestFor: 'Consulting firms, marketing agencies, and freelance services',
+    recipe: ['Hero', 'Benefits', 'Team', 'Testimonials', 'Contact']
+  },
+  [WebsiteType.EventConference]: {
+    description: 'Promote events and drive ticket sales',
+    bestFor: 'Webinars, workshops, meetups, and conferences',
+    recipe: ['Hero', 'About', 'Team', 'Pricing', 'FAQ', 'Call-to-Action']
+  },
+  [WebsiteType.Blog]: {
+    description: 'Share knowledge and build your audience',
+    bestFor: 'Writers, bloggers, journalists, and content creators',
+    recipe: ['Hero', 'Featured', 'About', 'Testimonials', 'Contact']
+  },
+  [WebsiteType.Nonprofit]: {
+    description: 'Raise awareness and funds for your cause',
+    bestFor: 'Charities, NGOs, and organizations seeking donations',
+    recipe: ['Hero', 'About', 'Benefits', 'Gallery', 'Testimonials', 'Call-to-Action']
+  },
+  [WebsiteType.RealEstate]: {
+    description: 'Showcase properties and generate leads',
+    bestFor: 'Real estate agents, property managers, and rental companies',
+    recipe: ['Hero', 'Gallery', 'About', 'Testimonials', 'Contact']
+  },
+};
 
 export const SectionVisibility: React.FC<SectionVisibilityProps> = ({
   website,
@@ -47,6 +99,27 @@ export const SectionVisibility: React.FC<SectionVisibilityProps> = ({
             <option key={type} value={type}>{type}</option>
           ))}
         </select>
+        
+        {/* Website Type Information */}
+        {websiteType && WEBSITE_TYPE_INFO[websiteType] && (
+          <div className="mt-3 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+            <div className="flex items-start gap-2">
+              <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+              <div className="text-sm">
+                <p className="font-medium text-amber-800 mb-1">{WEBSITE_TYPE_INFO[websiteType].description}</p>
+                <p className="text-amber-700 mb-2"><strong>Best for:</strong> {WEBSITE_TYPE_INFO[websiteType].bestFor}</p>
+                <div className="flex flex-wrap gap-1">
+                  <span className="text-amber-700 font-medium">Recipe:</span>
+                  {WEBSITE_TYPE_INFO[websiteType].recipe.map((section, index) => (
+                    <span key={index} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-amber-100 text-amber-800">
+                      {section}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-2 gap-4">
