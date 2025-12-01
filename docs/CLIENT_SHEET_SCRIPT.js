@@ -12,6 +12,8 @@
 // ============================================
 // CONFIGURATION (UPDATE THESE FOR EACH CLIENT)
 // ============================================
+// BUSINESS_NAME: Should match the website's title/name (e.g., "Big Brew Coffee", "Salon Name")
+// This is used in email notifications, chatbot responses, and knowledge base content
 const BUSINESS_NAME = "My Shop Name";      // e.g., "Big Brew Coffee"
 const BUSINESS_EMAIL = "myshop@gmail.com"; // e.g., "orders@bigbrew.com"
 
@@ -86,28 +88,30 @@ function setupChatbot() {
   sheet = ss.insertSheet("KnowledgeBase");
   
   // Set Headers
-  const headers = [["Keywords (What user asks)", "Answer (What bot says)"]];
-  sheet.getRange(1, 1, 1, 2).setValues(headers);
+  const headers = [["Business Information & FAQ"]];
+  sheet.getRange(1, 1, 1, 1).setValues(headers);
   
   // Style Headers
-  sheet.getRange(1, 1, 1, 2).setFontWeight("bold").setBackground("#4285f4").setFontColor("white");
-  sheet.setColumnWidth(1, 300);
-  sheet.setColumnWidth(2, 500);
+  sheet.getRange(1, 1, 1, 1).setFontWeight("bold").setBackground("#4285f4").setFontColor("white");
+  sheet.setColumnWidth(1, 600);
   
   // Add Sample Data
   const sampleData = [
-    ["hi, hello, hey, greetings", "Hello! Welcome to " + BUSINESS_NAME + ". How can I help you today?"],
-    ["price, cost, how much", "Our prices vary by item. You can view our full menu on the 'Products' section of this website."],
-    ["location, where, address", "We are an online store, but we deliver to your doorstep!"],
-    ["delivery, shipping", "We offer delivery within the city. Standard delivery fee is ₱50."],
-    ["payment, pay, gcash", "We accept GCash, Bank Transfer, and Cash on Delivery (COD)."],
-    ["contact, number, phone", "You can reach us at " + BUSINESS_EMAIL + "."],
-    ["order, buy, purchase", "You can order directly here on our website! Just add items to your cart and checkout."]
+    ["Business Name: " + BUSINESS_NAME],
+    ["Contact Email: " + BUSINESS_EMAIL],
+    ["We are an online store that delivers to your doorstep within the city."],
+    ["Standard delivery fee is ₱50 within the city limits."],
+    ["We accept GCash, Bank Transfer, and Cash on Delivery (COD) payments."],
+    ["Our menu and prices are available on the 'Products' section of this website."],
+    ["Customers can order directly through our website by adding items to cart and checking out."],
+    ["We typically process orders within 24 hours and provide status updates via email."],
+    ["For urgent inquiries, customers can contact us directly at " + BUSINESS_EMAIL + "."],
+    ["We offer a satisfaction guarantee - if there are any issues with your order, please contact us immediately."]
   ];
   
-  sheet.getRange(2, 1, sampleData.length, 2).setValues(sampleData);
+  sheet.getRange(2, 1, sampleData.length, 1).setValues(sampleData);
   
-  SpreadsheetApp.getUi().alert('Success! KnowledgeBase sheet created.\n\n1. Go to Extensions > Deploy as Web App\n2. Set "Who has access" to "Anyone"\n3. Copy the URL and use it in your website Chat Widget.');
+  SpreadsheetApp.getUi().alert('Success! KnowledgeBase sheet created.\n\nAdd your business information, policies, and FAQ details in column A. The AI will use this information to answer customer questions.\n\n1. Go to Extensions > Deploy as Web App\n2. Set "Who has access" to "Anyone"\n3. Copy the URL and use it in your website Chat Widget.');
 }
 
 // ============================================
@@ -116,16 +120,48 @@ function setupChatbot() {
 
 /**
  * API Endpoint for the Chatbot
- * Usage: GET https://script.google.com/.../exec?q=hello
+ * Usage: 
+ * - Get knowledge base content: GET https://script.google.com/.../exec?mode=kb&website=subdomain
+ * - Get AI response: GET https://script.google.com/.../exec?q=hello&website=subdomain
  */
 function doGet(e) {
   const params = e.parameter;
-  const query = (params.q || "").toLowerCase().trim();
-  const callback = params.callback; // For JSONP if needed
+  const mode = params.mode || "";
+  const query = (params.q || "").trim();
+  const website = params.website || "default";
   
+  // Mode: Return raw knowledge base content (for chatbot service to use with Gemini)
+  if (mode === "kb") {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName("KnowledgeBase");
+    
+    if (sheet) {
+      // Get all knowledge base information
+      const data = sheet.getDataRange().getValues();
+      
+      // Combine all knowledge base entries into context
+      let knowledgeBase = "";
+      for (let i = 1; i < data.length; i++) { // Skip header row
+        if (data[i][0] && data[i][0].toString().trim()) {
+          knowledgeBase += data[i][0].toString().trim() + "\n";
+        }
+      }
+      
+      // Return plain text knowledge base content
+      return ContentService.createTextOutput(knowledgeBase.trim())
+        .setMimeType(ContentService.MimeType.TEXT);
+    } else {
+      // No knowledge base sheet found
+      return ContentService.createTextOutput("")
+        .setMimeType(ContentService.MimeType.TEXT);
+    }
+  }
+  
+  // Mode: Process query and return AI response (legacy/fallback mode)
   const result = {
     answer: "I'm sorry, I didn't understand that. Could you please rephrase?",
-    found: false
+    found: false,
+    website: website
   };
   
   if (query) {
@@ -133,21 +169,23 @@ function doGet(e) {
     const sheet = ss.getSheetByName("KnowledgeBase");
     
     if (sheet) {
-      const data = sheet.getDataRange().getValues(); // Get all data
+      // Get all knowledge base information
+      const data = sheet.getDataRange().getValues();
       
-      // Simple Keyword Matching
-      // Row 0 is header, start at 1
-      for (let i = 1; i < data.length; i++) {
-        const keywords = String(data[i][0]).toLowerCase().split(",").map(k => k.trim());
-        const answer = data[i][1];
-        
-        // Check if any keyword exists in the user query
-        const match = keywords.some(keyword => query.includes(keyword));
-        
-        if (match) {
-          result.answer = answer;
+      // Combine all knowledge base entries into context
+      let knowledgeBase = "";
+      for (let i = 1; i < data.length; i++) { // Skip header row
+        if (data[i][0] && data[i][0].toString().trim()) {
+          knowledgeBase += data[i][0].toString().trim() + "\n";
+        }
+      }
+      
+      if (knowledgeBase.trim()) {
+        // Use AI to generate response based on knowledge base
+        const aiResponse = generateAIResponse(query, knowledgeBase);
+        if (aiResponse) {
+          result.answer = aiResponse;
           result.found = true;
-          break; // Stop at first match
         }
       }
     }
@@ -158,6 +196,187 @@ function doGet(e) {
     .setMimeType(ContentService.MimeType.JSON);
     
   return output;
+}
+
+/**
+ * Generate AI response using knowledge base context
+ */
+function generateAIResponse(userQuery, knowledgeBase) {
+  try {
+    // Create a prompt for AI to answer based on knowledge base
+    const prompt = `You are a helpful customer service assistant for ${BUSINESS_NAME}. 
+    
+Use the following business information to answer the customer's question:
+
+BUSINESS INFORMATION:
+${knowledgeBase}
+
+CUSTOMER QUESTION: ${userQuery}
+
+INSTRUCTIONS:
+- Answer in a friendly, helpful tone
+- Use only information from the business information provided above
+- If the information isn't available in the business details, politely say you don't have that information and suggest contacting ${BUSINESS_EMAIL}
+- Keep responses concise but informative
+- Don't make up information not provided in the business details
+
+ANSWER:`;
+
+    // Use a simple pattern matching as fallback if no AI service available
+    // You can replace this with actual AI service calls (OpenAI, Gemini, etc.)
+    return generateSimpleResponse(userQuery, knowledgeBase);
+    
+  } catch (error) {
+    console.error("Error generating AI response:", error);
+    return null;
+  }
+}
+
+/**
+ * Enhanced AI-like response generation with better context understanding
+ */
+function generateSimpleResponse(query, knowledgeBase) {
+  const lowerQuery = query.toLowerCase();
+  const kbLines = knowledgeBase.split('\n').filter(line => line.trim());
+  
+  // Greeting responses
+  if (lowerQuery.match(/\b(hi|hello|hey|greetings|good morning|good afternoon|good evening)\b/)) {
+    return `Hello! Welcome to ${BUSINESS_NAME}. How can I help you today?`;
+  }
+  
+  // Extract key topics from the query
+  const queryTopics = extractTopics(lowerQuery);
+  
+  // Score each knowledge base line based on relevance
+  const scoredLines = kbLines.map(line => {
+    const score = calculateRelevanceScore(lowerQuery, queryTopics, line);
+    return { line, score };
+  }).filter(item => item.score > 0).sort((a, b) => b.score - a.score);
+  
+  // If we found relevant information
+  if (scoredLines.length > 0) {
+    // Combine top relevant lines (up to 3)
+    const topLines = scoredLines.slice(0, 3).map(item => item.line);
+    
+    // If query is a question, format as an answer
+    if (isQuestion(lowerQuery)) {
+      return formatAnswer(lowerQuery, topLines);
+    }
+    
+    // Return the most relevant information
+    return topLines.join(' ');
+  }
+  
+  // No relevant info found
+  return `I don't have specific information about that. Please contact us at ${BUSINESS_EMAIL} for more details.`;
+}
+
+/**
+ * Extract topics and keywords from query
+ */
+function extractTopics(query) {
+  const topics = {
+    price: ['price', 'cost', 'how much', 'expensive', 'cheap', 'rate', 'fee', 'charge', 'pesos', '₱'],
+    delivery: ['delivery', 'shipping', 'deliver', 'ship', 'courier', 'send', 'freight'],
+    payment: ['payment', 'pay', 'gcash', 'cash', 'bank', 'transfer', 'cod', 'debit', 'credit'],
+    contact: ['contact', 'phone', 'number', 'email', 'reach', 'call', 'message', 'text'],
+    order: ['order', 'buy', 'purchase', 'cart', 'checkout', 'get', 'want'],
+    location: ['location', 'where', 'address', 'find', 'area', 'place', 'store', 'branch'],
+    hours: ['hours', 'open', 'close', 'time', 'schedule', 'when', 'available'],
+    menu: ['menu', 'items', 'products', 'list', 'what do you', 'sell', 'offer', 'have'],
+    policy: ['policy', 'rule', 'refund', 'return', 'cancel', 'guarantee', 'warranty']
+  };
+  
+  const foundTopics = [];
+  for (const [topic, keywords] of Object.entries(topics)) {
+    if (keywords.some(keyword => query.includes(keyword))) {
+      foundTopics.push(topic);
+    }
+  }
+  
+  return foundTopics;
+}
+
+/**
+ * Calculate relevance score between query and knowledge base line
+ */
+function calculateRelevanceScore(query, topics, kbLine) {
+  const lowerLine = kbLine.toLowerCase();
+  let score = 0;
+  
+  // Topic matching (high weight)
+  topics.forEach(topic => {
+    if (lowerLine.includes(topic)) score += 10;
+  });
+  
+  // Extract meaningful words from query (3+ characters)
+  const queryWords = query.split(/\s+/).filter(word => word.length > 2);
+  
+  // Word matching (medium weight)
+  queryWords.forEach(word => {
+    if (lowerLine.includes(word)) {
+      score += 5;
+    }
+  });
+  
+  // Partial word matching (low weight)
+  queryWords.forEach(word => {
+    if (word.length > 4) {
+      const partial = word.substring(0, word.length - 1);
+      if (lowerLine.includes(partial)) {
+        score += 2;
+      }
+    }
+  });
+  
+  // Boost score if the line contains numbers and query asks about amounts
+  if (query.match(/\b(how much|cost|price|fee)\b/) && kbLine.match(/₱|\d+/)) {
+    score += 8;
+  }
+  
+  return score;
+}
+
+/**
+ * Check if the query is a question
+ */
+function isQuestion(query) {
+  return query.includes('?') || 
+         query.match(/\b(what|where|when|who|why|how|can|do|does|is|are)\b/);
+}
+
+/**
+ * Format knowledge base information as a natural answer
+ */
+function formatAnswer(query, relevantLines) {
+  const lowerQuery = query.toLowerCase();
+  
+  // For "what" questions
+  if (lowerQuery.startsWith('what')) {
+    return relevantLines.join(' ');
+  }
+  
+  // For "where" questions
+  if (lowerQuery.startsWith('where')) {
+    return relevantLines.join(' ');
+  }
+  
+  // For "how much" / "how many" questions
+  if (lowerQuery.includes('how much') || lowerQuery.includes('how many')) {
+    return relevantLines.join(' ');
+  }
+  
+  // For "can I" / "do you" questions
+  if (lowerQuery.match(/\b(can i|do you|can you)\b/)) {
+    const info = relevantLines.join(' ');
+    if (info.toLowerCase().includes('accept') || info.toLowerCase().includes('offer')) {
+      return 'Yes! ' + info;
+    }
+    return info;
+  }
+  
+  // Default: return the information
+  return relevantLines.join(' ');
 }
 
 // ============================================
@@ -290,17 +509,17 @@ function sendOrderStatusEmail(e) {
 function getStatusMessage(status) {
   if (status === "Out for Delivery") {
     return `<div style="background-color: #e8f0fe; color: #1967d2; padding: 15px; border-radius: 4px; font-size: 14px; margin-top: 20px;">
-      <strong>🚚 On the way!</strong> Please be ready to receive your order at the delivery location.
+      <strong>On the way!</strong> Please be ready to receive your order at the delivery location.
     </div>`;
   }
   if (status === "Delivered") {
     return `<div style="background-color: #e6f4ea; color: #137333; padding: 15px; border-radius: 4px; font-size: 14px; margin-top: 20px;">
-      <strong>✅ Delivered!</strong> We hope you enjoy your purchase.
+      <strong>Delivered!</strong> We hope you enjoy your purchase.
     </div>`;
   }
   if (status === "Cancelled") {
     return `<div style="background-color: #fce8e6; color: #c5221f; padding: 15px; border-radius: 4px; font-size: 14px; margin-top: 20px;">
-      <strong>❌ Order Cancelled.</strong> If this was a mistake, please contact us immediately.
+      <strong>Order Cancelled.</strong> If this was a mistake, please contact us immediately.
     </div>`;
   }
   return "";

@@ -36,7 +36,7 @@ export async function getChatbotConfig(websiteId: string): Promise<ChatbotConfig
     let knowledgeBase = undefined;
     const kbUrl = data.knowledge_base;
     if (kbUrl && (kbUrl.startsWith('http://') || kbUrl.startsWith('https://'))) {
-      // It's a Google Sheets Apps Script URL, fetch it with website parameter
+      // It's a Google Sheets Apps Script URL, fetch it with website parameter and mode=kb
       try {
         // Get website subdomain from database to append to URL
         const { data: websiteData } = await supabase
@@ -46,17 +46,37 @@ export async function getChatbotConfig(websiteId: string): Promise<ChatbotConfig
           .single();
         
         const website = websiteData?.subdomain || 'default';
-        const sheetsUrl = `${kbUrl}${kbUrl.includes('?') ? '&' : '?'}website=${website}`;
+        // Use mode=kb to get raw knowledge base content as plain text
+        const separator = kbUrl.includes('?') ? '&' : '?';
+        const sheetsUrl = `${kbUrl}${separator}mode=kb&website=${website}`;
         
-        const response = await fetch(sheetsUrl);
+        console.log('[Chatbot] Fetching knowledge base from:', sheetsUrl);
+        
+        const response = await fetch(sheetsUrl, {
+          method: 'GET',
+          mode: 'cors',
+          cache: 'no-cache',
+        });
+        
         if (response.ok) {
-          knowledgeBase = await response.text();
+          const kbText = await response.text();
+          console.log('[Chatbot] Knowledge base fetched, length:', kbText?.length || 0);
+          // Only use if we got actual content (not empty)
+          if (kbText && kbText.trim().length > 0) {
+            knowledgeBase = kbText.trim();
+            console.log('[Chatbot] Knowledge base loaded successfully');
+          } else {
+            console.warn('[Chatbot] Knowledge base is empty from Google Sheets:', sheetsUrl);
+          }
         } else {
-          console.warn('Failed to fetch knowledge base from Google Sheets:', sheetsUrl);
+          const errorText = await response.text().catch(() => '');
+          console.warn('[Chatbot] Failed to fetch knowledge base:', sheetsUrl, response.status, errorText);
         }
       } catch (err) {
-        console.error('Error fetching knowledge base from Google Sheets:', err);
+        console.error('[Chatbot] Error fetching knowledge base from Google Sheets:', err);
       }
+    } else {
+      console.log('[Chatbot] No knowledge base URL configured');
     }
 
     // Use environment variable for Gemini API key (same as AI content generation)
@@ -84,11 +104,21 @@ export async function sendChatbotMessage(
   websiteId: string,
   conversationId?: string
 ): Promise<string> {
+  console.log('[Chatbot] Sending message:', message, 'for website:', websiteId);
+  
   const config = await getChatbotConfig(websiteId);
   
   if (!config) {
+    console.error('[Chatbot] No config found for website:', websiteId);
     return "I'm sorry, I'm having trouble connecting. Please try again later.";
   }
+
+  if (!config.apiKey) {
+    console.error('[Chatbot] No API key configured');
+    return "I'm sorry, I'm having trouble connecting. Please make sure the chatbot is properly configured.";
+  }
+
+  console.log('[Chatbot] Config loaded, API key present, knowledge base:', config.knowledgeBase ? 'Yes' : 'No');
 
   // Only Gemini is supported now
   return handleGemini(message, config, conversationId);
@@ -111,12 +141,17 @@ async function handleGemini(
 
   try {
     // Build system instruction with knowledge base if available
-    let systemInstruction = config.config?.systemPrompt || 'You are a helpful customer support assistant for a business. Be friendly, concise, and accurate.';
+    let systemInstruction = config.config?.systemPrompt || 'You are a helpful customer support assistant for a business. Be friendly, concise, and accurate. Always respond naturally to greetings and questions, even simple ones like "hello" or "hi".';
     
     // If knowledge base exists, prepend it to system instruction
     if (config.knowledgeBase) {
-      systemInstruction = `${systemInstruction}\n\nKnowledge Base:\n${config.knowledgeBase}\n\nUse the knowledge base above to answer questions accurately. If the information is not in the knowledge base, politely say you don't have that information and suggest contacting support directly.`;
+      console.log('[Chatbot] Including knowledge base in prompt, length:', config.knowledgeBase.length);
+      systemInstruction = `${systemInstruction}\n\nKnowledge Base:\n${config.knowledgeBase}\n\nUse the knowledge base above to answer questions accurately. Always respond naturally to greetings (like "hello", "hi", "helo") with a friendly greeting back. If the information is not in the knowledge base, politely say you don't have that information and suggest contacting support directly.`;
+    } else {
+      console.log('[Chatbot] No knowledge base available, using default system prompt');
     }
+    
+    console.log('[Chatbot] Sending message to Gemini:', message.substring(0, 50) + '...');
 
     // Use Gemini API via server proxy or direct API call
     const model = config.config?.model || 'gemini-2.0-flash';
@@ -152,19 +187,24 @@ async function handleGemini(
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
+      console.error('[Chatbot] Gemini API error:', response.status, errorData);
       throw new Error(`Gemini API error: ${response.statusText} - ${JSON.stringify(errorData)}`);
     }
 
     const data = await response.json();
+    console.log('[Chatbot] Gemini API response received');
     
     // Extract response text from Gemini API response
     if (data.candidates && data.candidates.length > 0) {
       const candidate = data.candidates[0];
       if (candidate.content && candidate.content.parts && candidate.content.parts.length > 0) {
-        return candidate.content.parts[0].text;
+        const responseText = candidate.content.parts[0].text;
+        console.log('[Chatbot] Gemini response:', responseText.substring(0, 100) + '...');
+        return responseText;
       }
     }
     
+    console.warn('[Chatbot] No valid response from Gemini, returning default');
     return 'I received your message.';
   } catch (error) {
     console.error('Gemini error:', error);
