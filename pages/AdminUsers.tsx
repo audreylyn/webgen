@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Layout } from '../components/Layout';
+import { cleanAllWebsitesImages } from '../services/supabaseService';
 
 const AdminUsers: React.FC = () => {
   const { user, signUpEditor } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [cleanupLoading, setCleanupLoading] = useState(false);
 
   if (!user || user.role !== 'admin') {
     return <div className="p-6">Access denied.</div>;
@@ -23,6 +25,22 @@ const AdminUsers: React.FC = () => {
       alert('Failed to register editor: ' + ((err as any)?.message || String(err)));
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCleanup = async () => {
+    if (!confirm('This will clean old/placeholder images from all websites in the database. Continue?')) {
+      return;
+    }
+    
+    setCleanupLoading(true);
+    try {
+      const result = await cleanAllWebsitesImages();
+      alert(`Cleanup complete! Cleaned ${result.cleaned} websites. ${result.errors} errors occurred.`);
+    } catch (err) {
+      alert('Cleanup failed: ' + ((err as any)?.message || String(err)));
+    } finally {
+      setCleanupLoading(false);
     }
   };
 
@@ -66,6 +84,20 @@ const AdminUsers: React.FC = () => {
               {loading ? 'Creating...' : 'Create Editor'}
             </button>
           </form>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-6">
+            <h3 className="font-semibold text-slate-900 mb-2">Database Maintenance</h3>
+            <p className="text-sm text-slate-600 mb-3">
+              Clean old placeholder images and broken image URLs from all websites.
+            </p>
+            <button 
+              onClick={handleCleanup}
+              disabled={cleanupLoading}
+              className="bg-slate-600 text-white px-4 py-2 rounded-lg hover:bg-slate-700 disabled:opacity-50 font-medium text-sm"
+            >
+              {cleanupLoading ? 'Cleaning...' : 'Clean Old Images'}
+            </button>
+          </div>
 
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
             <h3 className="font-semibold text-slate-900 mb-2">How to Assign Editors to Websites</h3>

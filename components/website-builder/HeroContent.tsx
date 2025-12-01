@@ -65,7 +65,7 @@ export const HeroContent: React.FC<HeroContentProps> = ({
         <WebsiteBuilderImageUpload
           label="Banner Image"
           imageUrl={website.content.hero.image}
-          onFileUpload={(file) => handleFileUpload(file, (url) => updateContent('hero', { ...website.content.hero, image: url }))}
+          onFileUpload={(file) => handleFileUpload(file, (url) => updateContent('hero', { ...website.content.hero, image: url }), website.content.hero.image)}
           isUploading={isUploadingImage}
         />
         

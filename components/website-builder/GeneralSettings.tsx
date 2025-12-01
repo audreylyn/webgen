@@ -36,7 +36,7 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({
           <WebsiteBuilderImageUpload
             label=""
             imageUrl={website.logo}
-            onFileUpload={(file) => handleFileUpload(file, (url) => setWebsite({ ...website, logo: url }))}
+            onFileUpload={(file) => handleFileUpload(file, (url) => setWebsite({ ...website, logo: url }), website.logo)}
             isUploading={isUploadingImage}
           />
           <p className="text-xs text-slate-500 mt-1">Logo will appear beside the website name in the navbar</p>

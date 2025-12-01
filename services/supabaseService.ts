@@ -57,6 +57,168 @@ export const uploadImage = async (file: File, bucket = IMAGE_BUCKET, path?: stri
   }
 };
 
+// Storage: delete image from bucket
+export const deleteImage = async (imageUrl: string, bucket = IMAGE_BUCKET) => {
+  try {
+    // Extract filename from URL
+    // URL format: https://[project].supabase.co/storage/v1/object/public/[bucket]/[filename]
+    const urlParts = imageUrl.split('/');
+    const filename = urlParts[urlParts.length - 1];
+    
+    if (!filename) {
+      console.warn('Could not extract filename from URL:', imageUrl);
+      return;
+    }
+
+    const { error } = await supabase.storage.from(bucket).remove([filename]);
+    if (error) {
+      console.warn('Failed to delete old image:', error);
+    } else {
+      console.log('Successfully deleted old image:', filename);
+    }
+  } catch (err) {
+    console.warn('Error deleting old image:', err);
+  }
+};
+
+// Database cleanup: clean old/unused images from website content
+export const cleanOldImages = async (website: Website): Promise<Website> => {
+  const cleanedWebsite = { ...website };
+  let hasChanges = false;
+
+  // Helper function to check if URL is a placeholder
+  const isPlaceholder = (url: string) => {
+    return url.includes('placehold.co') || url.includes('placeholder') || url.includes('Image+Not+Found');
+  };
+
+  // Helper function to check if Supabase URL exists
+  const checkSupabaseUrl = async (url: string): Promise<boolean> => {
+    if (!url || !url.includes('supabase.co')) return true; // Keep non-Supabase URLs
+    
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      return response.ok;
+    } catch {
+      return false;
+    }
+  };
+
+  // Clean hero image
+  if (cleanedWebsite.content.hero.image) {
+    if (isPlaceholder(cleanedWebsite.content.hero.image)) {
+      cleanedWebsite.content.hero.image = '';
+      hasChanges = true;
+    } else if (!(await checkSupabaseUrl(cleanedWebsite.content.hero.image))) {
+      console.warn('Removing broken hero image URL:', cleanedWebsite.content.hero.image);
+      cleanedWebsite.content.hero.image = '';
+      hasChanges = true;
+    }
+  }
+
+  // Clean logo
+  if (cleanedWebsite.logo) {
+    if (isPlaceholder(cleanedWebsite.logo)) {
+      cleanedWebsite.logo = '';
+      hasChanges = true;
+    } else if (!(await checkSupabaseUrl(cleanedWebsite.logo))) {
+      console.warn('Removing broken logo URL:', cleanedWebsite.logo);
+      cleanedWebsite.logo = '';
+      hasChanges = true;
+    }
+  }
+
+  // Clean about image
+  if (cleanedWebsite.content.about.image) {
+    if (isPlaceholder(cleanedWebsite.content.about.image)) {
+      cleanedWebsite.content.about.image = '';
+      hasChanges = true;
+    }
+  }
+
+  // Clean product images
+  for (const product of cleanedWebsite.content.products) {
+    if (product.image && isPlaceholder(product.image)) {
+      product.image = '';
+      hasChanges = true;
+    }
+  }
+
+  // Clean featured images
+  if (cleanedWebsite.content.featured?.items) {
+    for (const item of cleanedWebsite.content.featured.items) {
+      if (item.image && isPlaceholder(item.image)) {
+        item.image = '';
+        hasChanges = true;
+      }
+    }
+  }
+
+  // Clean gallery images
+  for (const item of cleanedWebsite.content.gallery) {
+    if (item.image && isPlaceholder(item.image)) {
+      item.image = '';
+      hasChanges = true;
+    }
+  }
+
+  // Clean team images
+  for (const member of cleanedWebsite.content.team) {
+    if (member.image && isPlaceholder(member.image)) {
+      member.image = '';
+      hasChanges = true;
+    }
+  }
+
+  // Clean testimonial avatars
+  for (const testimonial of cleanedWebsite.content.testimonials) {
+    if (testimonial.avatar && isPlaceholder(testimonial.avatar)) {
+      testimonial.avatar = '';
+      hasChanges = true;
+    }
+  }
+
+  if (hasChanges) {
+    console.log('Cleaned old/placeholder images from website:', cleanedWebsite.id);
+  }
+
+  return cleanedWebsite;
+};
+
+// Database cleanup: clean old images from all websites
+export const cleanAllWebsitesImages = async (): Promise<{ cleaned: number; errors: number }> => {
+  try {
+    const { data: websites, error } = await supabase
+      .from('websites')
+      .select('*');
+
+    if (error) throw error;
+
+    let cleaned = 0;
+    let errors = 0;
+
+    for (const websiteData of websites || []) {
+      try {
+        const website = websiteData as Website;
+        const cleanedWebsite = await cleanOldImages(website);
+        
+        // Only save if there were changes
+        if (JSON.stringify(website) !== JSON.stringify(cleanedWebsite)) {
+          await saveWebsite(cleanedWebsite);
+          cleaned++;
+        }
+      } catch (err) {
+        console.error('Error cleaning website:', websiteData.id, err);
+        errors++;
+      }
+    }
+
+    return { cleaned, errors };
+  } catch (err) {
+    console.error('Error cleaning all websites:', err);
+    throw err;
+  }
+};
+
 // Database CRUD for websites
 export const getWebsites = async () => {
   try {

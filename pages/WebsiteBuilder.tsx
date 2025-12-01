@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Layout } from '../components/Layout';
 import { ColorPicker } from '../components/ColorPicker';
 import { Website, Product, Benefit, Testimonial, FAQ, SocialLink, GalleryItem, TeamMember, PricingPlan, CallToAction } from '../types';
-import { saveWebsite, getWebsiteById, uploadImage } from '../services/supabaseService';
+import { saveWebsite, getWebsiteById, uploadImage, deleteImage } from '../services/supabaseService';
 import { generateWebsiteContent, generateTheme, generateMarketingContent } from '../services/geminiService';
 import { Save, ArrowLeft, Plus, Trash, Sparkles, Image as ImageIcon, Loader2, Lock, ExternalLink, Palette, Sun, Moon, MessageCircle, Layers, Star, HelpCircle, Heart, User, Facebook, Instagram, Twitter, Linkedin, Youtube, Link as LinkIcon, Megaphone, Copy, Check, Upload } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -134,11 +134,17 @@ export const WebsiteBuilder: React.FC = () => {
     }
   };
 
-  const handleFileUpload = (file: File, callback: (url: string) => void) => {
+  const handleFileUpload = (file: File, callback: (url: string) => void, oldImageUrl?: string) => {
     if (file) {
       setIsUploadingImage(true); // Set loading state
       uploadImage(file)
-        .then((url) => callback(url))
+        .then(async (url) => {
+          callback(url);
+          // Delete old image after successful upload
+          if (oldImageUrl) {
+            await deleteImage(oldImageUrl);
+          }
+        })
         .catch((error) => {
           console.error("Image upload failed:", error);
           // Optionally show a toast notification for upload failure
