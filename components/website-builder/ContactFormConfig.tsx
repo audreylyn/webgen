@@ -75,7 +75,8 @@ export const ContactFormConfig: React.FC<ContactFormConfigProps> = ({
           </label>
         </div>
 
-        {/* Google Script URL */}
+        {/* Google Script URL - HIDDEN (Managed Globally via ENV) */}
+        {/* 
         <div>
           <label className="block text-sm font-medium text-slate-700 mb-2">
             Google Apps Script Web App URL
@@ -106,6 +107,7 @@ export const ContactFormConfig: React.FC<ContactFormConfigProps> = ({
             Paste the Web App URL from your Google Apps Script deployment
           </p>
         </div>
+        */}
 
         {/* Client ID */}
         <div>

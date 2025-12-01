@@ -50,6 +50,8 @@ export const Integrations: React.FC<IntegrationsProps> = ({
                 className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-amber-400 focus:border-amber-400"
               />
             </div>
+            {/* Google Spreadsheet Integration - HIDDEN (Managed Globally via ENV) */}
+            {/* 
             <div>
               <label className="block text-xs font-medium text-slate-700 mb-1">
                 Google Spreadsheet Integration (Optional)
@@ -65,6 +67,7 @@ export const Integrations: React.FC<IntegrationsProps> = ({
                 Orders will be automatically saved to Google Spreadsheet. See setup guide in docs.
               </p>
             </div>
+            */}
           </div>
         )}
       </div>
