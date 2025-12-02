@@ -473,7 +473,10 @@ export const saveWebsite = async (website: Website) => {
     try {
       const { data } = await supabase.auth.getUser();
       const user = (data as any)?.user;
-      if (user && user.id) payload.owner = user.id;
+      // Only set owner if not already set (preserve existing owner for edits)
+      if (user && user.id && !payload.owner) {
+        payload.owner = user.id;
+      }
     } catch (e) {
       // ignore auth errors, proceed without owner
     }

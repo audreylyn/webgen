@@ -27,7 +27,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ label, value, onChange
         />
         <input
           type="color"
-          value={safeValue}
+          value={safeValue || '#000000'}
           onChange={(e) => onChange(e.target.value)}
           className="h-10 w-10 rounded-lg border border-slate-300 cursor-pointer flex-shrink-0"
         />
