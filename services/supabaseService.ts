@@ -488,21 +488,41 @@ export const saveWebsite = async (website: Website) => {
     const dbPayload: any = {};
     Object.keys(payload).forEach((k) => { dbPayload[k.toLowerCase()] = (payload as any)[k]; });
 
-    // Try upsert without select first to avoid schema cache issues
-    const { error: upsertError } = await supabase.from('websites').upsert(dbPayload);
-    if (upsertError) {
-      console.error("Supabase Upsert Error:", upsertError);
-      throw upsertError;
+    let savedData = null;
+
+    // Try update first to avoid triggering INSERT policies if the row exists
+    // This is crucial for editors who have UPDATE permission but not INSERT permission
+    const { data: updatedData, error: updateError } = await supabase
+      .from('websites')
+      .update(dbPayload)
+      .eq('id', payload.id)
+      .select('*')
+      .maybeSingle();
+
+    if (updateError) {
+      console.error("Supabase Update Error:", updateError);
+      throw updateError;
+    }
+
+    if (updatedData) {
+      savedData = updatedData;
+    } else {
+      // If update returned no data, try insert (new website)
+      const { data: insertedData, error: insertError } = await supabase
+        .from('websites')
+        .insert(dbPayload)
+        .select('*')
+        .maybeSingle();
+      
+      if (insertError) {
+        console.error("Supabase Insert Error:", insertError);
+        throw insertError;
+      }
+      savedData = insertedData;
     }
     
-    // Then fetch the saved data
-    const { data, error: selectError } = await supabase.from('websites').select('*').eq('id', payload.id).maybeSingle();
-    if (selectError) {
-      console.error("Supabase Select Error after upsert:", selectError);
-      throw selectError;
-    }
-    if (!data) return undefined as any;
-    const copy = { ...data } as any;
+    if (!savedData) return undefined as any;
+    const copy = { ...savedData } as any;
     if ('enabledsections' in copy) { copy.enabledSections = copy.enabledsections; delete copy.enabledsections; }
     if ('createdat' in copy) { copy.createdAt = copy.createdat; delete copy.createdat; }
     if ('titlefont' in copy) { copy.titleFont = copy.titlefont; delete copy.titlefont; }
