@@ -226,14 +226,6 @@ export const FeaturedList: React.FC<FeaturedListProps> = ({
                 onChange={(e) => updateItem(item.id, 'badge', e.target.value)}
                 className="flex-1 bg-white border border-slate-300 rounded-md px-2 py-1 text-xs text-slate-700 focus:border-amber-400 outline-none"
               />
-              <select
-                value={item.buttonStyle || 'secondary'}
-                onChange={(e) => updateItem(item.id, 'buttonStyle', e.target.value as 'primary' | 'secondary')}
-                className="bg-white border border-slate-300 rounded-md px-2 py-1 text-xs text-slate-700 focus:border-amber-400 outline-none"
-              >
-                <option value="primary">Primary (Dark Brown)</option>
-                <option value="secondary">Secondary (Light Cream)</option>
-              </select>
             </div>
             <textarea
               value={item.description}

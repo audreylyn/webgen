@@ -24,7 +24,7 @@ export const PricingList: React.FC<PricingListProps> = ({
             id: Math.random().toString(), 
             name: 'New Plan', 
             tagline: 'Perfect for...',
-            price: '$0.00/month', 
+            price: '₱0.00/month', 
             features: ['Feature 1', 'Feature 2'], 
             buttonText: 'Get Started', 
             buttonLink: '#',

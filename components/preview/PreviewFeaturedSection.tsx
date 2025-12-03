@@ -100,10 +100,11 @@ export const PreviewFeaturedSection: React.FC<PreviewFeaturedSectionProps> = ({
           transition: all 0.3s ease;
         }
         .featured-button-secondary:hover {
-          background-color: ${secondaryButtonHover};
-          border-color: ${secondaryButtonHover};
+          background-color: ${primaryButtonBg};
+          color: white;
+          border-color: ${primaryButtonBg};
           transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
       `}</style>
 
