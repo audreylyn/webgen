@@ -131,10 +131,22 @@ export const FeaturedList: React.FC<FeaturedListProps> = ({
             </label>
             <input
               type="text"
-              value={featured.title?.split(' ').slice(0, -1).join(' ') || featured.title || ''}
+              value={(() => {
+                // Extract base title by removing the current titleAccent from the end
+                const currentAccent = featured.titleAccent || '';
+                if (currentAccent && featured.title?.endsWith(` ${currentAccent}`)) {
+                  return featured.title.slice(0, -(currentAccent.length + 1));
+                }
+                // Fallback: remove last word if no titleAccent is set
+                return featured.title?.split(' ').slice(0, -1).join(' ') || featured.title || '';
+              })()}
               onChange={(e) => {
-                const accent = featured.titleAccent || featured.title?.split(' ').slice(-1)[0] || 'Bakes';
-                updateFeatured({ title: `${e.target.value} ${accent}` });
+                const newBaseTitle = e.target.value.trim();
+                const accent = featured.titleAccent || '';
+                // Only combine if accent exists, otherwise just use the base title
+                updateFeatured({ 
+                  title: accent ? `${newBaseTitle} ${accent}` : newBaseTitle 
+                });
               }}
               className="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-sm text-slate-700 focus:border-amber-400 outline-none"
               placeholder="Signature"
@@ -146,12 +158,22 @@ export const FeaturedList: React.FC<FeaturedListProps> = ({
             </label>
             <input
               type="text"
-              value={featured.titleAccent || featured.title?.split(' ').slice(-1)[0] || ''}
+              value={featured.titleAccent || ''}
               onChange={(e) => {
-                const baseTitle = featured.title?.split(' ').slice(0, -1).join(' ') || 'Signature';
+                const newAccent = e.target.value.trim();
+                // Extract base title by removing the current titleAccent from the end
+                let baseTitle = featured.title || 'Signature';
+                const currentAccent = featured.titleAccent || '';
+                if (currentAccent && baseTitle.endsWith(` ${currentAccent}`)) {
+                  baseTitle = baseTitle.slice(0, -(currentAccent.length + 1));
+                } else if (!currentAccent && baseTitle) {
+                  // If no current accent, the whole title is the base
+                  baseTitle = baseTitle;
+                }
+                // Update both titleAccent and reconstruct title
                 updateFeatured({ 
-                  title: `${baseTitle} ${e.target.value}`,
-                  titleAccent: e.target.value 
+                  titleAccent: newAccent,
+                  title: newAccent ? `${baseTitle} ${newAccent}` : baseTitle
                 });
               }}
               className="w-full bg-white border border-slate-300 rounded-md px-3 py-2 text-sm text-slate-700 focus:border-amber-400 outline-none"
