@@ -39,8 +39,14 @@ export const ChatSupportConfig: React.FC<ChatSupportConfigProps> = ({ websiteId 
         .eq('website_id', websiteId)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error fetching chat config:', error);
+      // Handle various error cases gracefully
+      // PGRST116 = no rows returned, 406 = not acceptable (table might not exist or RLS blocking)
+      if (error) {
+        if (error.code === 'PGRST116' || error.code === '406' || error.message?.includes('406')) {
+          // Config doesn't exist or table not accessible, use defaults
+          return;
+        }
+        console.warn('[ChatSupportConfig] Error fetching config:', error.code, error.message);
         return;
       }
 

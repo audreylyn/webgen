@@ -64,23 +64,18 @@ export const ChatSupport: React.FC<ChatSupportProps> = ({ websiteId }) => {
         .single();
 
       if (error) {
-        // If config doesn't exist (PGRST116) or any other error, default to disabled
-        if (error.code === 'PGRST116') {
-          // Config doesn't exist, create it as disabled
-          const { error: insertError } = await supabase
-            .from('chat_support_config')
-            .insert({
-              website_id: websiteId,
-              is_enabled: false,
-              greeting_message: 'Hi! How can we help you today?',
-              agent_name: 'Support',
-              position: 'bottom-right',
-            });
-          
-          if (insertError) {
-            console.error('Error creating chat support config:', insertError);
-          }
+        // Handle various error cases gracefully
+        // PGRST116 = no rows returned, 406 = not acceptable (table might not exist or RLS blocking)
+        if (error.code === 'PGRST116' || error.code === '406' || error.message?.includes('406')) {
+          // Config doesn't exist or table not accessible, default to disabled
+          // Don't try to create it if we get 406 (might be RLS blocking)
+          setIsEnabled(false);
+          setLoading(false);
+          return;
         }
+        
+        // For other errors, log but don't try to create config
+        console.warn('[ChatSupport] Error fetching config:', error.code, error.message);
         setIsEnabled(false);
         setLoading(false);
         return;

@@ -30,7 +30,17 @@ export async function getChatbotConfig(websiteId: string): Promise<ChatbotConfig
       .eq('website_id', websiteId)
       .single();
 
-    if (error || !data) return null;
+    // Handle various error cases gracefully
+    if (error) {
+      // PGRST116 = no rows returned, 406 = not acceptable (table might not exist or RLS blocking)
+      if (error.code === 'PGRST116' || error.code === '406' || error.message?.includes('406')) {
+        return null; // Config doesn't exist, return null gracefully
+      }
+      console.warn('[Chatbot] Error fetching config:', error.code, error.message);
+      return null;
+    }
+
+    if (!data) return null;
 
     // Knowledge base is now always from Google Sheets (Apps Script URL)
     let knowledgeBase = undefined;
