@@ -37,7 +37,7 @@ export const ChatSupportConfig: React.FC<ChatSupportConfigProps> = ({ websiteId 
         .from('chat_support_config')
         .select('*')
         .eq('website_id', websiteId)
-        .single();
+        .maybeSingle();
 
       // Handle various error cases gracefully
       // PGRST116 = no rows returned, 406 = not acceptable (table might not exist or RLS blocking)

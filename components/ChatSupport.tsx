@@ -61,7 +61,7 @@ export const ChatSupport: React.FC<ChatSupportProps> = ({ websiteId }) => {
         .from('chat_support_config')
         .select('is_enabled, greeting_message')
         .eq('website_id', websiteId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         // Handle various error cases gracefully
