@@ -1,17 +1,19 @@
-# Guide: Setting Up Custom Subdomains with Vercel and Supabase
+# Subdomain Setup
 
 This guide will walk you through the process of configuring your WebGen application to serve published websites on custom subdomains of your primary domain (`likhasiteworks.dev`).
 
 The goal is to have:
--   **`my-cool-site.likhasiteworks.dev`** -> Renders the published website.
--   **`likhasiteworks.dev`** -> Renders the main WebGen dashboard and editor.
+
+* **`my-cool-site.likhasiteworks.dev`** -> Renders the published website.
+* **`likhasiteworks.dev`** -> Renders the main WebGen dashboard and editor.
 
 This process involves three main parts:
-1.  **DNS Configuration**: Pointing your custom domain to Vercel.
-2.  **Vercel Configuration**: Adding the custom domain to your Vercel project.
-3.  **Application Code Changes**: Updating the React app to handle subdomain-based routing.
 
----
+1. **DNS Configuration**: Pointing your custom domain to Vercel.
+2. **Vercel Configuration**: Adding the custom domain to your Vercel project.
+3. **Application Code Changes**: Updating the React app to handle subdomain-based routing.
+
+***
 
 ## Step 1: DNS Configuration (At Your Domain Registrar)
 
@@ -19,52 +21,53 @@ Based on your Vercel dashboard, the recommended and most reliable method is to *
 
 ### Recommended Method: Use Vercel's Nameservers
 
-1.  **Log in to your domain registrar's dashboard** (where you purchased `likhasiteworks.dev`).
-2.  Find the section for managing **"Nameservers"** or "DNS Servers".
-3.  **Delete your existing nameservers** (they are usually default ones from your registrar).
-4.  Add Vercel's two nameservers:
-    -   `ns1.vercel-dns.com`
-    -   `ns2.vercel-dns.com`
-5.  **Save the changes.** It may take some time (from minutes to a few hours) for these changes to apply globally.
-6.  Once you do this, you do **not** need to add the `A` records mentioned below. Vercel handles everything.
+1. **Log in to your domain registrar's dashboard** (where you purchased `likhasiteworks.dev`).
+2. Find the section for managing **"Nameservers"** or "DNS Servers".
+3. **Delete your existing nameservers** (they are usually default ones from your registrar).
+4. Add Vercel's two nameservers:
+   * `ns1.vercel-dns.com`
+   * `ns2.vercel-dns.com`
+5. **Save the changes.** It may take some time (from minutes to a few hours) for these changes to apply globally.
+6. Once you do this, you do **not** need to add the `A` records mentioned below. Vercel handles everything.
 
 ### Alternative Method: Manually Configure A Records
 
 Only use this method if you cannot change your nameservers. Vercel may still show a warning for the wildcard domain.
 
-1.  **Log in to your domain registrar's dashboard**.
-2.  Navigate to the **DNS management** section for your domain.
+1. **Log in to your domain registrar's dashboard**.
+2. Navigate to the **DNS management** section for your domain.
 3.  Add/Update the following two records, using the IP address Vercel provides:
 
     **A. Root Domain (`likhasiteworks.dev`)**
-    -   **Type**: `A`
-    -   **Name / Host**: `@` (or `likhasiteworks.dev`)
-    -   **Value / Points to**: `216.198.79.1` (Use the value shown in your Vercel dashboard)
-    -   **TTL**: Leave as default.
+
+    * **Type**: `A`
+    * **Name / Host**: `@` (or `likhasiteworks.dev`)
+    * **Value / Points to**: `216.198.79.1` (Use the value shown in your Vercel dashboard)
+    * **TTL**: Leave as default.
 
     **B. Wildcard Subdomain (`*.likhasiteworks.dev`)**
-    -   **Type**: `A`
-    -   **Name / Host**: `*`
-    -   **Value / Points to**: `216.198.79.1` (Use the same IP as above)
-    -   **TTL**: Leave as default.
 
-4.  **Save the changes.** DNS propagation can take anywhere from a few minutes to 48 hours, but it's usually fast.
+    * **Type**: `A`
+    * **Name / Host**: `*`
+    * **Value / Points to**: `216.198.79.1` (Use the same IP as above)
+    * **TTL**: Leave as default.
+4. **Save the changes.** DNS propagation can take anywhere from a few minutes to 48 hours, but it's usually fast.
 
----
+***
 
 ## Step 2: Vercel Project Configuration
 
 Now, tell Vercel to associate your domain with your `webgen-xi` project.
 
-1.  Go to your project on the **Vercel Dashboard**.
-2.  Navigate to **Settings** -> **Domains**.
-3.  Add your root domain: `likhasiteworks.dev`. Vercel will check the DNS configuration and should show "Valid Configuration" once it propagates.
-4.  Add your wildcard domain: `*.likhasiteworks.dev`. This will handle all subdomains.
-5.  Vercel will automatically provision SSL certificates for both domains.
+1. Go to your project on the **Vercel Dashboard**.
+2. Navigate to **Settings** -> **Domains**.
+3. Add your root domain: `likhasiteworks.dev`. Vercel will check the DNS configuration and should show "Valid Configuration" once it propagates.
+4. Add your wildcard domain: `*.likhasiteworks.dev`. This will handle all subdomains.
+5. Vercel will automatically provision SSL certificates for both domains.
 
 Once this step is done, visiting `any-subdomain.likhasiteworks.dev` should show your deployed Vercel app (it will show the dashboard for now, we'll fix this in the next step).
 
----
+***
 
 ## Step 3: Application Code Changes
 
@@ -74,7 +77,7 @@ The final step is to update the application to differentiate between the main ap
 
 The router needs to check the subdomain of the URL. If a subdomain exists (and it's not `www`), we show the published website. Otherwise, we show the editor app.
 
-*I can implement this change for you. The logic would look something like this:*
+_I can implement this change for you. The logic would look something like this:_
 
 ```tsx
 // In App.tsx
@@ -114,7 +117,8 @@ const App: React.FC = () => {
 
 We need a new function in our service to query the `websites` table using the `subdomain` column.
 
-*I can add this function:*
+_I can add this function:_
+
 ```ts
 // In services/supabaseService.ts
 
@@ -138,7 +142,8 @@ export const getWebsiteBySubdomain = async (subdomain: string) => {
 
 Users need a way to choose their subdomain when creating or editing a site.
 
-*I can modify the UI to include an input field like this:*
+_I can modify the UI to include an input field like this:_
+
 ```tsx
 // In pages/WebsiteBuilder.tsx
 
@@ -159,8 +164,6 @@ Users need a way to choose their subdomain when creating or editing a site.
 
 When the website is saved, the `subdomain` field will be persisted to your Supabase table.
 
----
+***
 
 This guide provides the complete roadmap. The DNS and Vercel steps must be done by you, but I can implement all the necessary code changes in **Step 3**.
-
-**Would you like me to proceed with implementing the code changes described above?**
